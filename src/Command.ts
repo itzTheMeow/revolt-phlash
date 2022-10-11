@@ -14,6 +14,8 @@ type CommandExecFunction = (
     from(i: number): string[];
     /** Get all args. */
     all(): string[];
+    /** Returns singular string of all args. */
+    asString(): string;
   }
 ) => any;
 
@@ -35,6 +37,7 @@ export default class Command {
       number: (i) => (Number(args[i]) == NaN ? undefined : Number(args[i])),
       from: (i) => args.slice(i),
       all: () => args.slice(1),
+      asString: () => args.slice(1).join(" "),
     });
   }
 }
@@ -47,13 +50,13 @@ export function loadCommands() {
   const foundCommands: Command[] = [];
   fs.readdirSync("dist/cmds")
     .filter((f) => f.endsWith(".js"))
-    .forEach((f) => foundCommands.push(require(`${process.cwd()}/dist/cmds/${f}`).default));
+    .forEach((f) => {
+      const p = `${process.cwd()}/dist/cmds/${f}`;
+      delete require.cache[require.resolve(p)];
+      foundCommands.push(require(p).default);
+    });
   cachedCommands.splice(0);
-  foundCommands.forEach((cmd) => {
-    const i = cachedCommands.findIndex((c) => c.name == cmd.name);
-    if (i >= 0) cachedCommands[i] = cmd;
-    else cachedCommands.push(cmd);
-  });
+  cachedCommands.push(...foundCommands);
   console.log(`Loaded ${cachedCommands.length} commands.`);
   return cachedCommands;
 }
