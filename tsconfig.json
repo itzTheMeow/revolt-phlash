@@ -5,7 +5,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
-    "declaration": true
+    "declaration": true,
+    "skipLibCheck": true
   },
   "include": ["src"]
 }
