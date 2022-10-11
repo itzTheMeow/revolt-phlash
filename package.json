@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run build && node .",
-    "build": "tsc -b tsconfig.json"
+    "build": "rimraf dist && tsc -b tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "@types/node": "^18.7.18",
     "axios": "^1.1.2",
     "revolt.js": "^6.0.18",
+    "rimraf": "^3.0.2",
     "typescript": "^4.8.3"
   }
 }
