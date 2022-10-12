@@ -1,11 +1,16 @@
-import fs from "fs";
 import { Client } from "revolt.js";
 import { getCommands, loadCommands } from "./Command";
 import config from "./config";
+import ServerQueueManager from "./music/ServerManager";
 import { setStatus } from "./util";
 
-const bot = new Client({
+export const bot = new Client({
   autoReconnect: true,
+});
+
+process.on("unhandledRejection", (err, pro) => {
+  console.error(`Unhandled Rejection: ${err}`);
+  pro.catch((e) => console.error("^^ " + e + "\nstk: " + e.stack));
 });
 
 bot.on("ready", () => {
@@ -21,4 +26,6 @@ bot.on("message", (message) => {
   if (cmd) cmd.fire(bot, message);
 });
 
-bot.loginBot(fs.readFileSync("token").toString().trim());
+bot.loginBot(config.token);
+
+export const QueueManager = new ServerQueueManager(bot);
