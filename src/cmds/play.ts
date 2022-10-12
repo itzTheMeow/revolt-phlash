@@ -8,7 +8,7 @@ import { RevoiceState } from "revoice-ts";
 
 export default new Command(
   "play",
-  "Plays a song from youtube in your channel.",
+  { description: "Plays a song from youtube in your channel." },
   async (bot, message, args) => {
     let queue = QueueManager.getServerQueue(message.channel.server);
 
@@ -55,6 +55,8 @@ export default new Command(
 
     if (!searched) return message.reply("No results found for that search!", false);
 
+    const reply = await message.reply({ content: `:${config.emojis.loading}: Queueing...` }, false);
+
     await queue.connect();
 
     const stream = ytdl(searched.url, {
@@ -65,20 +67,18 @@ export default new Command(
     if (queue.connection.state == RevoiceState.PLAYING) await queue.player.stop();
     await queue.player.playStream(stream);
 
-    await message.reply(
-      {
-        embeds: [
-          {
-            description: `#### Added [${searched.title}](${searched.url}) to the queue.
+    await reply.edit({
+      content: "[]()",
+      embeds: [
+        {
+          description: `#### Added [${searched.title}](${searched.url}) to the queue.
 by [${searched.channel.name}](${searched.channel.url})
 :alarm_clock: ${searched.durationFormatted} :eye: ${searched.views.toLocaleString()}
 
-##### ${config.emojis.discspin} PHLASH Music &bull; Requested by <@${message.author._id}>`,
-            colour: config.brandColor,
-          },
-        ],
-      },
-      false
-    );
+##### :${config.emojis.discspin}: PHLASH Music &bull; Requested by <@${message.author._id}>`,
+          colour: config.brandColor,
+        },
+      ],
+    });
   }
 );

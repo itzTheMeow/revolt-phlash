@@ -2,43 +2,89 @@ import fs from "fs";
 import { Client, Message } from "revolt.js";
 import config from "./config";
 
-type CommandExecFunction = (
-  bot: Client,
-  message: Message,
-  args: {
-    /** Get argument at index. (starts at 1) */
-    string(i: number): string | undefined;
-    /** Convert argument to Number. */
-    number(i: number): number | undefined;
-    /** Get args from index to end. */
-    from(i: number): string[];
-    /** Get all args. */
-    all(): string[];
-    /** Returns singular string of all args. */
-    asString(): string;
-  }
-) => any;
+interface CommandArgumentsManager {
+  /** Get argument at index. (starts at 1) */
+  string(i: number): string | undefined;
+  /** Convert argument to Number. */
+  number(i: number): number | undefined;
+  /** Convert argument to Boolean. (extended, yes/no/etc are valid) */
+  bool(i: number): boolean | undefined;
+  /** Get args from index to end. */
+  from(i: number): string[];
+  /** Get all args. */
+  all(): string[];
+  /** Returns singular string of all args. */
+  asString(): string;
+  /** Returns a flag from the command. */
+  flag(name: string): string;
+  /** Returns all parsed flags. */
+  flags(): { [key: string]: string };
+  /** Returns a boolean flag from the command. */
+  bflag(name: string): boolean;
+  /** Returns all truthy boolean flags. */
+  bflags(): string[];
+}
+type CommandExecFunction = (bot: Client, message: Message, args: CommandArgumentsManager) => any;
+interface CommandFlags {
+  [key: `-${string}` | `--${string}`]: string;
+}
 
 export default class Command {
-  constructor(public name: string, public description: string, private exec: CommandExecFunction) {
+  public description: string;
+  public flags: CommandFlags;
+
+  constructor(
+    public name: string,
+    opts: {
+      description: string;
+      flags?: CommandFlags;
+    },
+    public exec: CommandExecFunction
+  ) {
     this.name = this.name.toLowerCase();
+    this.description = opts.description;
+    this.flags = opts.flags || {};
   }
 
-  public fire(bot: Client, message: Message) {
+  public fire(bot: Client, message: Message): CommandArgumentsManager {
+    const flags: { [key: string]: string } = {};
+    const bflags: string[] = [];
     const args = message.content
       .substring(config.prefix.length + this.name.length)
       .trim()
-      .match(/(?:"(.*?)")|(\S*)/g)
-      .filter((a) => !!a)
+      // im actually an insane regex user
+      .match(/-[^-\s]*\s(?:".*?"|\S*)|".*?"|\S*/g)
+      .filter((a) => {
+        if (!a) return false;
+        if (a.startsWith("--")) {
+          bflags.push(a.substring(2));
+          return false;
+        } else if (a.startsWith("-")) {
+          const flagname = a.substring(1).split(" ")[0].toLowerCase();
+          flags[flagname] = a.substring(`-${flagname} `.length).replace(/^"(.*)"$/, "$1");
+          return false;
+        }
+        return true;
+      })
       .map((a) => a.replace(/^"(.*)"$/, "$1"));
     args.unshift(null);
-    this.exec(bot, message, {
+    return {
       string: (i) => args[i],
       number: (i) => (Number(args[i]) == NaN ? undefined : Number(args[i])),
+      bool: (i) =>
+        ["true", "yes", "on"].includes(args[i]?.toLowerCase())
+          ? true
+          : ["false", "no", "off"].includes(args[i]?.toLowerCase())
+          ? false
+          : undefined,
       from: (i) => args.slice(i),
       all: () => args.slice(1),
       asString: () => args.slice(1).join(" "),
-    });
+      flag: (n) => flags[n.toLowerCase()],
+      flags: () => ({ ...flags }),
+      bflag: (n) => bflags.includes(n.toLowerCase()),
+      bflags: () => [...bflags],
+    };
   }
 }
 

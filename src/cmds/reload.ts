@@ -4,16 +4,16 @@ import config from "../config";
 
 export default new Command(
   "reload",
-  "Reloads the bot. (developer only)",
+  { description: "Reloads the bot. (developer only)" },
   async (bot, message, args) => {
     if (message.author_id !== config.owner) return;
 
     const startTime = Date.now();
     let time = startTime;
     const t = (ty = time) => ((time = Date.now()), `${Math.floor((Date.now() - ty) / 100) / 10}s`);
-    let content = `**${config.emojis.loading} Hot-Reloading...**`;
+    let content = `**:${config.emojis.loading}: Hot-Reloading...**`;
     const msg = await message.channel.sendMessage({
-      embeds: [{ description: content }],
+      embeds: [{ description: content, colour: config.colors.grey }],
     });
 
     exec("git pull").stdout.once("end", async () => {
@@ -28,9 +28,9 @@ export default new Command(
           embeds: [
             {
               description:
-                `**${config.emojis.greenTick} Reload complete!**\n` +
+                `**:${config.emojis.greenTick}: Reload complete!**\n` +
                 content.split("\n").slice(1).join("\n"),
-              colour: "#00FF00",
+              colour: config.colors.green,
             },
           ],
         });

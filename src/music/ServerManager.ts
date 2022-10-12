@@ -17,7 +17,11 @@ export class Queue {
   public connection: VoiceConnection;
   public player: MediaPlayer;
 
-  constructor(public channel: Channel, public lastSent: Channel) {}
+  constructor(
+    public parent: ServerQueueManager,
+    public channel: Channel,
+    public lastSent: Channel
+  ) {}
 
   public async connect(): Promise<boolean> {
     return new Promise((r) => {
@@ -40,6 +44,8 @@ export class Queue {
     this.destroy();
   }
   public async destroy() {
+    if (this.parent.queues.includes(this))
+      this.parent.queues.splice(this.parent.queues.indexOf(this), 1);
     if (this.connection) await this.connection.destroy();
   }
 }
@@ -58,7 +64,7 @@ export default class ServerQueueManager {
   public getQueue(channel: Channel, reference: Channel) {
     return (
       this.queues.find((q) => q.channel._id == channel._id) ||
-      this.queues[this.queues.push(new Queue(channel, reference)) - 1]
+      this.queues[this.queues.push(new Queue(this, channel, reference)) - 1]
     );
   }
 }

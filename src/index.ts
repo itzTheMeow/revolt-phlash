@@ -23,7 +23,10 @@ bot.on("message", (message) => {
   if (message.author.bot || !message.content?.startsWith(config.prefix)) return;
   const cmdName = message.content.substring(config.prefix.length).split(" ")[0]?.toLowerCase();
   const cmd = getCommands().find((c) => c.name == cmdName);
-  if (cmd) cmd.fire(bot, message);
+  if (cmd) {
+    const args = cmd.fire(bot, message);
+    cmd.exec(bot, message, args);
+  }
 });
 
 bot.loginBot(config.token);
