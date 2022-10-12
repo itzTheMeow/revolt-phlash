@@ -16,30 +16,36 @@ export default new Command(
     let queue = QueueManager.getServerQueue(message.channel.server);
 
     if (!queue) {
-      const context = await message.reply("Send the name of a channel (or mention it) to play in!");
-      const useChannel = await new Promise<Channel | null>((res) => {
-        const handler = (m: Message) => {
-          if (m.author_id !== message.author_id || m.channel_id !== message.channel_id) return;
-          const matchedPing = m.content.match(/<#([A-z0-9]{26})>/);
-          bot.off("message", handler);
-          if (matchedPing)
-            return res(
-              message.channel.server.channels.find((c) => c._id == matchedPing[1]) || null
-            );
-          return res(
-            message.channel.server.channels.find(
-              (c) =>
-                c.channel_type == "VoiceChannel" &&
-                c.name.toLowerCase().includes(m.content.toLowerCase())
-            ) || null
-          );
-        };
-        bot.on("message", handler);
-        setTimeout(() => {
-          bot.off("message", handler);
-          res(null);
-        }, 20000);
-      });
+      const matchChannel = (txt: string) => {
+        if (!txt) return null;
+        const matchedPing = txt.match(/<#([A-z0-9]{26})>/);
+        if (matchedPing)
+          return message.channel.server.channels.find((c) => c._id == matchedPing[1]) || null;
+        return (
+          message.channel.server.channels.find(
+            (c) =>
+              c.channel_type == "VoiceChannel" && c.name.toLowerCase().includes(txt.toLowerCase())
+          ) || null
+        );
+      };
+      const specifiedChannel = args.hasFlag("channel");
+      const context = specifiedChannel
+        ? message
+        : await message.reply("Send the name of a channel (or mention it) to play in!");
+      const useChannel = specifiedChannel
+        ? matchChannel(args.flag("channel"))
+        : await new Promise<Channel | null>((res) => {
+            const handler = (m: Message) => {
+              if (m.author_id !== message.author_id || m.channel_id !== message.channel_id) return;
+              bot.off("message", handler);
+              return res(matchChannel(m.content));
+            };
+            bot.on("message", handler);
+            setTimeout(() => {
+              bot.off("message", handler);
+              res(null);
+            }, 20000);
+          });
       if (!useChannel || useChannel.channel_type !== "VoiceChannel")
         return context.reply(
           "That's not a valid voice channel or you took too long to answer.",

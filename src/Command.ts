@@ -17,6 +17,8 @@ interface CommandArgumentsManager {
   asString(): string;
   /** Returns a flag from the command. */
   flag(name: string): string;
+  /** Determines if the flag was specified. */
+  hasFlag(name: string): boolean;
   /** Returns all parsed flags. */
   flags(): { [key: string]: string };
   /** Returns a boolean flag from the command. */
@@ -87,6 +89,7 @@ export default class Command {
       all: () => args.slice(1),
       asString: () => args.slice(1).join(" "),
       flag: (n) => flags[n.toLowerCase()],
+      hasFlag: (n) => n.toLowerCase() in flags,
       flags: () => ({ ...flags }),
       bflag: (n) => bflags.includes(n.toLowerCase()),
       bflags: () => [...bflags],
