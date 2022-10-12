@@ -15,5 +15,7 @@ export default {
     redTick: "01GETPQ5MXBYC6RHEPPZ2CZQ9X",
     discspin: "01GETQ7NVHXQW0373J5YY7ZRBH",
   },
+  yesResponses: ["true", "yes", "on", "y", "+"],
+  noResponses: ["false", "no", "off", "n", "-"],
   token: fs.readFileSync("token").toString().trim(),
 };

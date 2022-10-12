@@ -80,9 +80,9 @@ export default class Command {
       string: (i) => args[i],
       number: (i) => (Number(args[i]) == NaN ? undefined : Number(args[i])),
       bool: (i) =>
-        ["true", "yes", "on"].includes(args[i]?.toLowerCase())
+        config.yesResponses.includes(args[i]?.toLowerCase())
           ? true
-          : ["false", "no", "off"].includes(args[i]?.toLowerCase())
+          : config.noResponses.includes(args[i]?.toLowerCase())
           ? false
           : undefined,
       from: (i) => args.slice(i),
