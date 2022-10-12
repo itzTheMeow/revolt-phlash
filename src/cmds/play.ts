@@ -4,6 +4,7 @@ import config from "../config";
 import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
 import ytdl from "ytdl-core";
+import { RevoiceState } from "revoice-ts";
 
 export default new Command(
   "play",
@@ -61,6 +62,7 @@ export default new Command(
       highWaterMark: 1 << 26,
     });
 
+    if (queue.connection.state == RevoiceState.PLAYING) await queue.player.stop();
     await queue.player.playStream(stream);
 
     await message.reply(
