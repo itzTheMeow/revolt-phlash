@@ -2,7 +2,12 @@ import Command, { getCommands } from "../Command";
 
 export default new Command(
   "help",
-  { description: "Get some help...", flags: { "--argtest": "Tests command arguments." } },
+  {
+    description: "Get some help...",
+    flags: {
+      "--argtest": { description: "Tests command arguments.", aliases: ["--args"] },
+    },
+  },
   (bot, message, args) => {
     if (args.bflag("argtest"))
       return message.channel.sendMessage({

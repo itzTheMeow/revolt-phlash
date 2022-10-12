@@ -26,7 +26,8 @@ interface CommandArgumentsManager {
 }
 type CommandExecFunction = (bot: Client, message: Message, args: CommandArgumentsManager) => any;
 interface CommandFlags {
-  [key: `-${string}` | `--${string}`]: string;
+  [key: `-${string}`]: { description: string; aliases?: `-${string}`[] };
+  [key: `--${string}`]: { description: string; aliases?: `--${string}`[] };
 }
 
 export default class Command {
@@ -56,12 +57,17 @@ export default class Command {
       .match(/-[^-\s]*\s(?:".*?"|\S*)|".*?"|\S*/g)
       .filter((a) => {
         if (!a) return false;
+        const alias = Object.entries(this.flags).find((f) =>
+          f[1].aliases.includes(a.split(" ")[0])
+        )?.[0];
         if (a.startsWith("--")) {
-          bflags.push(a.substring(2));
+          bflags.push((alias || a).substring(2));
           return false;
         } else if (a.startsWith("-")) {
           const flagname = a.substring(1).split(" ")[0].toLowerCase();
-          flags[flagname] = a.substring(`-${flagname} `.length).replace(/^"(.*)"$/, "$1");
+          flags[alias?.substring(1) || flagname] = a
+            .substring(`-${flagname} `.length)
+            .replace(/^"(.*)"$/, "$1");
           return false;
         }
         return true;

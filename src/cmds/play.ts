@@ -8,7 +8,10 @@ import { RevoiceState } from "revoice-ts";
 
 export default new Command(
   "play",
-  { description: "Plays a song from youtube in your channel." },
+  {
+    description: "Plays a song from youtube in your channel.",
+    flags: { "-channel": { description: "The channel to play music in", aliases: ["-c"] } },
+  },
   async (bot, message, args) => {
     let queue = QueueManager.getServerQueue(message.channel.server);
 
