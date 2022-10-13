@@ -77,7 +77,7 @@ export default new Command(
     await queue.player.playStream(stream);
 
     await reply.edit({
-      content: "[]()",
+      content: null,
       embeds: [
         {
           description: `#### Added [${searched.title}](${searched.url}) to the queue.
