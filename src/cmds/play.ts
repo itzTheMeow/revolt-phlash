@@ -3,7 +3,7 @@ import Search from "youtube-sr";
 import config from "../config";
 import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
-import ytdl from "ytdl-core";
+import { exec } from "youtube-dl-exec";
 import { RevoiceState } from "revoice-ts";
 
 export default new Command(
@@ -68,10 +68,10 @@ export default new Command(
 
     await queue.connect();
 
-    const stream = ytdl(searched.url, {
-      quality: "highestaudio",
-      highWaterMark: 1 << 26,
-    });
+    const stream = exec(searched.url, {
+      format: "bestaudio",
+      output: "-",
+    }).stdout;
 
     if (queue.connection.state == RevoiceState.PLAYING) await queue.player.stop();
     await queue.player.playStream(stream);
