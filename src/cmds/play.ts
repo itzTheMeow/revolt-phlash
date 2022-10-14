@@ -5,6 +5,8 @@ import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
 import { exec } from "youtube-dl-exec";
 import { RevoiceState } from "revoice-ts";
+import { youtubeToTrack } from "../music/converters";
+import { msToString } from "revolt-toolset";
 
 export default new Command(
   "play",
@@ -67,22 +69,15 @@ export default new Command(
     const reply = await message.reply({ content: `:${config.emojis.loading}: Queueing...` }, false);
 
     await queue.connect();
-
-    const stream = exec(searched.url, {
-      format: "bestaudio",
-      output: "-",
-    }).stdout;
-
-    if (queue.connection.state == RevoiceState.PLAYING) await queue.player.stop();
-    await queue.player.playStream(stream);
+    const track = await queue.addSong(youtubeToTrack(searched));
 
     await reply.edit({
       content: "[]()",
       embeds: [
         {
-          description: `#### Added [${searched.title}](${searched.url}) to the queue.
-by [${searched.channel.name}](${searched.channel.url})
-:alarm_clock: ${searched.durationFormatted} :eye: ${searched.views.toLocaleString()}
+          description: `#### Added [${track.title}](${track.url}) to the queue.
+by [${track.authorName}](${track.authorURL})
+:alarm_clock: ${msToString(track.duration)} :eye: ${track.views.toLocaleString()}
 
 ##### :${config.emojis.discspin}: PHLASH Music &bull; Requested by <@${message.author._id}>`,
           colour: config.brandColor,
