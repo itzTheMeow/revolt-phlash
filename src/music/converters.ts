@@ -1,7 +1,8 @@
 import { Video } from "youtube-sr";
+import { QueueFilter } from "./filters";
 import { Track, TrackProvider } from "./Queue";
 
-export function youtubeToTrack(yt: Video): Track {
+export function youtubeToTrack(yt: Video, filters?: QueueFilter[]): Track {
   return {
     title: yt.title || "Unknown Video",
     authorName: yt.channel?.name || "Unknown Channel",
@@ -11,5 +12,6 @@ export function youtubeToTrack(yt: Video): Track {
     views: yt.views,
     url: yt.url,
     provider: TrackProvider.YOUTUBE,
+    filtersEnabled: filters || [],
   };
 }

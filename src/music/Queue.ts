@@ -2,6 +2,7 @@ import { MediaPlayer, RevoiceState, User } from "revoice-ts";
 import { VoiceConnection } from "revoice-ts/dist/Revoice";
 import { Channel } from "revolt.js";
 import { exec as youtubeDlExec } from "youtube-dl-exec";
+import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
 
 export enum TrackProvider {
@@ -17,6 +18,7 @@ export interface Track {
   duration: number;
   url: string;
   provider: TrackProvider;
+  filtersEnabled: QueueFilter[];
 }
 
 export default class Queue {
@@ -43,7 +45,6 @@ export default class Queue {
     return new Promise((r) => {
       if (this.connected) return r(true);
       this.player = new MediaPlayer();
-      this.player.on("finish", () => this.onSongFinished());
       this.parent.client
         .join(this.channel._id, false)
         .then((c) => {
@@ -52,6 +53,7 @@ export default class Queue {
             this.connection.play(this.player);
             r(true);
           });
+          this.connection.on("state", (s) => s == RevoiceState.IDLE && this.onSongFinished());
         })
         .catch(() => (this.connError(), r(false)));
     });
@@ -77,7 +79,14 @@ export default class Queue {
       format: "bestaudio",
       output: "-",
     }).stdout;
-
+    this.player.customArgs = [];
+    if (this.nowPlaying.filtersEnabled.length) {
+      this.player.customArgs.push(
+        "-af",
+        this.nowPlaying.filtersEnabled.map((f) => Filters[f].args).join("")
+      );
+    }
+    await this.player.ffmpegFinished(false);
     await this.player.playStream(stream);
     return finished;
   }

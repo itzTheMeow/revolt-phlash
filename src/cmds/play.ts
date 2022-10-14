@@ -3,16 +3,26 @@ import Search from "youtube-sr";
 import config from "../config";
 import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
-import { exec } from "youtube-dl-exec";
-import { RevoiceState } from "revoice-ts";
 import { youtubeToTrack } from "../music/converters";
 import { msToString } from "revolt-toolset";
+import { Filters, QueueFilter, QueueFilters } from "../music/filters";
 
 export default new Command(
   "play",
   {
     description: "Plays a song from youtube in your channel.",
-    flags: { "-channel": { description: "The channel to play music in", aliases: ["-c"] } },
+    flags: Object.values(Filters).reduce(
+      (prev, f) => {
+        prev[`--${f.id}`] = {
+          description: `Enables the ${f.name} filter for this query.`,
+          aliases: f.aliases.map((a) => `--${a}`),
+        };
+        return prev;
+      },
+      {
+        "-channel": { description: "The channel to play music in", aliases: ["-c"] },
+      }
+    ),
   },
   async (bot, message, args) => {
     let queue = QueueManager.getServerQueue(message.channel.server);
@@ -69,7 +79,11 @@ export default new Command(
     const reply = await message.reply({ content: `:${config.emojis.loading}: Queueing...` }, false);
 
     await queue.connect();
-    const track = await queue.addSong(youtubeToTrack(searched));
+    const filters: QueueFilter[] = [];
+    Object.entries(Filters).forEach(
+      ([id, detail]) => args.bflag(detail.id) && filters.push(Number(id))
+    );
+    const track = await queue.addSong(youtubeToTrack(searched, filters));
 
     await reply.edit({
       content: "[]()",
@@ -77,7 +91,13 @@ export default new Command(
         {
           description: `#### Added [${track.title}](${track.url}) to the queue.
 by [${track.authorName}](${track.authorURL})
-:alarm_clock: ${msToString(track.duration)} :eye: ${track.views.toLocaleString()}
+:alarm_clock: ${msToString(track.duration)} :eye: ${track.views.toLocaleString()}${
+            filters.length
+              ? `
+**Filters**
+${filters.map((f) => `\`${Filters[f].name}\``).join(", ")}`
+              : ""
+          }
 
 ##### :${config.emojis.discspin}: PHLASH Music &bull; Requested by <@${message.author._id}>`,
           colour: config.brandColor,
