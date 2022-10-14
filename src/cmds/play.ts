@@ -21,6 +21,10 @@ export default new Command(
       },
       {
         "-channel": { description: "The channel to play music in", aliases: ["-c"] },
+        "-speed": {
+          description: "The speed to play this song at. (0.5x-2x)",
+          aliases: ["-s", "-spd"],
+        },
       }
     ),
   },
@@ -83,7 +87,11 @@ export default new Command(
     Object.entries(Filters).forEach(
       ([id, detail]) => args.bflag(detail.id) && filters.push(Number(id))
     );
-    const track = await queue.addSong(youtubeToTrack(searched, filters));
+    const speed = Math.min(
+      2,
+      Math.max(0.5, Math.round((Number(args.flag("speed")) || 1) * 10) / 10)
+    );
+    const track = await queue.addSong(youtubeToTrack(searched, filters, speed));
 
     await reply.edit({
       content: "[]()",
