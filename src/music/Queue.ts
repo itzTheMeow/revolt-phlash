@@ -4,7 +4,6 @@ import { Channel } from "revolt.js";
 import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
 import { exec as ytDlpExec } from "yt-dlp-exec";
-import { FFmpeg } from "prism-media";
 import { spawn } from "child_process";
 import ffmpegPath from "ffmpeg-static";
 
