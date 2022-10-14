@@ -100,6 +100,12 @@ export default new Command(
           description: `#### Added [${track.title}](${track.url}) to the queue.
 by [${track.authorName}](${track.authorURL})
 :alarm_clock: ${msToString(track.duration)} :eye: ${track.views.toLocaleString()}${
+            track.playbackSpeed !== 1
+              ? ` ${
+                  track.playbackSpeed > 1 ? ":fast_forward:" : ":rewind:"
+                } ${track.playbackSpeed.toFixed(1)}x`
+              : ""
+          }${
             filters.length
               ? `
 **Filters**
