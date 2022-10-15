@@ -3,9 +3,11 @@ import Search from "youtube-sr";
 import config from "../config";
 import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
-import { youtubeToTrack } from "../music/converters";
+import { rawToTrack, youtubeToTrack } from "../music/converters";
 import { msToString } from "revolt-toolset";
-import { Filters, QueueFilter, QueueFilters } from "../music/filters";
+import { Filters } from "../music/filters";
+import { Track } from "../music/Queue";
+import { URL } from "url";
 
 export default new Command(
   "play",
@@ -70,28 +72,49 @@ export default new Command(
       queue = QueueManager.getQueue(useChannel, message.channel);
     }
 
-    const query = args.asString();
+    const audioAttachment = message.attachments?.filter((a) => a.metadata.type == "Audio")[0];
+    const query = audioAttachment
+      ? `https://autumn.revolt.chat/attachments/${
+          audioAttachment._id
+        }?__filename=${encodeURIComponent(audioAttachment.filename)}`
+      : args.asString();
     if (!query) return message.reply("You need to enter a URL or search query!", false);
 
-    const searched =
-      Search.validate(query, "VIDEO") || Search.validate(query, "VIDEO_ID")
-        ? await Search.getVideo(query)
-        : await Search.searchOne(query, "video");
-
-    if (!searched) return message.reply("No results found for that search!", false);
+    const foundData = await (async () => {
+      if (Search.validate(query, "VIDEO") || Search.validate(query, "VIDEO_ID")) {
+        return youtubeToTrack(await Search.getVideo(query));
+      } else if (
+        (() => {
+          try {
+            new URL(query);
+            return true;
+          } catch {
+            return false;
+          }
+        })()
+      ) {
+        return rawToTrack(new URL(query));
+      } else {
+        return youtubeToTrack(await Search.searchOne(query, "video"));
+      }
+    })();
+    if (!foundData) return message.reply("No results found for that search!", false);
 
     const reply = await message.reply({ content: `:${config.emojis.loading}: Queueing...` }, false);
 
     await queue.connect();
-    const filters: QueueFilter[] = [];
+    const track: Track = {
+      ...foundData,
+      filtersEnabled: [],
+      playbackSpeed: Math.min(
+        2,
+        Math.max(0.5, Math.round((Number(args.flag("speed")) || 1) * 10) / 10)
+      ),
+    };
     Object.entries(Filters).forEach(
-      ([id, detail]) => args.bflag(detail.id) && filters.push(Number(id))
+      ([id, detail]) => args.bflag(detail.id) && track.filtersEnabled.push(Number(id))
     );
-    const speed = Math.min(
-      2,
-      Math.max(0.5, Math.round((Number(args.flag("speed")) || 1) * 10) / 10)
-    );
-    const track = await queue.addSong(youtubeToTrack(searched, filters, speed));
+    await queue.addSong(track);
 
     await reply.edit({
       content: "[]()",
@@ -106,10 +129,10 @@ by [${track.authorName}](${track.authorURL})
                 } ${track.playbackSpeed.toFixed(1)}x`
               : ""
           }${
-            filters.length
+            track.filtersEnabled.length
               ? `
 **Filters**
-${filters.map((f) => `\`${Filters[f].name}\``).join(", ")}`
+${track.filtersEnabled.map((f) => `\`${Filters[f].name}\``).join(", ")}`
               : ""
           }
 

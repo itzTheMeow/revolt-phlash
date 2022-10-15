@@ -6,9 +6,13 @@ import ServerQueueManager from "./ServerManager";
 import { exec as ytDlpExec } from "yt-dlp-exec";
 import { spawn } from "child_process";
 import ffmpegPath from "ffmpeg-static";
+import internal from "stream";
+import http from "http";
+import https from "https";
 
 export enum TrackProvider {
   YOUTUBE,
+  RAW,
 }
 
 export interface Track {
@@ -74,17 +78,39 @@ export default class Queue {
   public nowPlaying: Track | null = null;
   public playHistory: Track[] = [];
 
-  public async onSongFinished() {
-    if (this.connection.state == RevoiceState.PLAYING) return;
+  public async onSongFinished(): Promise<Track | null> {
+    if (this.connection.state == RevoiceState.PLAYING) return null;
     const finished = this.nowPlaying;
     this.playHistory.unshift(finished);
     this.nowPlaying = null;
-    if (!this.songs.length) return;
+    if (!this.songs.length) return null;
     this.nowPlaying = this.songs.shift();
-    const stream = ytDlpExec(this.nowPlaying.url, {
-      format: "bestaudio",
-      output: "-",
-    }).stdout;
+    const stream = await (async (): Promise<internal.Readable> => {
+      switch (this.nowPlaying.provider) {
+        case TrackProvider.YOUTUBE:
+          return ytDlpExec(this.nowPlaying.url, {
+            format: "bestaudio",
+            output: "-",
+          }).stdout;
+        case TrackProvider.RAW:
+          return await new Promise((r) =>
+            (this.nowPlaying.url.startsWith("http://") ? http : https).get(
+              this.nowPlaying.url,
+              (res) => {
+                r(
+                  res.statusCode !== 200 ||
+                    !["audio/", "video/"].find((f) =>
+                      res.headers["content-type"]?.toLowerCase().startsWith(f)
+                    )
+                    ? null
+                    : res
+                );
+              }
+            )
+          );
+      }
+    })();
+    if (!stream) return this.onSongFinished();
     const ff = spawn(ffmpegPath, [
       "-i",
       "-",
@@ -104,7 +130,6 @@ export default class Queue {
       "pipe:1",
     ]);
     stream.pipe(ff.stdin);
-    ff.stdin.on("error", console.log);
     this.player.ffmpeg.on("exit", () => ff.kill());
     await this.player.playStream(ff.stdout);
     return finished;
