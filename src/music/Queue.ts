@@ -9,7 +9,7 @@ import ffmpegPath from "ffmpeg-static";
 import internal from "stream";
 import http from "http";
 import https from "https";
-import randomInteger from "random-int";
+import randomInteger from "../util";
 
 export enum TrackProvider {
   YOUTUBE,
