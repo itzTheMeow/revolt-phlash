@@ -9,6 +9,7 @@ import ffmpegPath from "ffmpeg-static";
 import internal from "stream";
 import http from "http";
 import https from "https";
+import randomInteger from "random-int";
 
 export enum TrackProvider {
   YOUTUBE,
@@ -40,17 +41,21 @@ export default class Queue {
   public listeners: User[] = [];
   public connection: VoiceConnection;
   public player: MediaPlayer;
+  public readonly port: number;
 
   constructor(
     public parent: ServerQueueManager,
     public channel: Channel,
     public lastSent: Channel
-  ) {}
+  ) {
+    // allows 1k ports to be used, i think thats enough
+    this.port = randomInteger(55535, 65535);
+  }
 
   public async connect(): Promise<boolean> {
     return new Promise((r) => {
       if (this.connected) return r(true);
-      this.player = new MediaPlayer();
+      this.player = new MediaPlayer(false, this.port);
       this.parent.client
         .join(this.channel._id, false)
         .then((c) => {

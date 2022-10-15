@@ -21,6 +21,7 @@
     "@types/node": "^18.7.18",
     "axios": "^1.1.2",
     "ffmpeg-static": "^5.1.0",
+    "random-int": "^3.0.0",
     "revoice-ts": "^0.0.10",
     "revoice.js": "^0.1.733",
     "revolt-toolset": "^0.0.13",
