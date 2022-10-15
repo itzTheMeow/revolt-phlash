@@ -100,7 +100,17 @@ export default new Command(
     })();
     if (!foundData) return message.reply("No results found for that search!", false);
 
-    const reply = await message.reply({ content: `:${config.emojis.loading}: Queueing...` }, false);
+    const reply = await message.reply(
+      {
+        embeds: [
+          {
+            description: `:${config.emojis.loading}: Queueing...`,
+            colour: config.brandColor,
+          },
+        ],
+      },
+      false
+    );
 
     await queue.connect();
     const track: Track = {
@@ -117,7 +127,6 @@ export default new Command(
     await queue.addSong(track);
 
     await reply.edit({
-      content: "[]()",
       embeds: [
         {
           description: `#### Added [${track.title}](${track.url}) to the queue.
