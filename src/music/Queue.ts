@@ -135,8 +135,6 @@ export default class Queue {
       "pipe:1",
     ]);
     stream.pipe(ff.stdin);
-    stream.on("error", () => void 0);
-    ff.on("error", () => void 0);
     this.player.ffmpeg.on("exit", () => ff.kill());
     await this.player.playStream(ff.stdout);
     return finished;
