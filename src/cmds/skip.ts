@@ -9,7 +9,7 @@ export default new Command(
     const queue = QueueManager.getServerQueue(message.channel.server);
     if (!queue) return message.react(config.emojis.redTick);
 
-    //await queue.player.stop();
+    await queue.player.stop();
     await queue.player.ffmpegFinished(true);
     message.react(config.emojis.greenTick);
   }
