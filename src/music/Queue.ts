@@ -42,6 +42,7 @@ export default class Queue {
   public connection: VoiceConnection;
   public player: MediaPlayer;
   public readonly port: number;
+  public freed = true;
 
   constructor(
     public parent: ServerQueueManager,
@@ -56,6 +57,7 @@ export default class Queue {
     return new Promise((r) => {
       if (this.connected) return r(true);
       this.player = new MediaPlayer(false, this.port);
+      this.player.socket.on("error", console.trace);
       this.parent.client
         .join(this.channel._id, false)
         .then((c) => {
@@ -84,7 +86,7 @@ export default class Queue {
   public playHistory: Track[] = [];
 
   public async onSongFinished(): Promise<Track | null> {
-    if (this.connection.state == RevoiceState.PLAYING) return null;
+    if (this.connection.state == RevoiceState.PLAYING || !this.freed) return null;
     const finished = this.nowPlaying;
     this.playHistory.unshift(finished);
     this.nowPlaying = null;
@@ -135,6 +137,9 @@ export default class Queue {
       "pipe:1",
     ]);
     stream.pipe(ff.stdin);
+    stream.on("error", () => true);
+    ff.stdin.on("error", () => true);
+    ff.stdout.on("error", () => true);
     this.player.ffmpeg.on("exit", () => ff.kill());
     await this.player.playStream(ff.stdout);
     return finished;

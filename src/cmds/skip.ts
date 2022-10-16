@@ -9,7 +9,10 @@ export default new Command(
     const queue = QueueManager.getServerQueue(message.channel.server);
     if (!queue) return message.react(config.emojis.redTick);
 
+    queue.freed = false;
     await queue.player.stop();
+    queue.freed = true;
+    queue.onSongFinished();
     message.react(config.emojis.greenTick);
   }
 );
