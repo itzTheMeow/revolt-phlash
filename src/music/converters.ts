@@ -8,6 +8,7 @@ export function youtubeToTrack(yt: Video | null): CustomTrack | null {
   if (!yt) return null;
   return {
     title: yt.title || "Unknown Video",
+    createdTime: yt.uploadedAt?.toLowerCase() || "unknown",
     authorName: yt.channel?.name || "Unknown Channel",
     authorURL: yt.channel?.url || "https://youtube.com",
     authorIcon: yt.channel?.iconURL() || "",
@@ -31,6 +32,7 @@ export function rawToTrack(url: URL): CustomTrack {
         .pop() ??
         "Attachment")
     ).trim(),
+    createdTime: "unknown",
     duration: 0,
     views: 0,
     authorName: url.hostname == "autumn.revolt.chat" ? "Revolt Attachment" : url.hostname,

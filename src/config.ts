@@ -1,7 +1,7 @@
 import fs from "fs";
 
 export default {
-  prefix: ";",
+  prefix: ";;",
   owner: "01FESEWQKT7RESCNX5YF3JR29H",
   brandColor: "#5b00c3",
   colors: {
@@ -14,6 +14,18 @@ export default {
     greenTick: "01GETPPMWHRN2K6X2D45PYJ0SA",
     redTick: "01GETPQ5MXBYC6RHEPPZ2CZQ9X",
     discspin: "01GETQ7NVHXQW0373J5YY7ZRBH",
+    num: {
+      "0": "01GFJ9TPGH5NP6TCM0AR9MEJF0",
+      "1": "01GFJ9TQSKNN9RRSCYK4H3XX0Q",
+      "2": "01GFJ9TSA64MXCY0Z75ZBZBZ1T",
+      "3": "01GFJ9TTS79MF8TJ9805P8JVY3",
+      "4": "01GFJ9TWC39GYE9FTKJGWN6911",
+      "5": "01GFJ9TXYX3KAD61Z5DSS75KDA",
+      "6": "01GFJ9TZH8MJB8Q11XSBZQYMKN",
+      "7": "01GFJ9V109X3W4D4GJA9ETR92M",
+      "8": "01GFJ9V29CC30A91DSS0EK30HS",
+      "9": "01GFJ9V3CYF8X8CZ1QVK93RGT0",
+    },
   },
   yesResponses: ["true", "yes", "on", "y", "+"],
   noResponses: ["false", "no", "off", "n", "-"],

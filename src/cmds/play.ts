@@ -8,6 +8,7 @@ import { msToString } from "revolt-toolset";
 import { Filters } from "../music/filters";
 import { Track } from "../music/Queue";
 import { URL } from "url";
+import { musicFooter } from "../music/util";
 
 export default new Command(
   "play",
@@ -131,7 +132,10 @@ export default new Command(
         {
           description: `#### Added [${track.title}](${track.url}) to the queue.
 by [${track.authorName}](${track.authorURL})
-:alarm_clock: ${msToString(track.duration)} :eye: ${track.views.toLocaleString()}${
+
+:alarm_clock: ${msToString(track.duration)}
+:eye: ${track.views.toLocaleString()}
+:timer_clock: ${track.createdTime}${
             track.playbackSpeed !== 1
               ? ` ${
                   track.playbackSpeed > 1 ? ":fast_forward:" : ":rewind:"
@@ -145,7 +149,7 @@ ${track.filtersEnabled.map((f) => `\`${Filters[f].name}\``).join(", ")}`
               : ""
           }
 
-##### :${config.emojis.discspin}: PHLASH Music &bull; Requested by <@${message.author._id}>`,
+${musicFooter([`Requested by <@${message.author._id}>`])}`,
           colour: config.brandColor,
         },
       ],

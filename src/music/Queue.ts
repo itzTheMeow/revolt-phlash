@@ -18,6 +18,7 @@ export enum TrackProvider {
 
 export interface Track {
   title: string;
+  createdTime: string;
   authorName: string;
   authorURL: string;
   authorIcon: string;
