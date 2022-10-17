@@ -1,7 +1,7 @@
 import fs from "fs";
 
 export default {
-  prefix: ";;",
+  prefix: fs.existsSync("DEV") ? ";;" : ";",
   owner: "01FESEWQKT7RESCNX5YF3JR29H",
   brandColor: "#5b00c3",
   colors: {
