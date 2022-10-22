@@ -3,6 +3,7 @@ import { getCommands, loadCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
 import { setStatus } from "./util";
+import db from "enhanced.db";
 
 export const bot = new Client({
   autoReconnect: true,
@@ -18,7 +19,16 @@ process.on("unhandledRejection", (err, pro) => {
 
 bot.on("ready", () => {
   console.log(`${bot.user.username} is now online!`);
-  setStatus(bot, `Use ${config.prefix}help for help!`, "Idle");
+  let status = 0;
+  const statusChoices = [
+    () => `Use ${config.prefix}help for help!`,
+    () => `${(Number(db.get("tracks_played")) || 0).toLocaleString()} songs played.`,
+  ];
+  setInterval(() => {
+    if (!statusChoices[status]) status = 0;
+    setStatus(bot, statusChoices[status](), "Idle");
+    status++;
+  }, 15000);
   loadCommands();
 });
 
