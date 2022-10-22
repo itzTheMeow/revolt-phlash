@@ -20,6 +20,7 @@
   "dependencies": {
     "@types/node": "^18.7.18",
     "axios": "^1.1.2",
+    "enhanced.db": "^0.3.4",
     "ffmpeg-static": "^5.1.0",
     "revoice-ts": "^0.0.10",
     "revoice.js": "^0.1.733",

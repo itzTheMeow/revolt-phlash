@@ -10,6 +10,7 @@ import internal from "stream";
 import http from "http";
 import https from "https";
 import randomInteger from "../util";
+import db from "enhanced.db";
 
 export enum TrackProvider {
   YOUTUBE,
@@ -143,6 +144,7 @@ export default class Queue {
     ff.stdout.on("error", () => true);
     this.player.ffmpeg.on("exit", () => ff.kill());
     await this.player.playStream(ff.stdout);
+    db.set("tracks_played", (Number(db.get("tracks_played")) || 0) + 1);
     return finished;
   }
   public async addSong(song: Track) {
