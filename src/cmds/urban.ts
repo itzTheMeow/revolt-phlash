@@ -1,4 +1,3 @@
-import { getMarkdownTimestamp, MarkdownTimestampTypes } from "revolt-toolset";
 import define from "urban-eng-dictionary";
 import Command from "../Command";
 import config from "../config";
@@ -7,6 +6,8 @@ export default new Command(
   "urban",
   {
     description: "Gets the definition for a term from Urban Dictionary.",
+    aliases: ["urbandictionary"],
+    args: ["[term]"],
   },
   async (bot, message, args) => {
     const searchTerm = args.asString();

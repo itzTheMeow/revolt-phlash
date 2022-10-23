@@ -26,27 +26,38 @@ interface CommandArgumentsManager {
   /** Returns all truthy boolean flags. */
   bflags(): string[];
 }
+type CommandArgsDef = `[${string}]` | `<${string}>`;
 type CommandExecFunction = (bot: Client, message: Message, args: CommandArgumentsManager) => any;
 interface CommandFlags {
-  [key: `-${string}`]: { description: string; aliases?: `-${string}`[] };
+  [key: `-${string}`]: {
+    description: string;
+    aliases?: `-${string}`[];
+    arg?: `[${string}]`;
+  };
   [key: `--${string}`]: { description: string; aliases?: `--${string}`[] };
 }
 
 export default class Command {
   public description: string;
   public flags: CommandFlags;
+  public aliases: string[];
+  public args: CommandArgsDef[];
 
   constructor(
     public name: string,
     opts: {
       description: string;
       flags?: CommandFlags;
+      aliases?: string[];
+      args?: CommandArgsDef[];
     },
     public exec: CommandExecFunction
   ) {
     this.name = this.name.toLowerCase();
     this.description = opts.description;
     this.flags = opts.flags || {};
+    this.aliases = [...(opts.aliases || [])].sort();
+    this.args = opts.args || [];
   }
 
   public fire(bot: Client, message: Message): CommandArgumentsManager {

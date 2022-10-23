@@ -9,6 +9,7 @@ export default new Command(
   "queue",
   {
     description: "View the server queue.",
+    aliases: ["q"],
   },
   (bot, message) => {
     const queue = QueueManager.getServerQueue(message.channel.server);

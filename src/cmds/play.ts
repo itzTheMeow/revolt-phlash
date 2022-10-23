@@ -30,15 +30,19 @@ export default new Command(
         "-speed": {
           description: "The speed to play this song at. (0.5x-2x)",
           aliases: ["-s", "-spd"],
+          arg: "[speed]",
         },
         "-use": {
           description:
-            "The search provider to use. (default is just youtube) Can be one of: " +
+            "The search provider to use. (default is just youtube)\nCan be one of: " +
             searchProviders.map((p) => `\`${p}\``).join(", "),
           aliases: ["-u", "-provider"],
+          arg: `[${searchProviders.join("/")}]`,
         },
       }
     ),
+    aliases: ["p"],
+    args: ["<query>"],
   },
   async (bot, message, args) => {
     let queue = QueueManager.getServerQueue(message.channel.server);

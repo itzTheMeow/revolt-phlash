@@ -4,7 +4,7 @@ import config from "../config";
 
 export default new Command(
   "skip",
-  { description: "Skips the current song." },
+  { description: "Skips the current song.", aliases: ["s"] },
   async (bot, message, args) => {
     const queue = QueueManager.getServerQueue(message.channel.server);
     if (!queue) return message.react(config.emojis.redTick);
