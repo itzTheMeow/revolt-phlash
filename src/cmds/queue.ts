@@ -35,9 +35,9 @@ export default new Command(
             if (t == queue.nowPlaying)
               return `### Now Playing
 ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
-:alarm_clock: ${msToString(t.duration)} :eye: ${t.views.toLocaleString()} :timer_clock: ${
-                t.createdTime
-              }\n`;
+:alarm_clock: ${
+                t.duration ? msToString(t.duration) : "Live"
+              } :eye: ${t.views.toLocaleString()} :timer_clock: ${t.createdTime}\n`;
             else
               return `#### ${emoji} **[${t.title}](${t.url})**
 ##### by [${t.authorName}](${t.authorURL})
