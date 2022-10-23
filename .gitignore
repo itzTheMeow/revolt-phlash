@@ -2,3 +2,4 @@ node_modules
 dist
 token
 DEV
+enhanced.sqlite
