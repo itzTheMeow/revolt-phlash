@@ -10,7 +10,7 @@ export default new Command(
     if (!queue) return message.react(config.emojis.redTick);
 
     queue.freed = false;
-    await queue.player.stop();
+    await queue.player.disconnect(false, true);
     queue.freed = true;
     queue.onSongFinished();
     message.react(config.emojis.greenTick);
