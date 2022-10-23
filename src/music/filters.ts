@@ -3,6 +3,7 @@ export enum QueueFilter {
   vaporwaveExtended,
   nightcore,
   nightcoreExtended,
+  bassBoost,
 }
 export interface QueueFilters {
   id: string;
@@ -35,5 +36,11 @@ export const Filters: { [key in QueueFilter]: QueueFilters } = {
     name: "Vaporwave Extended",
     args: "aresample=48000,asetrate=48000*0.6",
     aliases: ["vaporx", "vwx", "vx"],
+  },
+  [QueueFilter.bassBoost]: {
+    id: "bassboost",
+    name: "Bass Boost",
+    args: "bass=g=15:f=110:w=0.3",
+    aliases: ["bass", "bb"],
   },
 };
