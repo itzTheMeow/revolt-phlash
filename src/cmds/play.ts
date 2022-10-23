@@ -135,7 +135,7 @@ export default new Command(
           description: `#### Added [${track.title}](${track.url}) to the queue.
 by [${track.authorName}](${track.authorURL})
 
-:alarm_clock: ${msToString(track.duration)}
+:alarm_clock: ${track.duration ? msToString(track.duration) : "Live"}
 :eye: ${track.views.toLocaleString()}
 :timer_clock: ${track.createdTime}${
             track.playbackSpeed !== 1

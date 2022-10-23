@@ -31,6 +31,7 @@
     "typescript": "^4.8.3",
     "urban-eng-dictionary": "^1.0.3",
     "youtube-sr": "^4.3.4",
-    "yt-dlp-exec": "^1.0.2"
+    "yt-dlp-exec": "^1.0.2",
+    "ytdl-core": "^4.11.2"
   }
 }

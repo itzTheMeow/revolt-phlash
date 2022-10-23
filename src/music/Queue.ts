@@ -11,6 +11,7 @@ import http from "http";
 import https from "https";
 import randomInteger from "../util";
 import db from "enhanced.db";
+import ytdl from "ytdl-core";
 
 export enum TrackProvider {
   YOUTUBE,
@@ -97,10 +98,18 @@ export default class Queue {
     const stream = await (async (): Promise<internal.Readable> => {
       switch (this.nowPlaying.provider) {
         case TrackProvider.YOUTUBE:
-          return ytDlpExec(this.nowPlaying.url, {
-            format: "bestaudio",
-            output: "-",
-          }).stdout;
+          // determine if its a livestream
+          return !this.nowPlaying.duration &&
+            !this.nowPlaying.views &&
+            this.nowPlaying.createdTime == "unknown"
+            ? ytdl(this.nowPlaying.url, {
+                quality: "highestaudio",
+                highWaterMark: 1 << 26,
+              })
+            : ytDlpExec(this.nowPlaying.url, {
+                format: "bestaudio",
+                output: "-",
+              }).stdout;
         case TrackProvider.RAW:
           return await new Promise((r) =>
             (this.nowPlaying.url.startsWith("http://") ? http : https).get(
