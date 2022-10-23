@@ -2,7 +2,7 @@ import { URL } from "url";
 import { Video } from "youtube-sr";
 import { Track, TrackProvider } from "./Queue";
 
-type CustomTrack = Omit<Omit<Track, "playbackSpeed">, "filtersEnabled">;
+export type CustomTrack = Omit<Omit<Track, "playbackSpeed">, "filtersEnabled">;
 
 export function youtubeToTrack(yt: Video | null): CustomTrack | null {
   if (!yt) return null;

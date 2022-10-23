@@ -19,9 +19,11 @@
   "homepage": "https://github.com/itzTheMeow/revolt-phlash#readme",
   "dependencies": {
     "@types/node": "^18.7.18",
+    "@types/qs": "^6.9.7",
     "axios": "^1.1.2",
     "enhanced.db": "^0.3.4",
     "ffmpeg-static": "^5.1.0",
+    "qs": "^6.11.0",
     "revoice-ts": "^0.0.10",
     "revoice.js": "^0.1.733",
     "revolt-toolset": "^0.0.21",

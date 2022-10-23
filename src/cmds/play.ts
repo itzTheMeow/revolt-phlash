@@ -9,6 +9,9 @@ import { Filters } from "../music/filters";
 import { Track } from "../music/Queue";
 import { URL } from "url";
 import { musicFooter } from "../music/util";
+import { getTuneinTrack } from "../music/IntegrationTuneIn";
+
+const searchProviders = ["tunein"];
 
 export default new Command(
   "play",
@@ -27,6 +30,12 @@ export default new Command(
         "-speed": {
           description: "The speed to play this song at. (0.5x-2x)",
           aliases: ["-s", "-spd"],
+        },
+        "-use": {
+          description:
+            "The search provider to use. (default is just youtube) Can be one of: " +
+            searchProviders.map((p) => `\`${p}\``).join(", "),
+          aliases: ["-u", "-provider"],
         },
       }
     ),
@@ -82,7 +91,10 @@ export default new Command(
     if (!query) return message.reply("You need to enter a URL or search query!", false);
 
     const foundData = await (async () => {
-      if (Search.validate(query, "VIDEO") || Search.validate(query, "VIDEO_ID")) {
+      const useProvider = args.flag("use");
+      if (useProvider == "tunein") {
+        return await getTuneinTrack(query);
+      } else if (Search.validate(query, "VIDEO") || Search.validate(query, "VIDEO_ID")) {
         return youtubeToTrack(await Search.getVideo(query));
       } else if (
         (() => {
