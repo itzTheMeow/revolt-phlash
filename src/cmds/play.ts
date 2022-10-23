@@ -125,6 +125,8 @@ export default new Command(
     Object.entries(Filters).forEach(
       ([id, detail]) => args.bflag(detail.id) && track.filtersEnabled.push(Number(id))
     );
+    if (message.author_id == config.owner && args.hasFlag("args"))
+      track.filtersEnabled.push(args.flag("args"));
     await queue.addSong(track);
 
     await reply.edit({

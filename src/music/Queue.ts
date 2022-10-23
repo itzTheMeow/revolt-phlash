@@ -28,7 +28,7 @@ export interface Track {
   url: string;
   provider: TrackProvider;
   playbackSpeed: number;
-  filtersEnabled: QueueFilter[];
+  filtersEnabled: (QueueFilter | string)[];
 }
 
 export default class Queue {
@@ -133,8 +133,8 @@ export default class Queue {
       "0",
       "-af",
       [
-        ...this.nowPlaying.filtersEnabled.map((f) => Filters[f].args),
         `atempo=${this.nowPlaying.playbackSpeed.toFixed(1)}`,
+        ...this.nowPlaying.filtersEnabled.map((f) => (typeof f == "string" ? f : Filters[f].args)),
       ].join(","),
       "pipe:1",
     ]);
