@@ -19,6 +19,7 @@
   "homepage": "https://github.com/itzTheMeow/revolt-phlash#readme",
   "dependencies": {
     "@types/node": "^18.7.18",
+    "@types/urban-dictionary": "^3.0.0",
     "axios": "^1.1.2",
     "enhanced.db": "^0.3.4",
     "ffmpeg-static": "^5.1.0",
@@ -29,6 +30,7 @@
     "rimraf": "^3.0.2",
     "soundcloud-scraper": "^5.0.3",
     "typescript": "^4.8.3",
+    "urban-dictionary": "^3.0.2",
     "youtube-sr": "^4.3.4",
     "yt-dlp-exec": "^1.0.2"
   }
