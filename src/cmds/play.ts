@@ -147,7 +147,10 @@ by [${track.authorName}](${track.authorURL})
             track.filtersEnabled.length
               ? `
 **Filters**
-${track.filtersEnabled.map((f) => `\`${Filters[f].name}\``).join(", ")}`
+${track.filtersEnabled
+  .filter((f) => typeof f !== "string")
+  .map((f) => `\`${Filters[f].name}\``)
+  .join(", ")}`
               : ""
           }
 
