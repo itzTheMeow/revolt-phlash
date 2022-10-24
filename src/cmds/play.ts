@@ -3,13 +3,14 @@ import Search from "youtube-sr";
 import config from "../config";
 import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
-import { rawToTrack, youtubeToTrack } from "../music/converters";
+import { CustomTrack, rawToTrack, youtubeListToTrack, youtubeToTrack } from "../music/converters";
 import { msToString } from "revolt-toolset";
 import { Filters } from "../music/filters";
 import { Track } from "../music/Queue";
 import { URL } from "url";
 import { musicFooter } from "../music/util";
 import { getTuneinTrack } from "../music/IntegrationTuneIn";
+import { Util as SoundCloudUtils } from "soundcloud-scraper";
 
 const searchProviders = ["tunein"];
 
@@ -94,12 +95,22 @@ export default new Command(
       : args.asString();
     if (!query) return message.reply("You need to enter a URL or search query!", false);
 
-    const foundData = await (async () => {
+    const foundData: CustomTrack | CustomTrack[] = await (async () => {
       const useProvider = args.flag("use");
       if (useProvider == "tunein") {
         return await getTuneinTrack(query);
-      } else if (Search.validate(query, "VIDEO") || Search.validate(query, "VIDEO_ID")) {
+      } else if (Search.validate(query, "PLAYLIST")) {
+        const list = await Search.getPlaylist(query);
+        return [
+          youtubeListToTrack(list),
+          ...(await Promise.all(list.videos.map(async (v) => await Search.getVideo(v.url)))).map(
+            youtubeToTrack
+          ),
+        ];
+      } else if (Search.validate(query, "VIDEO")) {
         return youtubeToTrack(await Search.getVideo(query));
+      } else if (SoundCloudUtils.validateURL(query, "track")) {
+        return;
       } else if (
         (() => {
           try {
@@ -130,25 +141,44 @@ export default new Command(
     );
 
     await queue.connect();
-    const track: Track = {
-      ...foundData,
-      filtersEnabled: [],
-      playbackSpeed: Math.min(
-        2,
-        Math.max(0.5, Math.round((Number(args.flag("speed")) || 1) * 10) / 10)
-      ),
-    };
+    const playbackSpeed = Math.min(
+      2,
+      Math.max(0.5, Math.round((Number(args.flag("speed")) || 1) * 10) / 10)
+    );
+    const filtersEnabled = [];
     Object.entries(Filters).forEach(
-      ([id, detail]) => args.bflag(detail.id) && track.filtersEnabled.push(Number(id))
+      ([id, detail]) => args.bflag(detail.id) && filtersEnabled.push(Number(id))
     );
     if (message.author_id == config.owner && args.hasFlag("args"))
-      track.filtersEnabled.push(args.flag("args"));
-    await queue.addSong(track);
+      filtersEnabled.push(args.flag("args"));
+    const useList: Track = Array.isArray(foundData)
+      ? { ...foundData.shift(), filtersEnabled, playbackSpeed }
+      : null;
+    for (const track of Array.isArray(foundData) ? foundData : [foundData]) {
+      await queue.addSong({
+        ...track,
+        filtersEnabled,
+        playbackSpeed,
+      });
+    }
+    const track = Array.isArray(foundData)
+      ? useList
+      : {
+          ...foundData,
+          filtersEnabled,
+          playbackSpeed,
+        };
 
     await reply.edit({
       embeds: [
         {
-          description: `#### Added [${track.title}](${track.url}) to the queue.
+          description: `#### Added${Array.isArray(foundData) ? " Playlist" : ""} [${track.title}](${
+            track.url
+          })${
+            Array.isArray(foundData)
+              ? ` with ${foundData.length} song${foundData.length == 1 ? "" : "s"}`
+              : ""
+          } to the queue.
 by [${track.authorName}](${track.authorURL})
 
 :alarm_clock: ${track.duration ? msToString(track.duration) : "Live"}

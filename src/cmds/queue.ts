@@ -30,7 +30,7 @@ export default new Command(
       return (
         pages[num]
           ?.map((t, i) => {
-            const emoji = [...String(i + 1).padStart(Math.floor(totalSongs / 10) + 1, "0")]
+            const emoji = [...String(i + 1).padStart(String(totalSongs).length, "0")]
               .map((c) => `:${config.emojis.num[c]}:`)
               .join("");
             if (t == queue.nowPlaying)

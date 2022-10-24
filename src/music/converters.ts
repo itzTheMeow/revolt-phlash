@@ -1,18 +1,32 @@
 import { URL } from "url";
-import { Video } from "youtube-sr";
+import { Playlist as PlaylistYT, Video as VideoYT } from "youtube-sr";
 import { Track, TrackProvider } from "./Queue";
 
 export type CustomTrack = Omit<Omit<Track, "playbackSpeed">, "filtersEnabled">;
 
-export function youtubeToTrack(yt: Video | null): CustomTrack | null {
+export function youtubeToTrack(yt: VideoYT | null): CustomTrack | null {
   if (!yt) return null;
   return {
     title: yt.title || "Unknown Video",
     createdTime: yt.uploadedAt?.toLowerCase() || "unknown",
     authorName: yt.channel?.name || "Unknown Channel",
     authorURL: yt.channel?.url || "https://youtube.com",
-    authorIcon: yt.channel?.iconURL() || "",
+    authorIcon: yt.channel?.iconURL?.() || "",
     duration: yt.duration,
+    views: yt.views,
+    url: yt.url,
+    provider: TrackProvider.YOUTUBE,
+  };
+}
+export function youtubeListToTrack(yt: PlaylistYT | null): CustomTrack | null {
+  if (!yt) return null;
+  return {
+    title: yt.title || "Unknown Playlist",
+    createdTime: yt.lastUpdate || "unknown",
+    authorName: yt.channel?.name || "Unknown Channel",
+    authorURL: yt.channel?.url || "https://youtube.com",
+    authorIcon: yt.channel?.iconURL?.() || "",
+    duration: yt.videos.reduce((dur, v) => dur + v.duration, 0),
     views: yt.views,
     url: yt.url,
     provider: TrackProvider.YOUTUBE,

@@ -15,6 +15,7 @@ import ytdl from "ytdl-core";
 
 export enum TrackProvider {
   YOUTUBE,
+  SOUNDCLOUD,
   RAW,
 }
 
@@ -98,8 +99,10 @@ export default class Queue {
     const stream = await (async (): Promise<internal.Readable> => {
       switch (this.nowPlaying.provider) {
         case TrackProvider.YOUTUBE:
-          // determine if its a livestream
-          return !this.nowPlaying.duration &&
+        case TrackProvider.SOUNDCLOUD:
+          // determine if its a livestream (yt only)
+          return this.nowPlaying.provider == TrackProvider.YOUTUBE &&
+            !this.nowPlaying.duration &&
             !this.nowPlaying.views &&
             this.nowPlaying.createdTime == "unknown"
             ? ytdl(this.nowPlaying.url, {
