@@ -3,7 +3,14 @@ import Search from "youtube-sr";
 import config from "../config";
 import { QueueManager } from "..";
 import { Channel, Message } from "revolt.js";
-import { CustomTrack, rawToTrack, youtubeListToTrack, youtubeToTrack } from "../music/converters";
+import {
+  CustomTrack,
+  rawToTrack,
+  soundcloudListToTrack,
+  soundcloudToTrack,
+  youtubeListToTrack,
+  youtubeToTrack,
+} from "../music/converters";
 import { msToString } from "revolt-toolset";
 import { Filters } from "../music/filters";
 import { Track } from "../music/Queue";
@@ -11,8 +18,11 @@ import { URL } from "url";
 import { musicFooter } from "../music/util";
 import { getTuneinTrack } from "../music/IntegrationTuneIn";
 import { Util as SoundCloudUtils } from "soundcloud-scraper";
+import SCClient from "soundcloud.ts";
 
-const searchProviders = ["tunein"];
+const SoundCloud = new SCClient();
+
+const searchProviders = ["soundcloud", "tunein"];
 
 export default new Command(
   "play",
@@ -99,8 +109,18 @@ export default new Command(
       const useProvider = args.flag("use");
       if (useProvider == "tunein") {
         return await getTuneinTrack(query);
+      } else if (useProvider == "soundcloud") {
+        return soundcloudToTrack(
+          (
+            await SoundCloud.tracks.searchV2({
+              q: query,
+              limit: 1,
+            })
+          )?.collection?.[0]
+        );
       } else if (Search.validate(query, "PLAYLIST")) {
         const list = await Search.getPlaylist(query);
+        if (!list) return null;
         return [
           youtubeListToTrack(list),
           ...(await Promise.all(list.videos.map(async (v) => await Search.getVideo(v.url)))).map(
@@ -110,7 +130,11 @@ export default new Command(
       } else if (Search.validate(query, "VIDEO")) {
         return youtubeToTrack(await Search.getVideo(query));
       } else if (SoundCloudUtils.validateURL(query, "track")) {
-        return;
+        return soundcloudToTrack(await SoundCloud.tracks.getV2(query));
+      } else if (SoundCloudUtils.validateURL(query, "playlist")) {
+        const list = await SoundCloud.playlists.getV2(query);
+        if (!list) return null;
+        return [soundcloudListToTrack(list), ...list.tracks.map(soundcloudToTrack)];
       } else if (
         (() => {
           try {
