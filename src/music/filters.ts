@@ -40,7 +40,7 @@ export const Filters: { [key in QueueFilter]: QueueFilters } = {
   [QueueFilter.bassBoost]: {
     id: "bassboost",
     name: "Bass Boost",
-    args: "bass=g=15:f=110:w=0.3",
+    args: "bass=g=10:f=110:w=0.3",
     aliases: ["bass", "bb"],
   },
 };
