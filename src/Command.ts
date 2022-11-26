@@ -64,7 +64,8 @@ export default class Command {
     const flags: { [key: string]: string } = {};
     const bflags: string[] = [];
     const args = message.content
-      .slice(Math.max(0, message.content.indexOf(" ")))
+      .trim()
+      .slice(Math.max(0, message.content.trim().indexOf(" ")))
       .trim()
       // im actually an insane regex user
       .match(/-[^-\s]*\s(?:".*?"|\S*)|".*?"|\S*/g)
