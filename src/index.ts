@@ -17,7 +17,7 @@ process.on("unhandledRejection", (err, pro) => {
   pro.catch((e) => console.error("^^ " + e + "\nstk: " + e.stack));
 });
 
-bot.on("ready", () => {
+bot.once("ready", () => {
   console.log(`${bot.user.username} is now online!`);
   let status = 0;
   const statusChoices = [
@@ -28,7 +28,7 @@ bot.on("ready", () => {
     if (!statusChoices[status]) status = 0;
     setStatus(bot, statusChoices[status](), "Idle");
     status++;
-  }, 15000);
+  }, 30000);
   loadCommands();
 });
 
