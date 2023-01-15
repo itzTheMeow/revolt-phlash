@@ -4,7 +4,7 @@
   "description": "Port of PHLASH for Revolt.",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run build && node .",
+    "start": "pnpm run build && node .",
     "build": "rimraf dist && tsc -b tsconfig.json"
   },
   "repository": {
