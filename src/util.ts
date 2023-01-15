@@ -1,11 +1,15 @@
 import axios from "axios";
-import { Client, User } from "revolt.js";
+import { Client, User } from "revolt-toolset";
 
-export function setStatus(bot: Client, text: string, presence: User["status"]["presence"]) {
+export function setStatus(
+  bot: Client,
+  text: string,
+  presence: User["presence"]
+) {
   return axios.patch(
-    `${bot.apiURL}/users/@me`,
+    `${bot.options.apiURL}/users/@me`,
     { status: { text, presence } },
-    { headers: { "x-bot-token": bot.session } }
+    { headers: { "x-bot-token": bot.session.token } }
   );
 }
 export default function randomInteger(minimum: number, maximum: number) {

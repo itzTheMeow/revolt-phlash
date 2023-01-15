@@ -1,6 +1,6 @@
 import { MediaPlayer, RevoiceState, User } from "revoice-ts";
 import { VoiceConnection } from "revoice-ts/dist/Revoice";
-import { Channel } from "revolt.js";
+import { Channel } from "revolt-toolset";
 import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
 import { exec as ytDlpExec } from "yt-dlp-exec";
@@ -63,20 +63,23 @@ export default class Queue {
       this.player = new MediaPlayer(false, this.port);
       this.player.socket.on("error", console.trace);
       this.parent.client
-        .join(this.channel._id, false)
+        .join(this.channel.id, false)
         .then((c) => {
           this.connection = c;
           this.connection.on("join", () => {
             this.connection.play(this.player);
             r(true);
           });
-          this.connection.on("state", (s) => s == RevoiceState.IDLE && this.onSongFinished());
+          this.connection.on(
+            "state",
+            (s) => s == RevoiceState.IDLE && this.onSongFinished()
+          );
         })
         .catch(() => (this.connError(), r(false)));
     });
   }
   public connError() {
-    this.lastSent.sendMessage(`Failed to join voice channel (<#${this.channel._id}>).`);
+    this.lastSent.send(`Failed to join voice channel (<#${this.channel.id}>).`);
     this.destroy();
   }
   public async destroy() {
@@ -90,7 +93,8 @@ export default class Queue {
   public playHistory: Track[] = [];
 
   public async onSongFinished(): Promise<Track | null> {
-    if (this.connection.state == RevoiceState.PLAYING || !this.freed) return null;
+    if (this.connection.state == RevoiceState.PLAYING || !this.freed)
+      return null;
     const finished = this.nowPlaying;
     this.playHistory.unshift(finished);
     this.nowPlaying = null;
@@ -146,7 +150,9 @@ export default class Queue {
       "-af",
       [
         `atempo=${this.nowPlaying.playbackSpeed.toFixed(1)}`,
-        ...this.nowPlaying.filtersEnabled.map((f) => (typeof f == "string" ? f : Filters[f].args)),
+        ...this.nowPlaying.filtersEnabled.map((f) =>
+          typeof f == "string" ? f : Filters[f].args
+        ),
       ].join(","),
       "pipe:1",
     ]);

@@ -6,14 +6,17 @@ export default new Command(
   {
     description: "Get some help...",
     flags: {
-      "--argtest": { description: "Tests command arguments.", aliases: ["--args"] },
+      "--argtest": {
+        description: "Tests command arguments.",
+        aliases: ["--args"],
+      },
     },
     aliases: ["h", "cmds", "commands"],
     args: ["[command]"],
   },
   (bot, message, args) => {
     if (args.bflag("argtest"))
-      return message.channel.sendMessage({
+      return message.channel.send({
         embeds: [
           {
             title: "Arg Debugger",
@@ -44,7 +47,11 @@ Boolean Flags: ${args
             description: `### ${config.prefix}${cmd.name}${
               cmd.args.length ? ` ${cmd.args.join(" ")}` : ""
             }
-##### AKA. ${cmd.aliases.length ? cmd.aliases.map((a) => `\`${a}\``).join(", ") : "No Aliases"}
+##### AKA. ${
+              cmd.aliases.length
+                ? cmd.aliases.map((a) => `\`${a}\``).join(", ")
+                : "No Aliases"
+            }
 
 ${cmd.description}${
               Object.keys(cmd.flags).length
@@ -55,9 +62,10 @@ ${Object.entries(cmd.flags)
   .sort((e1, e2) => (e1[0] > e2[0] ? 1 : -1))
   .map(
     ([name, data]) =>
-      `**${[name, ...[...(data.aliases || [])].sort().map((f) => f.replace(/^-?-/, ""))].join(
-        "/"
-      )}${data.arg ? ` ${data.arg}` : ""}**
+      `**${[
+        name,
+        ...[...(data.aliases || [])].sort().map((f) => f.replace(/^-?-/, "")),
+      ].join("/")}${data.arg ? ` ${data.arg}` : ""}**
 ${data.description}`
   )
   .join("\n")}`
@@ -76,7 +84,9 @@ ${data.description}`
           description: `Theres ${commands.length} commands...
       ${commands.map((c) => "`" + c.name + "`").join(", ")}
       
-      Use \`${config.prefix}help [command]\` to view help on a specific command.`,
+      Use \`${
+        config.prefix
+      }help [command]\` to view help on a specific command.`,
           colour: config.brandColor,
         },
       ],

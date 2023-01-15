@@ -9,8 +9,7 @@ specifiers:
   qs: ^6.11.0
   revoice-ts: ^0.0.10
   revoice.js: ^0.1.733
-  revolt-toolset: ^0.0.21
-  revolt.js: ^6.0.18
+  revolt-toolset: ^1.0.21
   rimraf: ^3.0.2
   soundcloud-scraper: ^5.0.3
   soundcloud.ts: ^0.4.9
@@ -29,8 +28,7 @@ dependencies:
   qs: 6.11.0
   revoice-ts: 0.0.10
   revoice.js: 0.1.737
-  revolt-toolset: 0.0.21
-  revolt.js: 6.0.19
+  revolt-toolset: 1.0.21
   rimraf: 3.0.2
   soundcloud-scraper: 5.0.3
   soundcloud.ts: 0.4.9
@@ -69,12 +67,10 @@ packages:
     resolution: {integrity: sha512-0lsMVexkZ7dHpQlPrTZDRsm42hZ4/CzKxP1hbAEJH8IaEwrIEhhTKJuFxPuLOi2TwPImuocncjYHpGpwVNOemQ==}
     dev: false
 
-  /@insertish/isomorphic-ws/4.0.1_ws@8.12.0:
+  /@insertish/isomorphic-ws/4.0.1:
     resolution: {integrity: sha512-kFD/p8T4Hkqr992QrdkbW/cQ/W/q2d9MPCobwzBv2PwTKLkCD9RaYDy6m17qRnSLQQ5PU0kHCG8kaOwAqzj1vQ==}
     peerDependencies:
       ws: '*'
-    dependencies:
-      ws: 8.12.0
     dev: false
 
   /@insertish/oapi/0.1.16:
@@ -242,6 +238,10 @@ packages:
     resolution: {integrity: sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==}
     dev: false
 
+  /@types/luxon/3.2.0:
+    resolution: {integrity: sha512-lGmaGFoaXHuOLXFvuju2bfvZRqxAqkHPx9Y9IQdQABrinJJshJwfNCKV+u7rR3kJbiqfTF/NhOkcxxAFrObyaA==}
+    dev: false
+
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: false
@@ -256,6 +256,12 @@ packages:
 
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
+    dev: false
+
+  /@types/ws/8.5.4:
+    resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
+    dependencies:
+      '@types/node': 18.11.18
     dev: false
 
   /aes-js/3.1.2:
@@ -628,8 +634,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /eventemitter3/4.0.7:
-    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+  /eventemitter3/5.0.0:
+    resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
     dev: false
 
   /events/3.3.0:
@@ -926,14 +932,6 @@ packages:
     resolution: {integrity: sha512-3j8wdDzYuWO3lM3Reg03MuQR957t287Rpcxp1njpEa8oDrikb+FwGdW3n+FELh/A6qib6yPit0j/pv9G/yeAqA==}
     dev: false
 
-  /lodash.flatten/4.4.0:
-    resolution: {integrity: sha512-C5N2Z3DgnnKr0LOpv/hKCgKdb7ZZwafIrsesve6lmzvZIRZRGaZ/l6Q8+2W7NaT+ZwO3fFlSCzCzrDCFdJfZ4g==}
-    dev: false
-
-  /lodash.isequal/4.5.0:
-    resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-    dev: false
-
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: false
@@ -951,6 +949,11 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+    dev: false
+
+  /luxon/3.2.1:
+    resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
+    engines: {node: '>=12'}
     dev: false
 
   /m3u8stream/0.8.6:
@@ -1025,10 +1028,6 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
-    dev: false
-
-  /mobx/6.7.0:
-    resolution: {integrity: sha512-1kBLBdSNG2bA522HQdbsTvwAwYf9hq9FWxmlhX7wTsJUAI54907J+ozfGW+LoYUo06vjit748g6QH1AAGLNebw==}
     dev: false
 
   /ms/2.1.2:
@@ -1302,37 +1301,23 @@ packages:
       - debug
     dev: false
 
-  /revolt-toolset/0.0.21:
-    resolution: {integrity: sha512-P663RlS2SkrcRd5u2gN95y5oGlBCEPZ03+/09bxFxsEowQe4OsPK/e7k/Kew01rkSQrycdUpzC+6bAEZcBzx3Q==}
-    dependencies:
-      axios: 1.2.2
-      form-data: 4.0.0
-      revolt.js: 6.0.19
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - utf-8-validate
-    dev: false
-
-  /revolt.js/6.0.19:
-    resolution: {integrity: sha512-/tne+YgaqL5eFg6mxGXCch7hAPSspEkT5Vt7HEJ1vtcSsLPQyRG7CI7wmriekUhDmjLR9VM6WnY+q5j5wMgOXA==}
+  /revolt-toolset/1.0.21:
+    resolution: {integrity: sha512-B1ag4HcOmdNECC2atU89MG2vGPa2CjBt1FvTH6fCcEEJgNs+Cm0RGQyIGM3X6QM00Id7sT8ShHAATPycJH7y0A==}
     dependencies:
       '@insertish/exponential-backoff': 3.1.0-patch.2
-      '@insertish/isomorphic-ws': 4.0.1_ws@8.12.0
-      axios: 0.21.4
-      eventemitter3: 4.0.7
-      lodash.defaultsdeep: 4.6.1
-      lodash.flatten: 4.4.0
-      lodash.isequal: 4.5.0
+      '@insertish/isomorphic-ws': 4.0.1
+      '@types/luxon': 3.2.0
+      '@types/ws': 8.5.4
+      axios: 1.2.2
+      eventemitter3: 5.0.0
+      form-data: 4.0.0
       long: 5.2.1
-      mobx: 6.7.0
+      luxon: 3.2.1
       revolt-api: 0.5.5-5
       ulid: 2.3.0
-      ws: 8.12.0
     transitivePeerDependencies:
-      - bufferutil
       - debug
-      - utf-8-validate
+      - ws
     dev: false
 
   /rimraf/3.0.2:

@@ -1,4 +1,4 @@
-import { Channel, Client, Server } from "revolt.js";
+import { Channel, Client, Server } from "revolt-toolset";
 import { Revoice } from "revoice-ts";
 import config from "../config";
 import Queue from "./Queue";
@@ -10,12 +10,14 @@ export default class ServerQueueManager {
   constructor(public bot: Client) {}
 
   public getServerQueue(server: Server) {
-    return this.queues.find((q) => q.channel.server_id == server._id);
+    return this.queues.find(
+      (q) => q.channel.isServerBased() && q.channel.serverID == server.id
+    );
   }
 
   public getQueue(channel: Channel, reference: Channel) {
     return (
-      this.queues.find((q) => q.channel._id == channel._id) ||
+      this.queues.find((q) => q.channel.id == channel.id) ||
       this.queues[this.queues.push(new Queue(this, channel, reference)) - 1]
     );
   }

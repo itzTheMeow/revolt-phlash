@@ -12,6 +12,7 @@ export default new Command(
     aliases: ["q"],
   },
   (bot, message) => {
+    if (!message.channel.isServerBased()) return;
     const queue = QueueManager.getServerQueue(message.channel.server);
 
     if (!queue) return message.reply("There is nothing in the queue!", false);
@@ -30,7 +31,9 @@ export default new Command(
       return (
         pages[num]
           ?.map((t, i) => {
-            const emoji = [...String(i + 1).padStart(String(totalSongs).length, "0")]
+            const emoji = [
+              ...String(i + 1).padStart(String(totalSongs).length, "0"),
+            ]
               .map((c) => `:${config.emojis.num[c]}:`)
               .join("");
             if (t == queue.nowPlaying)
@@ -38,7 +41,9 @@ export default new Command(
 ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
 :alarm_clock: ${
                 t.duration ? msToString(t.duration) : "Live"
-              } :eye: ${t.views.toLocaleString()} :timer_clock: ${t.createdTime}\n`;
+              } :eye: ${t.views.toLocaleString()} :timer_clock: ${
+                t.createdTime
+              }\n`;
             else
               return `#### ${emoji} **[${t.title}](${t.url})**
 ##### by [${t.authorName}](${t.authorURL})
@@ -46,7 +51,9 @@ ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
           })
           .join("\n") +
         `\n\n${musicFooter([
-          `${totalSongs.toLocaleString()} total song${totalSongs == 1 ? "" : "s"} `,
+          `${totalSongs.toLocaleString()} total song${
+            totalSongs == 1 ? "" : "s"
+          } `,
         ])}`
       );
     }

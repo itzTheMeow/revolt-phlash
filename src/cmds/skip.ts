@@ -6,6 +6,7 @@ export default new Command(
   "skip",
   { description: "Skips the current song.", aliases: ["s"] },
   async (bot, message, args) => {
+    if (!message.channel.isServerBased()) return;
     const queue = QueueManager.getServerQueue(message.channel.server);
     if (!queue) return message.react(config.emojis.redTick);
 

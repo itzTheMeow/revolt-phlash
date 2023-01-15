@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Client, Message } from "revolt.js";
+import { Client, Message } from "revolt-toolset";
 import config from "./config";
 
 interface CommandArgumentsManager {
@@ -27,7 +27,11 @@ interface CommandArgumentsManager {
   bflags(): string[];
 }
 type CommandArgsDef = `[${string}]` | `<${string}>`;
-type CommandExecFunction = (bot: Client, message: Message, args: CommandArgumentsManager) => any;
+type CommandExecFunction = (
+  bot: Client,
+  message: Message,
+  args: CommandArgumentsManager
+) => any;
 interface CommandFlags {
   [key: `-${string}`]: {
     description: string;
@@ -90,7 +94,7 @@ export default class Command {
     args.unshift(null);
     return {
       string: (i) => args[i],
-      number: (i) => (Number(args[i]) == NaN ? undefined : Number(args[i])),
+      number: (i) => (isNaN(Number(args[i])) ? undefined : Number(args[i])),
       bool: (i) =>
         config.yesResponses.includes(args[i]?.toLowerCase())
           ? true

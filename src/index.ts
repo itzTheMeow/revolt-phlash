@@ -1,4 +1,4 @@
-import { Client } from "revolt.js";
+import { Client } from "revolt-toolset";
 import { getCommands, loadCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
@@ -6,7 +6,7 @@ import { setStatus } from "./util";
 import db from "enhanced.db";
 
 export const bot = new Client({
-  autoReconnect: true,
+  reconnect: true,
 });
 
 process.on("uncaughtException", (err, ori) => {
@@ -22,7 +22,10 @@ bot.once("ready", () => {
   let status = 0;
   const statusChoices = [
     () => `Use ${config.prefix}help for help!`,
-    () => `${(Number(db.get("tracks_played")) || 0).toLocaleString()} songs played.`,
+    () =>
+      `${(
+        Number(db.get("tracks_played")) || 0
+      ).toLocaleString()} songs played.`,
   ];
   setInterval(() => {
     if (!statusChoices[status]) status = 0;
@@ -33,9 +36,13 @@ bot.once("ready", () => {
 });
 
 bot.on("message", (message) => {
+  if (!message.isUser()) return;
   const content = message.content?.trim() || "";
   if (message.author.bot || !content?.startsWith(config.prefix)) return;
-  const cmdName = content.substring(config.prefix.length).split(" ")[0]?.toLowerCase();
+  const cmdName = content
+    .substring(config.prefix.length)
+    .split(" ")[0]
+    ?.toLowerCase();
   const cmd =
     getCommands().find((c) => c?.name == cmdName) ||
     getCommands().find((c) => c?.aliases.includes(cmdName));
@@ -45,6 +52,6 @@ bot.on("message", (message) => {
   }
 });
 
-bot.loginBot(config.token);
+bot.login(config.token, "bot");
 
 export const QueueManager = new ServerQueueManager(bot);
