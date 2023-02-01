@@ -1,9 +1,8 @@
+import db from "enhanced.db";
 import { Client } from "revolt-toolset";
 import { getCommands, loadCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
-import { setStatus } from "./util";
-import db from "enhanced.db";
 
 export const bot = new Client({
   reconnect: true,
@@ -22,16 +21,17 @@ bot.once("ready", () => {
   let status = 0;
   const statusChoices = [
     () => `Use ${config.prefix}help for help!`,
-    () =>
-      `${(
-        Number(db.get("tracks_played")) || 0
-      ).toLocaleString()} songs played.`,
+    () => `${(Number(db.get("tracks_played")) || 0).toLocaleString()} songs played.`,
   ];
-  setInterval(() => {
+  async function updateStatus() {
     if (!statusChoices[status]) status = 0;
-    setStatus(bot, statusChoices[status](), "Idle");
+    await bot.editUser({
+      status: { text: statusChoices[status](), presence: "Idle" },
+    });
     status++;
-  }, 30000);
+    setTimeout(() => updateStatus(), 30_000);
+  }
+  updateStatus();
   loadCommands();
 });
 
@@ -39,10 +39,7 @@ bot.on("message", (message) => {
   if (!message.isUser()) return;
   const content = message.content?.trim() || "";
   if (message.author.bot || !content?.startsWith(config.prefix)) return;
-  const cmdName = content
-    .substring(config.prefix.length)
-    .split(" ")[0]
-    ?.toLowerCase();
+  const cmdName = content.substring(config.prefix.length).split(" ")[0]?.toLowerCase();
   const cmd =
     getCommands().find((c) => c?.name == cmdName) ||
     getCommands().find((c) => c?.aliases.includes(cmdName));
