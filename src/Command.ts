@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Client, Message } from "revolt-toolset";
+import { Client, Message, Permissions } from "revolt-toolset";
 import config from "./config";
 
 interface CommandArgumentsManager {
@@ -42,6 +42,7 @@ export default class Command {
   public flags: CommandFlags;
   public aliases: string[];
   public args: CommandArgsDef[];
+  public requiredPermissions: Permissions[];
 
   constructor(
     public name: string,
@@ -50,6 +51,7 @@ export default class Command {
       flags?: CommandFlags;
       aliases?: string[];
       args?: CommandArgsDef[];
+      permissions?: Permissions[];
     },
     public exec: CommandExecFunction
   ) {
@@ -58,6 +60,7 @@ export default class Command {
     this.flags = opts.flags || {};
     this.aliases = [...(opts.aliases || [])].sort();
     this.args = opts.args || [];
+    this.requiredPermissions = opts.permissions || [];
   }
 
   public fire(bot: Client, message: Message): CommandArgumentsManager {

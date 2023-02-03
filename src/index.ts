@@ -1,5 +1,5 @@
 import db from "enhanced.db";
-import { Client } from "revolt-toolset";
+import { Client, Permissions } from "revolt-toolset";
 import { getCommands, loadCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
@@ -44,8 +44,23 @@ bot.on("message", (message) => {
     getCommands().find((c) => c?.name == cmdName) ||
     getCommands().find((c) => c?.aliases.includes(cmdName));
   if (cmd) {
-    const args = cmd.fire(bot, message);
-    cmd.exec(bot, message, args);
+    if (
+      !cmd.requiredPermissions.length ||
+      cmd.requiredPermissions.find((p) => message.member.permissions.has(p))
+    ) {
+      const args = cmd.fire(bot, message);
+      cmd.exec(bot, message, args);
+    } else {
+      if (cmd.requiredPermissions.length == 1)
+        message.reply(
+          `You need to have the ${
+            Permissions[cmd.requiredPermissions[0]]
+          } permission to use this command!`
+        );
+      else
+        message.reply(`You need to have one of the following permissions to use this command:
+${cmd.requiredPermissions.map((p) => Permissions[p]).join(", ")}`);
+    }
   }
 });
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { EmbedBuilder } from "revolt-toolset";
+import { EmbedBuilder, Permissions } from "revolt-toolset";
 import Command from "../Command";
 import config from "../config";
 import { getServerSettings } from "../Settings";
@@ -10,6 +10,7 @@ export default new Command(
     description: "Get and set various server settings.",
     aliases: ["sett"],
     args: ["<key>", "<value>"],
+    permissions: [Permissions.ManageServer],
   },
   async (bot, message, args) => {
     const settings = getServerSettings(message.server);
