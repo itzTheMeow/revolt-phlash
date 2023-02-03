@@ -13,7 +13,7 @@ process.on("uncaughtException", (err, ori) => {
 });
 process.on("unhandledRejection", (err, pro) => {
   console.error(`Unhandled Rejection: ${err}`);
-  pro.catch((e) => console.error("^^ " + e + "\nstk: " + e.stack));
+  pro.catch((e) => console.error("^^ ", e, "\nstk: " + e.stack));
 });
 
 bot.once("ready", () => {
