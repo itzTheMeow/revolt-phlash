@@ -1,7 +1,7 @@
-import axios from "axios";
-import { EmbedBuilder } from "revolt-toolset";
+import { EmbedBuilder, Message, msToString } from "revolt-toolset";
 import Command from "../Command";
 import config from "../config";
+import { getPlexUser, pollPlexPIN, requestPlexPIN } from "../music/IntegrationPlex";
 import { getServerSettings, getUserSettings } from "../Settings";
 
 export default new Command(
@@ -52,30 +52,49 @@ Examples:
           `You need to supply a value! Use \`${serverSettings.prefix}preferences\` for help.`
         );
       switch (key) {
-        case "avatar": {
+        case "plextoken": {
           try {
-            await message.server.me.edit(
-              value == "remove"
-                ? { remove: ["Avatar"] }
-                : {
-                    avatar: await bot.uploadAttachment(
-                      "avatar.png",
-                      (
-                        await axios.get(args.string(2), { responseType: "arraybuffer" })
-                      ).data,
-                      "avatars"
-                    ),
+            const replyEmbed = new EmbedBuilder()
+              .setColor(config.brandColor)
+              .setTitle("Link Plex Account");
+            let token = value,
+              reply: Message;
+            if (token.toLowerCase() == "link") {
+              const pin = await requestPlexPIN();
+              reply = await message.reply(
+                replyEmbed.setDescription(`:${config.emojis.loading}: Checking...
+
+Go to [plex.tv/link](https://plex.tv/link) and enter the code **\`${
+                  pin.code
+                }\`** to link your account.
+*This code will expire in ${msToString(
+                  Math.round((pin.expires.getTime() - Date.now()) / 1000 / 60) * 60 * 1000,
+                  {
+                    verbose: true,
+                    maxDepth: 1,
                   }
+                )}.*`)
+              );
+              token = await pollPlexPIN(pin);
+              if (!token) reply.edit(replyEmbed.setDescription("Authorization code expired."));
+            } else {
+              reply = await message.reply(
+                replyEmbed.setDescription(`:${config.emojis.loading}: Linking...`)
+              );
+            }
+            const user = await getPlexUser(token);
+            if (!user) return reply.edit(replyEmbed.setDescription("Invalid authorizaton token."));
+            reply.edit(
+              replyEmbed.setDescription(`Account linked successfully! **${user.username}**`)
             );
-            message.reply("Avatar successfully set!");
           } catch {
-            message.reply("Failed to set avatar. Check your image URL?");
+            message.reply("Failed to link account.");
           }
           break;
         }
         default: {
           message.reply(
-            `Invalid settings key. Use \`${serverSettings.prefix}preferences\` for help.`
+            `Invalid preferences key. Use \`${serverSettings.prefix}preferences\` for help.`
           );
         }
       }

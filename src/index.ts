@@ -46,7 +46,7 @@ bot.on("message", (message) => {
   if (cmd) {
     if (
       !cmd.requiredPermissions.length ||
-      cmd.requiredPermissions.find((p) => message.member.permissions.has(p))
+      (message.member && cmd.requiredPermissions.find((p) => message.member.permissions.has(p)))
     ) {
       const args = cmd.fire(bot, message);
       cmd.exec(bot, message, args);

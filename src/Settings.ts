@@ -9,7 +9,7 @@ export interface ServerSettings {
 export function getServerSettings(server: Server): ServerSettings {
   return {
     prefix: config.prefix,
-    ...(<ServerSettings>db.get(`settings_${server.id}`) || {}),
+    ...(<ServerSettings>db.get(`settings_${server?.id}`) || {}),
   };
 }
 export function setServerSetting<K extends keyof ServerSettings>(
@@ -17,6 +17,7 @@ export function setServerSetting<K extends keyof ServerSettings>(
   key: K,
   value: ServerSettings[K]
 ): ServerSettings {
+  if (!server) return;
   const settings = <ServerSettings>(db.get(`settings_${server.id}`) || {});
   settings[key] = value;
   db.set(`settings_${server.id}`, settings);
