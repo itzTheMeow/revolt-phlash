@@ -31,7 +31,7 @@ bot.once("ready", () => {
     status++;
     setTimeout(() => updateStatus(), 30_000);
   }
-  updateStatus();
+  if (!config.dev) updateStatus();
   loadCommands();
 });
 

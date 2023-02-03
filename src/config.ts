@@ -1,7 +1,10 @@
 import fs from "fs";
 
+const dev = fs.existsSync("DEV");
+
 export default {
-  prefix: fs.existsSync("DEV") ? ";;" : ";",
+  dev,
+  prefix: dev ? ";;" : ";",
   owner: "01FESEWQKT7RESCNX5YF3JR29H",
   brandColor: "#5b00c3",
   colors: {

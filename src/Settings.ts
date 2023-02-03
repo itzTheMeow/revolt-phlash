@@ -1,5 +1,5 @@
 import db from "enhanced.db";
-import { Server } from "revolt-toolset";
+import { Server, User } from "revolt-toolset";
 import config from "./config";
 
 export interface ServerSettings {
@@ -20,5 +20,28 @@ export function setServerSetting<K extends keyof ServerSettings>(
   const settings = <ServerSettings>(db.get(`settings_${server.id}`) || {});
   settings[key] = value;
   db.set(`settings_${server.id}`, settings);
+  return settings;
+}
+
+export interface UserSettings {
+  plexKey: string;
+  plexServer: string;
+}
+
+export function getUserSettings(user: User): UserSettings {
+  return {
+    plexKey: "",
+    plexServer: "",
+    ...(<UserSettings>db.get(`prefs_${user.id}`) || {}),
+  };
+}
+export function setUserSetting<K extends keyof UserSettings>(
+  user: User,
+  key: K,
+  value: UserSettings[K]
+): UserSettings {
+  const settings = <UserSettings>(db.get(`prefs_${user.id}`) || {});
+  settings[key] = value;
+  db.set(`prefs_${user.id}`, settings);
   return settings;
 }
