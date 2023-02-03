@@ -27,11 +27,7 @@ interface CommandArgumentsManager {
   bflags(): string[];
 }
 type CommandArgsDef = `[${string}]` | `<${string}>`;
-type CommandExecFunction = (
-  bot: Client,
-  message: Message,
-  args: CommandArgumentsManager
-) => any;
+type CommandExecFunction = (bot: Client, message: Message, args: CommandArgumentsManager) => any;
 interface CommandFlags {
   [key: `-${string}`]: {
     description: string;
@@ -69,7 +65,14 @@ export default class Command {
     const bflags: string[] = [];
     const args = message.content
       .trim()
-      .slice(Math.max(0, message.content.trim().indexOf(" ")))
+      .slice(
+        Math.max(
+          0,
+          message.content.trim().indexOf(" ") == -1
+            ? message.content.length
+            : message.content.trim().indexOf(" ")
+        )
+      )
       .trim()
       // im actually an insane regex user
       .match(/-[^-\s]*\s(?:".*?"|\S*)|".*?"|\S*/g)

@@ -9,7 +9,7 @@ specifiers:
   qs: ^6.11.0
   revoice-ts: ^0.0.10
   revoice.js: ^0.1.733
-  revolt-toolset: ^1.0.55
+  revolt-toolset: ^1.0.58
   rimraf: ^3.0.2
   soundcloud-scraper: ^5.0.3
   soundcloud.ts: ^0.4.9
@@ -28,7 +28,7 @@ dependencies:
   qs: 6.11.0
   revoice-ts: 0.0.10
   revoice.js: 0.1.737
-  revolt-toolset: 1.0.55
+  revolt-toolset: 1.0.58
   rimraf: 3.0.2
   soundcloud-scraper: 5.0.3
   soundcloud.ts: 0.4.9
@@ -1301,8 +1301,8 @@ packages:
       - debug
     dev: false
 
-  /revolt-toolset/1.0.55:
-    resolution: {integrity: sha512-t68B5Ev+JZZh+clvwZZ11pC39cCaQEiL/HkszMXi1APcAEMsfk9wLKNUJGyoFRBDkjtcWOfw/i2PUKgSHGRiUA==}
+  /revolt-toolset/1.0.58:
+    resolution: {integrity: sha512-VwjULWRQjFYPdegFZJhOzDIpEuIrDuukDk1R4m8QgDNxewitRvm5Zy/+aLoNqFVYWpgSC+I1ObcGIy2ecCFkeQ==}
     dependencies:
       '@insertish/exponential-backoff': 3.1.0-patch.2
       '@insertish/isomorphic-ws': 4.0.1
