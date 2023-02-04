@@ -176,7 +176,24 @@ export async function searchPlexSong(
               libname.toLowerCase().replace(/ /g, "")
           )
         : trackList
-    ).sort((a, b) => Number(b.score) - Number(a.score))[0];
+    ).sort(
+      (a, b) =>
+        Number(b.score) +
+        Number(
+          b.title.toLowerCase().replace(/ /g, "").includes(query.toLowerCase().replace(/ /g, ""))
+        ) *
+          5 -
+        Number(
+          a.score +
+            Number(
+              a.title
+                .toLowerCase()
+                .replace(/ /g, "")
+                .includes(query.toLowerCase().replace(/ /g, ""))
+            ) *
+              5
+        )
+    )[0];
 
   let i: NodeJS.Timer;
   function sendState(state: "playing" | "paused" | "stopped", time: number) {
