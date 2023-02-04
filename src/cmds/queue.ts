@@ -40,7 +40,7 @@ ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
 :alarm_clock: ${
                 t.duration
                   ? `${msToString(queue.seek, { noMs: true })}/${msToString(
-                      t.duration * queue.playbackSpeed(),
+                      t.duration / queue.playbackSpeed(),
                       { noMs: true }
                     )}${
                       queue.playbackSpeed() !== 1 ? ` (${queue.playbackSpeed().toFixed(1)}x)` : ""

@@ -181,7 +181,7 @@ export default class Queue {
   }
   public get seek() {
     return this.startedPlaying
-      ? (Date.now() - this.startedPlaying) * this.playbackSpeed(this.nowPlaying)
+      ? (Date.now() - this.startedPlaying) / this.playbackSpeed(this.nowPlaying)
       : 0;
   }
 }
