@@ -34,7 +34,7 @@ Add your plex account for use with music commands.
 Use plextoken to set your token manually (do this in DMs, DO NOT LEAK YOUR TOKEN), pass 'link' to use the safer pin option, or pass 'unlink' to remove your account.
 Use plexserver to set your server name for use with music searching.
 **Status: ${prefs.plexKey ? `:${config.emojis.loading}:` : "Not Linked"}**${
-        prefs.plexServer ? `\n**Server: ${prefs.plexServer}**` : ""
+        prefs.plexServer ? `\n**Server: :${config.emojis.loading}:**` : ""
       }
 Examples:
 - ${preview("plextoken", "[token]")}
@@ -55,6 +55,23 @@ Examples:
           await reply.edit(
             embed.setDescription(
               embed.description.replace(`:${config.emojis.loading}:`, "@" + user.username)
+            )
+          );
+        }
+      }
+      if (prefs.plexKey && prefs.plexServer) {
+        const server = (await getPlexServers(prefs.plexKey)).find((s) => s.id == prefs.plexServer);
+        if (!server) {
+          setUserSetting(message.author, "plexServer", "");
+          await reply.edit(
+            embed.setDescription(
+              embed.description.replace(`:${config.emojis.loading}:`, "Not Found")
+            )
+          );
+        } else {
+          await reply.edit(
+            embed.setDescription(
+              embed.description.replace(`:${config.emojis.loading}:`, server.name)
             )
           );
         }
