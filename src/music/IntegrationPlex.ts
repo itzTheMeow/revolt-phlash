@@ -18,6 +18,7 @@ const PLEX_HEADERS = {
   ),
   "X-Plex-Product": `PHLASH Music Player`,
   "X-Plex-Device": `Revolt`,
+  "X-Plex-Platform": `Revolt`,
   "X-Plex-Device-Name": `PHLASH Music Player`,
   Accept: "application/json",
 };
