@@ -55,6 +55,7 @@ interface PlexTrack {
   grandparentThumb: string;
   duration: number;
   addedAt: number;
+  updatedAt: number;
   grandparentTitle: string;
   parentKey: string;
   grandparentKey: string;
@@ -269,7 +270,8 @@ export async function searchPlexSong(
 
     return {
       title: track.title || "Track",
-      createdTime: msToString(track.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
+      createdTime:
+        msToString(track.updatedAt || track.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
       authorName: track.grandparentTitle || "Unknown Channel",
       authorURL:
         `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
