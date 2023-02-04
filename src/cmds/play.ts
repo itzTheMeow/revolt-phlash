@@ -234,7 +234,16 @@ export default new Command(
           } to the queue.
 by [${track.authorName}](${track.authorURL})
 
-:alarm_clock: ${track.duration ? msToString(track.duration) : "Live"}
+:alarm_clock: ${
+            track.duration
+              ? msToString(track.duration, { noMs: true }) +
+                (queue.playbackSpeed(track) !== 1
+                  ? ` (${msToString(track.duration / queue.playbackSpeed(track), {
+                      noMs: true,
+                    })} @ ${queue.playbackSpeed(track).toFixed(1)}x)`
+                  : "")
+              : "Live"
+          }
 :eye: ${track.views.toLocaleString()}
 :timer_clock: ${track.createdTime}${
             track.playbackSpeed !== 1
