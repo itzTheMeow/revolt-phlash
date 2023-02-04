@@ -48,9 +48,13 @@ export default new Command(
           description: "Search provider for playlists instead of tracks.",
           aliases: ["--pl"],
         },
+        "--prepend": {
+          description: "Adds the song to the beginning of the queue.",
+          aliases: ["--pre", "--first"],
+        },
         "--shuffle": {
           description: "Shuffles the playlist before queueing it. (playlist only)",
-          aliases: [],
+          aliases: ["--sh"],
         },
         "-channel": {
           description: "The channel to play music in",
@@ -223,11 +227,14 @@ export default new Command(
         ? shuffle(foundData)
         : foundData
       : [foundData]) {
-      await queue.addSong({
-        ...track,
-        filtersEnabled,
-        playbackSpeed,
-      });
+      await queue.addSong(
+        {
+          ...track,
+          filtersEnabled,
+          playbackSpeed,
+        },
+        args.bflag("prepend")
+      );
     }
     const track = Array.isArray(foundData)
       ? useList

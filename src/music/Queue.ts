@@ -170,8 +170,9 @@ export default class Queue {
     this.nowPlaying.onplay?.(this);
     return finished;
   }
-  public async addSong(song: Track) {
-    this.songs.push(song);
+  public async addSong(song: Track, prepend = false) {
+    if (prepend) this.songs.unshift(song);
+    else this.songs.push(song);
     if (!this.nowPlaying) await this.onSongFinished();
     return song;
   }
