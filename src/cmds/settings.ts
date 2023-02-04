@@ -23,6 +23,7 @@ export default new Command(
       const embed = new EmbedBuilder().setColor(config.brandColor).setDescription(`##### :${
         config.emojis.logo
       }: PHLASH Settings
+
 Settings are laid out in "Setting Name (key)" format. Use ${preview(
         "[key]",
         "[value]"
