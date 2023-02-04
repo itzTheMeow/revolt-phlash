@@ -34,6 +34,18 @@ interface PlexServer {
   name: string;
   address: string;
 }
+interface PlexPlaylist {
+  score: string;
+  key: string;
+  title: string;
+  playlistType: "audio";
+  viewCount: number;
+  lastViewedAt: number;
+  duration: number;
+  leafCount: number;
+  addedAt: number;
+  updatedAt: number;
+}
 interface PlexTrack {
   title: string;
   viewCount: number;
@@ -157,88 +169,133 @@ export async function searchPlexSong(
   token: string,
   server: PlexServer,
   query: string,
-  libname?: string
-): Promise<CustomTrack> {
-  const trackList = <PlexTrack[]>(
+  libname?: string,
+  searchPlaylist = false
+): Promise<CustomTrack | CustomTrack[]> {
+  const result = (
+    await axios.get(
+      `${server.address}/hubs/search?${QueryString.stringify({
+        query,
+        limit: 30,
+        ...getHeaders(token),
+      })}`
+    )
+  ).data.MediaContainer.Hub;
+
+  if (!searchPlaylist) {
+    const trackList = <PlexTrack[]>result.find((t) => t.type == "track").Metadata,
+      res = (
+        libname
+          ? trackList.filter(
+              (t) =>
+                t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
+                libname.toLowerCase().replace(/ /g, "")
+            )
+          : trackList
+      ).sort((a, b) => {
+        function calc(c: PlexTrack) {
+          return (
+            Number(c.score) +
+            Number(
+              c.title
+                .toLowerCase()
+                .replace(/ /g, "")
+                .includes(query.toLowerCase().replace(/ /g, ""))
+            ) *
+              5
+          );
+        }
+        return calc(b) - calc(a);
+      })[0];
+
+    return res ? mapTrack(res) : null;
+  } else {
+    const playlists = <PlexPlaylist[]>result.find((t) => t.type == "playlist").Metadata,
+      list =
+        playlists.find(
+          (l) => l.title.toLowerCase().replace(/ /g, "") == query.toLowerCase().replace(/ /g, "")
+        ) || playlists[0];
+    if (!list) return null;
+    const tracks = <PlexPlaylist & { Metadata: PlexTrack[] }>(
       await axios.get(
-        `${server.address}/hubs/search?${QueryString.stringify({
-          query,
-          limit: 30,
+        `${server.address}/${list.key}?${QueryString.stringify({
+          includeExternalMedia: 1,
+          "X-Plex-Container-Start": 0,
+          "X-Plex-Container-Size": 999,
           ...getHeaders(token),
         })}`
       )
-    ).data.MediaContainer.Hub.find((t) => t.type == "track").Metadata,
-    res = (
-      libname
-        ? trackList.filter(
-            (t) =>
-              t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
-              libname.toLowerCase().replace(/ /g, "")
-          )
-        : trackList
-    ).sort((a, b) => {
-      function calc(c: PlexTrack) {
-        return (
-          Number(c.score) +
-          Number(
-            c.title.toLowerCase().replace(/ /g, "").includes(query.toLowerCase().replace(/ /g, ""))
-          ) *
-            5
-        );
-      }
-      return calc(b) - calc(a);
-    })[0];
-
-  if (!res) return null;
-
-  let i: NodeJS.Timer;
-  function sendState(state: "playing" | "paused" | "stopped", time: number) {
-    axios.get(
-      `${server.address}/:/timeline${QueryString.stringify(
-        {
-          ratingKey: res.ratingKey,
-          key: res.key,
-          playbackTime: time,
-          playQueueItemID: 0,
-          state,
-          hasMDE: 1,
-          time,
-          duration: res.duration,
-        },
-        { addQueryPrefix: true }
-      )}`
-    );
+    ).data.MediaContainer;
+    return [
+      {
+        title: list.title || "Playlist",
+        createdTime: msToString(list.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
+        authorName: "You",
+        authorURL: "https://app.plex.tv",
+        authorIcon: "",
+        duration: list.duration,
+        views: list.viewCount,
+        url: `https://app.plex.tv/desktop/#!/server/${server.id}/playlist?key=${list.key.replace(
+          "/items",
+          ""
+        )}`,
+        provider: TrackProvider.RAW,
+      },
+      ...tracks.Metadata.map(mapTrack),
+    ];
   }
 
-  return {
-    title: res.title || "Track",
-    createdTime: msToString(res.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
-    authorName: res.grandparentTitle || "Unknown Channel",
-    authorURL:
-      `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
-        res.grandparentKey
-      )}` || "https://app.plex.tv",
-    authorIcon: "",
-    duration: res.Media[0].duration,
-    views: res.viewCount,
-    url:
-      `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
-        res.parentKey
-      )}` || "https://app.plex.tv",
-    address:
-      server.address +
-      res.Media[0].Part[0].key +
-      QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
-    provider: TrackProvider.RAW,
-    onplay(q) {
-      sendState("playing", 0);
-      i = setInterval(() => {
-        sendState("playing", q.seek);
-      }, 10_000);
-    },
-    onstop(q) {
-      clearInterval(i);
-      sendState("stopped", q.seek);
-    },
-  };
+  function mapTrack(track: PlexTrack): CustomTrack {
+    let i: NodeJS.Timer;
+    function sendState(state: "playing" | "paused" | "stopped", time: number) {
+      axios.get(
+        `${server.address}/:/timeline${QueryString.stringify(
+          {
+            ratingKey: track.ratingKey,
+            key: track.key,
+            playbackTime: time,
+            playQueueItemID: 0,
+            state,
+            hasMDE: 1,
+            time,
+            duration: track.duration,
+            ...getHeaders(token),
+          },
+          { addQueryPrefix: true }
+        )}`
+      );
+    }
+
+    return {
+      title: track.title || "Track",
+      createdTime: msToString(track.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
+      authorName: track.grandparentTitle || "Unknown Channel",
+      authorURL:
+        `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
+          track.grandparentKey
+        )}` || "https://app.plex.tv",
+      authorIcon: "",
+      duration: track.Media[0].duration,
+      views: track.viewCount,
+      url:
+        `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
+          track.parentKey
+        )}` || "https://app.plex.tv",
+      address:
+        server.address +
+        track.Media[0].Part[0].key +
+        QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
+      provider: TrackProvider.RAW,
+      onplay(q) {
+        sendState("playing", 0);
+        i = setInterval(() => {
+          sendState("playing", q.seek);
+        }, 10_000);
+      },
+      onstop(q) {
+        clearInterval(i);
+        sendState("stopped", q.seek);
+      },
+    };
+  }
 }

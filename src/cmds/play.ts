@@ -146,7 +146,8 @@ export default new Command(
           prefs.plexKey,
           server,
           query,
-          useProvider.substring(SearchProviders.Plex.length + 1).trim()
+          useProvider.substring(SearchProviders.Plex.length + 1).trim(),
+          args.bflag("playlist")
         );
       } else if (useProvider == SearchProviders.TuneIn) {
         return await getTuneinTrack(query);
