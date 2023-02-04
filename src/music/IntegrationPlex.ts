@@ -247,23 +247,33 @@ export async function searchPlexSong(
 
   function mapTrack(track: PlexTrack): CustomTrack {
     let i: NodeJS.Timer;
-    function sendState(state: "playing" | "paused" | "stopped", time: number, duration: number) {
-      axios.get(
-        `${server.address}/:/timeline${QueryString.stringify(
-          {
-            ratingKey: track.ratingKey,
-            key: track.key,
-            playbackTime: Math.round(time),
-            playQueueItemID: 0,
-            state,
-            hasMDE: 1,
-            time: Math.round(time),
-            duration: Math.round(duration),
-            ...getHeaders(token),
-          },
-          { addQueryPrefix: true }
-        )}`
-      );
+    async function sendState(
+      state: "playing" | "paused" | "stopped",
+      time: number,
+      duration: number
+    ) {
+      try {
+        await axios.get(
+          `${server.address}/:/timeline${QueryString.stringify(
+            {
+              ratingKey: track.ratingKey,
+              key: track.key,
+              playbackTime: Math.round(time),
+              playQueueItemID: 0,
+              state,
+              hasMDE: 1,
+              time: Math.round(time),
+              duration: Math.round(duration),
+              ...getHeaders(token),
+            },
+            { addQueryPrefix: true }
+          )}`
+        );
+        return true;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
     }
 
     return {
@@ -289,7 +299,8 @@ export async function searchPlexSong(
       onplay(q) {
         sendState("playing", 0, q.nowPlaying.duration / q.playbackSpeed());
         i = setInterval(() => {
-          sendState("playing", q.seek, q.nowPlaying.duration / q.playbackSpeed());
+          if (!sendState("playing", q.seek, q.nowPlaying.duration / q.playbackSpeed()))
+            clearInterval(i);
         }, 10_000);
       },
       onstop(q) {
