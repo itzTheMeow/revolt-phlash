@@ -218,7 +218,7 @@ export async function searchPlexSong(
     if (!list) return null;
     const tracks = <PlexPlaylist & { Metadata: PlexTrack[] }>(
       await axios.get(
-        `${server.address}/${list.key}?${QueryString.stringify({
+        `${server.address}${list.key}?${QueryString.stringify({
           includeExternalMedia: 1,
           "X-Plex-Container-Start": 0,
           "X-Plex-Container-Size": 999,
