@@ -1,7 +1,7 @@
 import { EmbedBuilder, Message, msToString } from "revolt-toolset";
 import Command from "../Command";
 import config from "../config";
-import { getPlexUser, pollPlexPIN, requestPlexPIN } from "../music/IntegrationPlex";
+import { getPlexServers, getPlexUser, pollPlexPIN, requestPlexPIN } from "../music/IntegrationPlex";
 import { getServerSettings, getUserSettings, setUserSetting } from "../Settings";
 
 export default new Command(
@@ -32,7 +32,7 @@ Settings are laid out in "Setting Name (key)" format. Use ${preview(
 #### Plex Integration (\`plextoken\`, \`plexserver\`)
 Add your plex account for use with music commands.
 Use plextoken to set your token manually (do this in DMs, DO NOT LEAK YOUR TOKEN), pass 'link' to use the safer pin option, or pass 'unlink' to remove your account.
-Use plexserver to set your server and library name for use with music searching. Use the format ServerName:LibraryName.
+Use plexserver to set your server and library name for use with music searching. Use the format ServerName=>LibraryName.
 **Status: ${prefs.plexKey ? `:${config.emojis.loading}:` : "Not Linked"}**${
         prefs.plexServer
           ? `\n**Server/Library: ${prefs.plexServer.split(":")[0]}/${
@@ -43,12 +43,13 @@ Use plexserver to set your server and library name for use with music searching.
 Examples:
 - ${preview("plextoken", "[token]")}
 - ${preview("plextoken", "link")}
-- ${preview("plexserver", "MyMedia:Music")}`);
+- ${preview("plexserver", "MyMedia=>Music")}`);
       const reply = await message.reply(embed);
       if (prefs.plexKey) {
         const user = await getPlexUser(prefs.plexKey);
         if (!user) {
           setUserSetting(message.author, "plexKey", "");
+          setUserSetting(message.author, "plexServer", "");
           await reply.edit(
             embed.setDescription(
               embed.description.replace(`:${config.emojis.loading}:`, "Not Linked")
@@ -73,6 +74,7 @@ Examples:
           try {
             if (value.toLowerCase() == "unlink") {
               setUserSetting(message.author, "plexKey", "");
+              setUserSetting(message.author, "plexServer", "");
               message.reply("Plex account unlinked successfully!");
               return;
             }
@@ -115,6 +117,21 @@ You can now proceed with setting \`plexserver\`.`)
             message.reply("Failed to link account.");
           }
           break;
+        }
+        case "plexserver": {
+          if (!prefs.plexKey) return message.reply("You need to link your plex account first!");
+          const [server, library] = value.split("\n")[0].split("=>");
+          if (!server || !library)
+            return message.reply(
+              "Invalid format. Make sure you use ServerName=>LibraryName separated with a =>."
+            );
+          const useServer = (await getPlexServers(prefs.plexKey)).find(
+            (s) => s.name.toLowerCase() == server.toLowerCase()
+          );
+          if (!useServer)
+            return message.reply(
+              `No plex servers were found on your account matching \`${server.replace(/@/g, "")}\``
+            );
         }
         default: {
           message.reply(
