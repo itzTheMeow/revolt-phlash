@@ -33,7 +33,7 @@ export const Filters: { [key in QueueFilter]: QueueFilters } = {
     name: "Vaporwave",
     args: "aresample=48000,asetrate=48000*0.8",
     aliases: ["vapor", "vw", "v"],
-    speed: 0.6,
+    speed: 0.8,
   },
   [QueueFilter.vaporwaveExtended]: {
     id: "vaporwaveex",
