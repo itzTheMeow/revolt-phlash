@@ -138,7 +138,7 @@ export default new Command(
           prefs.plexKey,
           server,
           query,
-          useProvider.replace(SearchProviders.Plex + ":", "").trim()
+          useProvider.substring(SearchProviders.Plex.length + 1).trim()
         );
       } else if (useProvider == SearchProviders.TuneIn) {
         return await getTuneinTrack(query);
