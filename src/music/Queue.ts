@@ -84,6 +84,7 @@ export default class Queue {
     this.destroy();
   }
   public async destroy() {
+    this.nowPlaying?.onstop?.(this);
     if (this.parent.queues.includes(this))
       this.parent.queues.splice(this.parent.queues.indexOf(this), 1);
     if (this.connection) await this.connection.destroy();
