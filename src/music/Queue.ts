@@ -1,17 +1,17 @@
+import { spawn } from "child_process";
+import db from "enhanced.db";
+import ffmpegPath from "ffmpeg-static";
+import http from "http";
+import https from "https";
 import { MediaPlayer, RevoiceState, User } from "revoice-ts";
 import { VoiceConnection } from "revoice-ts/dist/Revoice";
 import { Channel } from "revolt-toolset";
+import internal from "stream";
+import { exec as ytDlpExec } from "yt-dlp-exec";
+import ytdl from "ytdl-core";
+import randomInteger from "../util";
 import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
-import { exec as ytDlpExec } from "yt-dlp-exec";
-import { spawn } from "child_process";
-import ffmpegPath from "ffmpeg-static";
-import internal from "stream";
-import http from "http";
-import https from "https";
-import randomInteger from "../util";
-import db from "enhanced.db";
-import ytdl from "ytdl-core";
 
 export enum TrackProvider {
   YOUTUBE,
@@ -31,6 +31,7 @@ export interface Track {
   provider: TrackProvider;
   playbackSpeed: number;
   filtersEnabled: (QueueFilter | string)[];
+  address?: string;
 }
 
 export default class Queue {
@@ -70,10 +71,7 @@ export default class Queue {
             this.connection.play(this.player);
             r(true);
           });
-          this.connection.on(
-            "state",
-            (s) => s == RevoiceState.IDLE && this.onSongFinished()
-          );
+          this.connection.on("state", (s) => s == RevoiceState.IDLE && this.onSongFinished());
         })
         .catch(() => (this.connError(), r(false)));
     });
@@ -93,8 +91,7 @@ export default class Queue {
   public playHistory: Track[] = [];
 
   public async onSongFinished(): Promise<Track | null> {
-    if (this.connection.state == RevoiceState.PLAYING || !this.freed)
-      return null;
+    if (this.connection.state == RevoiceState.PLAYING || !this.freed) return null;
     const finished = this.nowPlaying;
     this.playHistory.unshift(finished);
     this.nowPlaying = null;
@@ -119,19 +116,19 @@ export default class Queue {
               }).stdout;
         case TrackProvider.RAW:
           return await new Promise((r) =>
-            (this.nowPlaying.url.startsWith("http://") ? http : https).get(
-              this.nowPlaying.url,
-              (res) => {
-                r(
-                  res.statusCode !== 200 ||
-                    !["audio/", "video/"].find((f) =>
-                      res.headers["content-type"]?.toLowerCase().startsWith(f)
-                    )
-                    ? null
-                    : res
-                );
-              }
-            )
+            ((this.nowPlaying.address || this.nowPlaying.url).startsWith("http://")
+              ? http
+              : https
+            ).get(this.nowPlaying.address || this.nowPlaying.url, (res) => {
+              r(
+                res.statusCode !== 200 ||
+                  !["audio/", "video/"].find((f) =>
+                    res.headers["content-type"]?.toLowerCase().startsWith(f)
+                  )
+                  ? null
+                  : res
+              );
+            })
           );
       }
     })();
@@ -150,9 +147,7 @@ export default class Queue {
       "-af",
       [
         `atempo=${this.nowPlaying.playbackSpeed.toFixed(1)}`,
-        ...this.nowPlaying.filtersEnabled.map((f) =>
-          typeof f == "string" ? f : Filters[f].args
-        ),
+        ...this.nowPlaying.filtersEnabled.map((f) => (typeof f == "string" ? f : Filters[f].args)),
       ].join(","),
       "pipe:1",
     ]);

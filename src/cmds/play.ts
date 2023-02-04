@@ -1,8 +1,11 @@
-import Command from "../Command";
+import { Channel, Message, msToString } from "revolt-toolset";
+import { Util as SoundCloudUtils } from "soundcloud-scraper";
+import SCClient from "soundcloud.ts";
+import { URL } from "url";
 import Search from "youtube-sr";
-import config from "../config";
 import { QueueManager } from "..";
-import { Channel, Message } from "revolt-toolset";
+import Command from "../Command";
+import config from "../config";
 import {
   CustomTrack,
   rawToTrack,
@@ -11,18 +14,27 @@ import {
   youtubeListToTrack,
   youtubeToTrack,
 } from "../music/converters";
-import { msToString } from "revolt-toolset";
 import { Filters } from "../music/filters";
-import { Track } from "../music/Queue";
-import { URL } from "url";
-import { musicFooter } from "../music/util";
+import { getPlexServers, searchPlexSong } from "../music/IntegrationPlex";
 import { getTuneinTrack } from "../music/IntegrationTuneIn";
-import { Util as SoundCloudUtils } from "soundcloud-scraper";
-import SCClient from "soundcloud.ts";
+import { Track } from "../music/Queue";
+import { musicFooter } from "../music/util";
+import { getUserSettings } from "../Settings";
 
 const SoundCloud = new SCClient();
 
-const searchProviders = ["soundcloud", "tunein"];
+enum SearchProviders {
+  YouTube = "youtube",
+  SoundCloud = "soundcloud",
+  TuneIn = "tunein",
+  Plex = "plex",
+}
+const SearchProviderAliases: { [key in SearchProviders]: string[] } = {
+  youtube: ["yt", "y"],
+  soundcloud: ["sc", "s", "cloud"],
+  tunein: ["radio", "t"],
+  plex: ["p"],
+};
 
 export default new Command(
   "play",
@@ -48,10 +60,12 @@ export default new Command(
         },
         "-use": {
           description:
-            "The search provider to use. (default is just youtube)\nCan be one of: " +
-            searchProviders.map((p) => `\`${p}\``).join(", "),
+            "The search provider to use. (default is just youtube, you can use shorter names like yt/sc)\nCan be one of: " +
+            Object.values(SearchProviders)
+              .map((p) => `\`${p}\``)
+              .join(", "),
           aliases: ["-u", "-provider"],
-          arg: `[${searchProviders.join("/")}]`,
+          arg: `[${Object.values(SearchProviders).join("/")}]`,
         },
       }
     ),
@@ -67,33 +81,22 @@ export default new Command(
         if (!txt || !message.channel.isServerBased()) return null;
         const matchedPing = txt.match(/<#([A-z0-9]{26})>/);
         if (matchedPing)
-          return (
-            message.channel.server.channels.find(
-              (c) => c.id == matchedPing[1]
-            ) || null
-          );
+          return message.channel.server.channels.find((c) => c.id == matchedPing[1]) || null;
         return (
           message.channel.server.channels.find(
-            (c) =>
-              c.isVoice() && c.name.toLowerCase().includes(txt.toLowerCase())
+            (c) => c.isVoice() && c.name.toLowerCase().includes(txt.toLowerCase())
           ) || null
         );
       };
       const specifiedChannel = args.hasFlag("channel");
       const context = specifiedChannel
         ? message
-        : await message.reply(
-            "Send the name of a channel (or mention it) to play in!"
-          );
+        : await message.reply("Send the name of a channel (or mention it) to play in!");
       const useChannel = specifiedChannel
         ? matchChannel(args.flag("channel"))
         : await new Promise<Channel | null>((res) => {
             const handler = (m: Message) => {
-              if (
-                m.authorID !== message.authorID ||
-                m.channelID !== message.channelID
-              )
-                return;
+              if (m.authorID !== message.authorID || m.channelID !== message.channelID) return;
               bot.off("message", handler);
               return res(matchChannel(m.content));
             };
@@ -111,20 +114,28 @@ export default new Command(
       queue = QueueManager.getQueue(useChannel, message.channel);
     }
 
-    const audioAttachment = message.attachments?.find(
-      (a) => a.metadata.type == "Audio"
-    );
+    const audioAttachment = message.attachments?.find((a) => a.metadata.type == "Audio");
     const query = audioAttachment
       ? `https://autumn.revolt.chat/attachments/${
           audioAttachment.id
         }?__filename=${encodeURIComponent(audioAttachment.name)}`
       : args.asString();
-    if (!query)
-      return message.reply("You need to enter a URL or search query!", false);
+    if (!query) return message.reply("You need to enter a URL or search query!", false);
 
     const foundData: CustomTrack | CustomTrack[] = await (async () => {
-      const useProvider = args.flag("use");
-      if (useProvider == "tunein") {
+      const useProvider =
+        Object.entries(SearchProviderAliases).find((e) => e[1].includes(args.flag("use")))?.[0] ||
+        args.flag("use");
+      if (useProvider == SearchProviders.Plex) {
+        const prefs = getUserSettings(message.author);
+        if (!prefs.plexKey || !prefs.plexServer)
+          return (
+            message.reply("You need to link your plex account with the settings command!"), null
+          );
+        const server = (await getPlexServers(prefs.plexKey)).find((s) => s.id == prefs.plexServer);
+        if (!server) return message.reply("Failed to get plex server. Try re-linking?"), null;
+        return await searchPlexSong(prefs.plexKey, server, query);
+      } else if (useProvider == SearchProviders.TuneIn) {
         return await getTuneinTrack(query);
       } else if (useProvider == "soundcloud") {
         return soundcloudToTrack(
@@ -140,11 +151,9 @@ export default new Command(
         if (!list) return null;
         return [
           youtubeListToTrack(list),
-          ...(
-            await Promise.all(
-              list.videos.map(async (v) => await Search.getVideo(v.url))
-            )
-          ).map(youtubeToTrack),
+          ...(await Promise.all(list.videos.map(async (v) => await Search.getVideo(v.url)))).map(
+            youtubeToTrack
+          ),
         ];
       } else if (Search.validate(query, "VIDEO")) {
         return youtubeToTrack(await Search.getVideo(query));
@@ -153,10 +162,7 @@ export default new Command(
       } else if (SoundCloudUtils.validateURL(query, "playlist")) {
         const list = await SoundCloud.playlists.getV2(query);
         if (!list) return null;
-        return [
-          soundcloudListToTrack(list),
-          ...list.tracks.map(soundcloudToTrack),
-        ];
+        return [soundcloudListToTrack(list), ...list.tracks.map(soundcloudToTrack)];
       } else if (
         (() => {
           try {
@@ -172,8 +178,7 @@ export default new Command(
         return youtubeToTrack(await Search.searchOne(query, "video"));
       }
     })();
-    if (!foundData)
-      return message.reply("No results found for that search!", false);
+    if (!foundData) return message.reply("No results found for that search!", false);
 
     const reply = await message.reply(
       {
@@ -220,13 +225,11 @@ export default new Command(
     await reply.edit({
       embeds: [
         {
-          description: `#### Added${
-            Array.isArray(foundData) ? " Playlist" : ""
-          } [${track.title}](${track.url})${
+          description: `#### Added${Array.isArray(foundData) ? " Playlist" : ""} [${track.title}](${
+            track.url
+          })${
             Array.isArray(foundData)
-              ? ` with ${foundData.length} song${
-                  foundData.length == 1 ? "" : "s"
-                }`
+              ? ` with ${foundData.length} song${foundData.length == 1 ? "" : "s"}`
               : ""
           } to the queue.
 by [${track.authorName}](${track.authorURL})
@@ -243,9 +246,7 @@ by [${track.authorName}](${track.authorURL})
             track.filtersEnabled.length
               ? `
 **Filters**
-${track.filtersEnabled
-  .map((f) => `\`${typeof f == "string" ? f : Filters[f].name}\``)
-  .join(", ")}`
+${track.filtersEnabled.map((f) => `\`${typeof f == "string" ? f : Filters[f].name}\``).join(", ")}`
               : ""
           }
 

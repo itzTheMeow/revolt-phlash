@@ -2,6 +2,10 @@ import axios from "axios";
 import { randomUUID } from "crypto";
 import db from "enhanced.db";
 import { JSDOM } from "jsdom";
+import QueryString from "qs";
+import { msToString } from "revolt-toolset";
+import { CustomTrack } from "./converters";
+import { TrackProvider } from "./Queue";
 
 const PLEX_HEADERS = {
   "X-Plex-Client-Identifier": String(
@@ -23,26 +27,31 @@ interface PINPayload {
   code: string;
   expires: Date;
 }
-enum PlexSearchType {
-  movie = 1,
-  show = 2,
-  season = 3,
-  episode = 4,
-  trailer = 5,
-  comic = 6,
-  person = 7,
-  artist = 8,
-  album = 9,
-  track = 10,
-  picture = 11,
-  clip = 12,
-  photo = 13,
-  photoalbum = 14,
-  playlist = 15,
-  playlistFolder = 16,
-  collection = 18,
-  optimizedVersion = 42,
-  userPlaylistItem = 1001,
+interface PlexServer {
+  id: string;
+  name: string;
+  address: string;
+}
+interface PlexTrack {
+  title: string;
+  viewCount: number;
+  parentYear: number;
+  thumb: string;
+  grandparentThumb: string;
+  duration: number;
+  addedAt: number;
+  grandparentTitle: string;
+  key: string;
+  parentKey: string;
+  Media: {
+    id: number;
+    duration: number;
+    Part: {
+      id: number;
+      key: string;
+      duration: number;
+    }[];
+  }[];
 }
 
 export async function requestPlexPIN(): Promise<PINPayload> {
@@ -100,7 +109,7 @@ export async function getPlexUser(token: string) {
   }
 }
 
-export async function getPlexServers(token: string) {
+export async function getPlexServers(token: string): Promise<PlexServer[]> {
   try {
     const dom = new JSDOM(
       (
@@ -136,4 +145,41 @@ export async function getPlexServers(token: string) {
   } catch {
     return [];
   }
+}
+
+export async function searchPlexSong(
+  token: string,
+  server: PlexServer,
+  query: string
+): Promise<CustomTrack> {
+  const res = <PlexTrack>(
+    await axios.get(
+      `${server.address}/hubs/search?${QueryString.stringify({
+        query,
+        limit: 1,
+        ...getHeaders(token),
+      })}`
+    )
+  ).data.MediaContainer.Hub.filter((t) => t.type == "track")[0].Metadata[0];
+  return {
+    title: res.title || "Track",
+    createdTime: msToString(res.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
+    authorName: res.grandparentTitle || "Unknown Channel",
+    authorURL:
+      `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
+        res.parentKey
+      )}` || "https://app.plex.tv",
+    authorIcon: "",
+    duration: res.Media[0].duration,
+    views: res.viewCount,
+    url:
+      `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
+        res.key
+      )}` || "https://app.plex.tv",
+    address:
+      server.address +
+      res.Media[0].Part[0].key +
+      QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
+    provider: TrackProvider.RAW,
+  };
 }
