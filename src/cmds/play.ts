@@ -94,7 +94,7 @@ export default new Command(
       const specifiedChannel = args.hasFlag("channel");
       const context = specifiedChannel
         ? message
-        : await message.reply("Send the name of a channel (or mention it) to play in!");
+        : await message.reply("Send the name of a channel (or mention it) to play in!", true);
       const useChannel = specifiedChannel
         ? matchChannel(args.flag("channel"))
         : await new Promise<Channel | null>((res) => {

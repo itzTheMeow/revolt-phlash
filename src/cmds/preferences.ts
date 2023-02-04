@@ -30,7 +30,6 @@ Settings are laid out in "Setting Name (key)" format. Use ${preview(
         "[value]"
       )} to change a setting.
 
-
 #### Plex Integration (\`plextoken\`, \`plexserver\`)
 Add your plex account for use with music commands.
 Use plextoken to set your token manually (do this in DMs, DO NOT LEAK YOUR TOKEN), pass 'link' to use the safer pin option, or pass 'unlink' to remove your account.
@@ -42,7 +41,6 @@ Examples:
 - ${preview("plextoken", "[token]")}
 - ${preview("plextoken", "link")}
 - ${preview("plexserver", "MyMedia")}
-
 
 #### Default Music Provider (\`provider\`)
 Changes your default music search provider when you use \`${serverSettings.prefix}play\`.

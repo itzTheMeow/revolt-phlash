@@ -29,7 +29,6 @@ Settings are laid out in "Setting Name (key)" format. Use ${preview(
         "[value]"
       )} to change a setting.
 
-
 #### Server Avatar (\`avatar\`)
 Change the bot's avatar for this server.
 Example:
