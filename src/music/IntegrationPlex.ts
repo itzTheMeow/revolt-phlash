@@ -287,14 +287,14 @@ export async function searchPlexSong(
         QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
       provider: TrackProvider.RAW,
       onplay(q) {
-        sendState("playing", 0, q.nowPlaying.duration);
+        sendState("playing", 0, q.nowPlaying.duration / q.playbackSpeed());
         i = setInterval(() => {
-          sendState("playing", Date.now() - q.startedPlaying, q.nowPlaying.duration);
+          sendState("playing", q.seek, q.nowPlaying.duration / q.playbackSpeed());
         }, 10_000);
       },
       onstop(q) {
         clearInterval(i);
-        sendState("stopped", Date.now() - q.startedPlaying, q.nowPlaying.duration);
+        sendState("stopped", q.seek, q.nowPlaying.duration / q.playbackSpeed());
       },
     };
   }
