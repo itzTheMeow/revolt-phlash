@@ -4,7 +4,7 @@ import config from "../config";
 
 export default new Command(
   "stop",
-  { description: "Stops playing music.", aliases: ["leave", "fuckoff"] },
+  { description: "Stops playing music.", aliases: ["leave", "fuckoff", "stp"] },
   async (bot, message, args) => {
     if (!message.channel.isServerBased()) return;
     const queue = QueueManager.getServerQueue(message.channel.server);
