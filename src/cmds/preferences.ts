@@ -2,6 +2,7 @@ import { EmbedBuilder, Message, msToString } from "revolt-toolset";
 import Command from "../Command";
 import config from "../config";
 import { getPlexServers, getPlexUser, pollPlexPIN, requestPlexPIN } from "../music/IntegrationPlex";
+import { SearchProviders } from "../music/search";
 import { getServerSettings, getUserSettings, setUserSetting } from "../Settings";
 
 export default new Command(
@@ -39,7 +40,16 @@ Use plexserver to set your server name for use with music searching.
 Examples:
 - ${preview("plextoken", "[token]")}
 - ${preview("plextoken", "link")}
-- ${preview("plexserver", "MyMedia")}`);
+- ${preview("plexserver", "MyMedia")}
+
+#### Default Music Provider (\`provider\`)
+Changes your default music search provider when you use \`${serverSettings.prefix}play\`.
+Must be one of ${Object.values(SearchProviders)
+        .map((s) => `\`${s}\``)
+        .join(", ")}.
+**Currently: ${prefs.provider}**
+Example:
+- ${preview("provider", "soundcloud")}`);
       const reply = await message.reply(embed);
       if (prefs.plexKey) {
         const user = await getPlexUser(prefs.plexKey);
@@ -144,10 +154,22 @@ You can now proceed with setting \`plexserver\`.`)
           message.reply(`Changed plex server to ${useServer.name.replace(/@/g, "")}.`);
           break;
         }
+        case "provider": {
+          const prov = <SearchProviders>value.toLowerCase();
+          if (!Object.values(SearchProviders).includes(prov))
+            return message.reply(`Invalid provider! Make sure you use the full name.
+Valid Providers: ${Object.values(SearchProviders)
+              .map((s) => `\`${s}\``)
+              .join(", ")}`);
+          setUserSetting(message.author, "provider", prov);
+          message.reply(`Changed default search provider to ${prov}.`);
+          break;
+        }
         default: {
           message.reply(
             `Invalid preferences key. Use \`${serverSettings.prefix}preferences\` for help.`
           );
+          break;
         }
       }
     }

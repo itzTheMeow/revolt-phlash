@@ -1,6 +1,7 @@
 import db from "enhanced.db";
 import { Server, User } from "revolt-toolset";
 import config from "./config";
+import { SearchProviders } from "./music/search";
 
 export interface ServerSettings {
   prefix: string;
@@ -27,12 +28,14 @@ export function setServerSetting<K extends keyof ServerSettings>(
 export interface UserSettings {
   plexKey: string;
   plexServer: string;
+  provider: SearchProviders;
 }
 
 export function getUserSettings(user: User): UserSettings {
   return {
     plexKey: "",
     plexServer: "",
+    provider: SearchProviders.YouTube,
     ...(<UserSettings>db.get(`prefs_${user.id}`) || {}),
   };
 }

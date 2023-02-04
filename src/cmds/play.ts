@@ -129,7 +129,7 @@ export default new Command(
       const useProvider =
         Object.entries(SearchProviderAliases).find((e) => e[1].includes(args.flag("use")))?.[0] ||
         args.flag("use") ||
-        "";
+        getUserSettings(message.author).provider;
       if (useProvider.startsWith(SearchProviders.Plex)) {
         const prefs = getUserSettings(message.author);
         if (!prefs.plexKey || !prefs.plexServer)
