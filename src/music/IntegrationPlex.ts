@@ -100,7 +100,7 @@ export async function getPlexUser(token: string) {
   }
 }
 
-export async function getPlexServers(token: string): Promise<{ name: string; address: string }[]> {
+export async function getPlexServers(token: string) {
   try {
     const dom = new JSDOM(
       (
@@ -129,6 +129,7 @@ export async function getPlexServers(token: string): Promise<{ name: string; add
             conns.find((c) => !c.relay && !c.https) ||
             conns[0]
           )?.address,
+          id: d.getAttribute("clientIdentifier"),
         };
       })
       .filter((d) => d.address);

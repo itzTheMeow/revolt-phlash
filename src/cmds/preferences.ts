@@ -32,18 +32,14 @@ Settings are laid out in "Setting Name (key)" format. Use ${preview(
 #### Plex Integration (\`plextoken\`, \`plexserver\`)
 Add your plex account for use with music commands.
 Use plextoken to set your token manually (do this in DMs, DO NOT LEAK YOUR TOKEN), pass 'link' to use the safer pin option, or pass 'unlink' to remove your account.
-Use plexserver to set your server and library name for use with music searching. Use the format ServerName=>LibraryName.
+Use plexserver to set your server name for use with music searching.
 **Status: ${prefs.plexKey ? `:${config.emojis.loading}:` : "Not Linked"}**${
-        prefs.plexServer
-          ? `\n**Server/Library: ${prefs.plexServer.split(":")[0]}/${
-              prefs.plexServer.split(":")[1]
-            }**`
-          : ""
+        prefs.plexServer ? `\n**Server: ${prefs.plexServer}**` : ""
       }
 Examples:
 - ${preview("plextoken", "[token]")}
 - ${preview("plextoken", "link")}
-- ${preview("plexserver", "MyMedia=>Music")}`);
+- ${preview("plexserver", "MyMedia")}`);
       const reply = await message.reply(embed);
       if (prefs.plexKey) {
         const user = await getPlexUser(prefs.plexKey);
@@ -120,18 +116,14 @@ You can now proceed with setting \`plexserver\`.`)
         }
         case "plexserver": {
           if (!prefs.plexKey) return message.reply("You need to link your plex account first!");
-          const [server, library] = value.split("\n")[0].split("=>");
-          if (!server || !library)
-            return message.reply(
-              "Invalid format. Make sure you use ServerName=>LibraryName separated with a =>."
-            );
           const useServer = (await getPlexServers(prefs.plexKey)).find(
-            (s) => s.name.toLowerCase() == server.toLowerCase()
+            (s) => s.name.toLowerCase() == value.toLowerCase()
           );
           if (!useServer)
             return message.reply(
-              `No plex servers were found on your account matching \`${server.replace(/@/g, "")}\``
+              `No plex servers were found on your account matching \`${value.replace(/@/g, "")}\``
             );
+          setUserSetting(message.author, "plexServer", useServer.id);
         }
         default: {
           message.reply(
