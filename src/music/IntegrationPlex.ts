@@ -43,6 +43,8 @@ interface PlexTrack {
   grandparentTitle: string;
   parentKey: string;
   grandparentKey: string;
+  key: string;
+  ratingKey: string;
   Media: {
     id: number;
     duration: number;
@@ -161,6 +163,27 @@ export async function searchPlexSong(
       })}`
     )
   ).data.MediaContainer.Hub.filter((t) => t.type == "track")[0].Metadata[0];
+
+  let i: NodeJS.Timer;
+
+  function sendState(state: "playing" | "paused" | "stopped", time: number) {
+    axios.get(
+      `${server.address}/:/timeline${QueryString.stringify(
+        {
+          ratingKey: res.ratingKey,
+          key: res.key,
+          playbackTime: time,
+          playQueueItemID: 0,
+          state,
+          hasMDE: 1,
+          time,
+          duration: res.duration,
+        },
+        { addQueryPrefix: true }
+      )}`
+    );
+  }
+
   return {
     title: res.title || "Track",
     createdTime: msToString(res.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
@@ -181,5 +204,15 @@ export async function searchPlexSong(
       res.Media[0].Part[0].key +
       QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
     provider: TrackProvider.RAW,
+    onplay(q) {
+      sendState("playing", 0);
+      i = setInterval(() => {
+        sendState("playing", q.seek);
+      }, 10_000);
+    },
+    onstop(q) {
+      clearInterval(i);
+      sendState("stopped", q.seek);
+    },
   };
 }

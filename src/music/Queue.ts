@@ -32,6 +32,8 @@ export interface Track {
   playbackSpeed: number;
   filtersEnabled: (QueueFilter | string)[];
   address?: string;
+  onplay?(queue: Queue): any;
+  onstop?(queue: Queue): any;
 }
 
 export default class Queue {
@@ -48,6 +50,7 @@ export default class Queue {
   public player: MediaPlayer;
   public readonly port: number;
   public freed = true;
+  private startedPlaying = 0;
 
   constructor(
     public parent: ServerQueueManager,
@@ -92,9 +95,11 @@ export default class Queue {
 
   public async onSongFinished(): Promise<Track | null> {
     if (this.connection.state == RevoiceState.PLAYING || !this.freed) return null;
+    this.startedPlaying = 0;
     const finished = this.nowPlaying;
     this.playHistory.unshift(finished);
     this.nowPlaying = null;
+    finished.onstop?.(this);
     if (!this.songs.length) return null;
     this.nowPlaying = this.songs.shift();
     const stream = await (async (): Promise<internal.Readable> => {
@@ -158,11 +163,25 @@ export default class Queue {
     this.player.ffmpeg.on("exit", () => ff.kill());
     await this.player.playStream(ff.stdout);
     db.set("tracks_played", (Number(db.get("tracks_played")) || 0) + 1);
+    this.startedPlaying = Date.now();
+    this.nowPlaying.onplay?.(this);
     return finished;
   }
   public async addSong(song: Track) {
     this.songs.push(song);
     if (!this.nowPlaying) await this.onSongFinished();
     return song;
+  }
+
+  public get seek() {
+    return this.startedPlaying
+      ? (Date.now() - this.startedPlaying) *
+          [
+            this.nowPlaying.playbackSpeed || 1,
+            ...this.nowPlaying.filtersEnabled.map((f) =>
+              f in Filters ? Filters[f].speed || 1 : 1
+            ),
+          ].reduce((s, v) => s * v, 1)
+      : 0;
   }
 }

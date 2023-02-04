@@ -10,6 +10,7 @@ export interface QueueFilters {
   name: string;
   args: string;
   aliases: string[];
+  speed?: number;
 }
 
 export const Filters: { [key in QueueFilter]: QueueFilters } = {
@@ -18,24 +19,28 @@ export const Filters: { [key in QueueFilter]: QueueFilters } = {
     name: "Nightcore",
     args: "aresample=48000,asetrate=48000*1.25",
     aliases: ["night", "nc", "n"],
+    speed: 1.25,
   },
   [QueueFilter.nightcoreExtended]: {
     id: "nightcoreex",
     name: "Nightcore Extended",
     args: "aresample=48000,asetrate=48000*1.5",
     aliases: ["nightx", "ncx", "nx"],
+    speed: 1.5,
   },
   [QueueFilter.vaporwave]: {
     id: "vaporwave",
     name: "Vaporwave",
     args: "aresample=48000,asetrate=48000*0.8",
     aliases: ["vapor", "vw", "v"],
+    speed: 0.6,
   },
   [QueueFilter.vaporwaveExtended]: {
     id: "vaporwaveex",
     name: "Vaporwave Extended",
     args: "aresample=48000,asetrate=48000*0.6",
     aliases: ["vaporx", "vwx", "vx"],
+    speed: 0.6,
   },
   [QueueFilter.bassBoost]: {
     id: "bassboost",
