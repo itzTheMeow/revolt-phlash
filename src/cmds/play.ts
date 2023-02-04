@@ -228,7 +228,7 @@ export default new Command(
       ? { ...foundData.shift(), filtersEnabled, playbackSpeed }
       : null;
     let firstSong: Track;
-    const shouldSkip = args.bflag("skip") && !queue.nowPlaying;
+    const shouldSkip = args.bflag("skip") && queue.nowPlaying;
 
     for (const track of Array.isArray(foundData)
       ? args.bflag("shuffle")
