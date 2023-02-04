@@ -173,15 +173,15 @@ export default class Queue {
     return song;
   }
 
+  public playbackSpeed(track = this.nowPlaying) {
+    return [
+      track.playbackSpeed || 1,
+      ...track.filtersEnabled.map((f) => (f in Filters ? Filters[f].speed || 1 : 1)),
+    ].reduce((s, v) => s * v, 1);
+  }
   public get seek() {
     return this.startedPlaying
-      ? (Date.now() - this.startedPlaying) *
-          [
-            this.nowPlaying.playbackSpeed || 1,
-            ...this.nowPlaying.filtersEnabled.map((f) =>
-              f in Filters ? Filters[f].speed || 1 : 1
-            ),
-          ].reduce((s, v) => s * v, 1)
+      ? (Date.now() - this.startedPlaying) * this.playbackSpeed(this.nowPlaying)
       : 0;
   }
 }
