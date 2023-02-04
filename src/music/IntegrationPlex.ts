@@ -253,12 +253,12 @@ export async function searchPlexSong(
           {
             ratingKey: track.ratingKey,
             key: track.key,
-            playbackTime: time,
+            playbackTime: Math.round(time),
             playQueueItemID: 0,
             state,
             hasMDE: 1,
-            time,
-            duration,
+            time: Math.round(time),
+            duration: Math.round(duration),
             ...getHeaders(token),
           },
           { addQueryPrefix: true }
