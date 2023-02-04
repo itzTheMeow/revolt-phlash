@@ -124,6 +124,8 @@ You can now proceed with setting \`plexserver\`.`)
               `No plex servers were found on your account matching \`${value.replace(/@/g, "")}\``
             );
           setUserSetting(message.author, "plexServer", useServer.id);
+          message.reply(`Changed plex server to ${useServer.name.replace(/@/g, "")}.`);
+          break;
         }
         default: {
           message.reply(
