@@ -247,7 +247,7 @@ export async function searchPlexSong(
 
   function mapTrack(track: PlexTrack): CustomTrack {
     let i: NodeJS.Timer;
-    function sendState(state: "playing" | "paused" | "stopped", time: number) {
+    function sendState(state: "playing" | "paused" | "stopped", time: number, duration: number) {
       axios.get(
         `${server.address}/:/timeline${QueryString.stringify(
           {
@@ -258,7 +258,7 @@ export async function searchPlexSong(
             state,
             hasMDE: 1,
             time,
-            duration: track.duration,
+            duration,
             ...getHeaders(token),
           },
           { addQueryPrefix: true }
@@ -287,14 +287,14 @@ export async function searchPlexSong(
         QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
       provider: TrackProvider.RAW,
       onplay(q) {
-        sendState("playing", 0);
+        sendState("playing", 0, q.nowPlaying.duration / q.playbackSpeed());
         i = setInterval(() => {
-          sendState("playing", q.seek);
+          sendState("playing", q.seek, q.nowPlaying.duration / q.playbackSpeed());
         }, 10_000);
       },
       onstop(q) {
         clearInterval(i);
-        sendState("stopped", q.seek);
+        sendState("stopped", q.seek, q.nowPlaying.duration / q.playbackSpeed());
       },
     };
   }

@@ -98,8 +98,8 @@ export default class Queue {
     this.startedPlaying = 0;
     const finished = this.nowPlaying;
     if (finished) this.playHistory.unshift(finished);
-    this.nowPlaying = null;
     finished?.onstop?.(this);
+    this.nowPlaying = null;
     if (!this.songs.length) return null;
     this.nowPlaying = this.songs.shift();
     const stream = await (async (): Promise<internal.Readable> => {
