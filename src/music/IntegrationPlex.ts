@@ -229,7 +229,7 @@ export async function searchPlexSong(
     return [
       {
         title: list.title || "Playlist",
-        createdTime: msToString(list.addedAt, { verbose: true, maxDepth: 2 }) + " ago",
+        createdTime: msToString(list.updatedAt, { verbose: true, maxDepth: 2 }) + " ago",
         authorName: "You",
         authorURL: "https://app.plex.tv",
         authorIcon: "",
