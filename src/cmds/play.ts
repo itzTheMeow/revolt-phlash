@@ -223,9 +223,13 @@ export default new Command(
     );
     if (message.authorID == config.owner && args.hasFlag("args"))
       filtersEnabled.push(args.flag("args"));
+
     const useList: Track = Array.isArray(foundData)
       ? { ...foundData.shift(), filtersEnabled, playbackSpeed }
       : null;
+    let firstSong: Track;
+    const shouldSkip = args.bflag("skip") && !queue.nowPlaying;
+
     for (const track of Array.isArray(foundData)
       ? args.bflag("shuffle")
         ? shuffle(foundData) // doesnt really matter for shuffling
@@ -233,7 +237,7 @@ export default new Command(
         ? [...foundData].reverse()
         : foundData
       : [foundData]) {
-      await queue.addSong(
+      const s = await queue.addSong(
         {
           ...track,
           filtersEnabled,
@@ -241,6 +245,7 @@ export default new Command(
         },
         args.bflag("prepend")
       );
+      if (!firstSong) firstSong = s;
     }
     const track = Array.isArray(foundData)
       ? useList
@@ -249,6 +254,8 @@ export default new Command(
           filtersEnabled,
           playbackSpeed,
         };
+
+    if (shouldSkip) await queue.skipTo(queue.songs.indexOf(firstSong));
 
     await reply.edit({
       embeds: [

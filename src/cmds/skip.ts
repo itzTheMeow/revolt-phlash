@@ -4,16 +4,21 @@ import config from "../config";
 
 export default new Command(
   "skip",
-  { description: "Skips the current song.", aliases: ["s"] },
+  {
+    description: "Skips the current song. Optionally skip to a number in the queue.",
+    aliases: ["s"],
+    args: ["<index>"],
+  },
   async (bot, message, args) => {
     if (!message.channel.isServerBased()) return;
     const queue = QueueManager.getServerQueue(message.channel.server);
     if (!queue) return message.react(config.emojis.redTick);
 
-    queue.freed = false;
-    queue.player.disconnect(false, true);
-    queue.freed = true;
-    queue.onSongFinished();
-    message.react(config.emojis.greenTick);
+    const index = args.number(1),
+      skipped = await queue.skipTo(Math.min(0, (index || 0) - 1));
+
+    if (skipped.length) {
+      message.reply(`Skipped past ${skipped.length} song${skipped.length > 1 ? "s" : ""}.`);
+    } else message.react(config.emojis.greenTick);
   }
 );

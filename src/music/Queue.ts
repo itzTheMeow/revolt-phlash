@@ -188,4 +188,15 @@ export default class Queue {
       ? (Date.now() - this.startedPlaying) / this.playbackSpeed(this.nowPlaying)
       : 0;
   }
+
+  /** Skip to a song in the queue. Returns songs skipped if any. (does not include nowPlaying) */
+  public async skipTo(index: number) {
+    index = Math.min(this.songs.length, index);
+    this.freed = false;
+    this.player.disconnect(false, true);
+    this.freed = true;
+    const skipped = this.songs.splice(0, index);
+    await this.onSongFinished();
+    return skipped;
+  }
 }
