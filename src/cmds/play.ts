@@ -18,7 +18,7 @@ import { Filters } from "../music/filters";
 import { getPlexServers, searchPlexSong } from "../music/IntegrationPlex";
 import { getTuneinTrack } from "../music/IntegrationTuneIn";
 import { Track } from "../music/Queue";
-import { musicFooter } from "../music/util";
+import { musicFooter, shuffle } from "../music/util";
 import { getUserSettings } from "../Settings";
 
 const SoundCloud = new SCClient();
@@ -222,7 +222,11 @@ export default new Command(
     const useList: Track = Array.isArray(foundData)
       ? { ...foundData.shift(), filtersEnabled, playbackSpeed }
       : null;
-    for (const track of Array.isArray(foundData) ? foundData : [foundData]) {
+    for (const track of Array.isArray(foundData)
+      ? args.bflag("shuffle")
+        ? shuffle(foundData)
+        : foundData
+      : [foundData]) {
       await queue.addSong({
         ...track,
         filtersEnabled,
