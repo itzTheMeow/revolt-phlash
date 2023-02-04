@@ -252,6 +252,7 @@ export async function searchPlexSong(
       time: number,
       duration: number
     ) {
+      if (time > duration) time = duration;
       try {
         await axios.get(
           `${server.address}/:/timeline${QueryString.stringify(
