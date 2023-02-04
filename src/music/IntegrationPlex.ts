@@ -3,7 +3,6 @@ import { randomUUID } from "crypto";
 import db from "enhanced.db";
 import { JSDOM } from "jsdom";
 import QueryString from "qs";
-import { msToString } from "revolt-toolset";
 import { CustomTrack } from "./converters";
 import { TrackProvider } from "./Queue";
 
@@ -230,8 +229,7 @@ export async function searchPlexSong(
     return [
       {
         title: list.title || "Playlist",
-        createdTime:
-          msToString(Date.now() - list.updatedAt * 1000, { verbose: true, maxDepth: 2 }) + " ago",
+        createdTime: new Date(list.updatedAt * 1000).toLocaleDateString(),
         authorName: "You",
         authorURL: "https://app.plex.tv",
         authorIcon: "",
@@ -270,8 +268,7 @@ export async function searchPlexSong(
 
     return {
       title: track.title || "Track",
-      createdTime:
-        msToString(Date.now() - track.addedAt * 1000, { verbose: true, maxDepth: 2 }) + " ago",
+      createdTime: new Date(track.addedAt * 1000).toLocaleDateString(),
       authorName: track.grandparentTitle || "Unknown Channel",
       authorURL:
         `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
