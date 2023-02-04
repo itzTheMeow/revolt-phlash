@@ -41,8 +41,8 @@ interface PlexTrack {
   duration: number;
   addedAt: number;
   grandparentTitle: string;
-  key: string;
   parentKey: string;
+  grandparentKey: string;
   Media: {
     id: number;
     duration: number;
@@ -167,14 +167,14 @@ export async function searchPlexSong(
     authorName: res.grandparentTitle || "Unknown Channel",
     authorURL:
       `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
-        res.parentKey
+        res.grandparentKey
       )}` || "https://app.plex.tv",
     authorIcon: "",
     duration: res.Media[0].duration,
     views: res.viewCount,
     url:
       `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
-        res.key
+        res.parentKey
       )}` || "https://app.plex.tv",
     address:
       server.address +
