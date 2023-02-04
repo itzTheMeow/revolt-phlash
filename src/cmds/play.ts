@@ -126,7 +126,7 @@ export default new Command(
       const useProvider =
         Object.entries(SearchProviderAliases).find((e) => e[1].includes(args.flag("use")))?.[0] ||
         args.flag("use");
-      if (useProvider == SearchProviders.Plex) {
+      if (useProvider.startsWith(SearchProviders.Plex)) {
         const prefs = getUserSettings(message.author);
         if (!prefs.plexKey || !prefs.plexServer)
           return (
@@ -134,7 +134,12 @@ export default new Command(
           );
         const server = (await getPlexServers(prefs.plexKey)).find((s) => s.id == prefs.plexServer);
         if (!server) return message.reply("Failed to get plex server. Try re-linking?"), null;
-        return await searchPlexSong(prefs.plexKey, server, query);
+        return await searchPlexSong(
+          prefs.plexKey,
+          server,
+          query,
+          useProvider.replace(SearchProviders.Plex + ":", "").trim()
+        );
       } else if (useProvider == SearchProviders.TuneIn) {
         return await getTuneinTrack(query);
       } else if (useProvider == "soundcloud") {
