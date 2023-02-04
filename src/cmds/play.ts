@@ -18,17 +18,12 @@ import { Filters } from "../music/filters";
 import { getPlexServers, searchPlexSong } from "../music/IntegrationPlex";
 import { getTuneinTrack } from "../music/IntegrationTuneIn";
 import { Track } from "../music/Queue";
+import { SearchProviders } from "../music/search";
 import { musicFooter, shuffle } from "../music/util";
 import { getUserSettings } from "../Settings";
 
 const SoundCloud = new SCClient();
 
-enum SearchProviders {
-  YouTube = "youtube",
-  SoundCloud = "soundcloud",
-  TuneIn = "tunein",
-  Plex = "plex",
-}
 const SearchProviderAliases: { [key in SearchProviders]: string[] } = {
   youtube: ["yt", "y"],
   soundcloud: ["sc", "s", "cloud"],
