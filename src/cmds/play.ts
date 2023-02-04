@@ -56,6 +56,10 @@ export default new Command(
           description: "Shuffles the playlist before queueing it. (playlist only)",
           aliases: ["--sh"],
         },
+        "--skip": {
+          description: "Skips to the queued song after adding it. Best paired with --prepend.",
+          aliases: [],
+        },
         "-channel": {
           description: "The channel to play music in",
           aliases: ["-c"],
@@ -224,7 +228,9 @@ export default new Command(
       : null;
     for (const track of Array.isArray(foundData)
       ? args.bflag("shuffle")
-        ? shuffle(foundData)
+        ? shuffle(foundData) // doesnt really matter for shuffling
+        : args.bflag("prepend") // reverse order if prepending to queue
+        ? [...foundData].reverse()
         : foundData
       : [foundData]) {
       await queue.addSong(
@@ -244,7 +250,6 @@ export default new Command(
           playbackSpeed,
         };
 
-    if (!reply.isUser()) return;
     await reply.edit({
       embeds: [
         {
