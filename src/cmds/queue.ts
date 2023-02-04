@@ -36,9 +36,7 @@ export default new Command(
               .join("");
             if (t == queue.nowPlaying)
               return `### Now Playing
-${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${
-                t.authorURL.startsWith("https://app.plex.tv") ? "https://plex.tv" : t.authorURL
-              })
+${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
 :alarm_clock: ${
                 t.duration
                   ? `${msToString(queue.seek, { noMs: true })}/${msToString(
@@ -51,7 +49,9 @@ ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${
               } :eye: ${t.views.toLocaleString()} :timer_clock: ${t.createdTime}\n`;
             else
               return `#### ${emoji} **[${t.title}](${t.url})**
-##### by [${t.authorName}](${t.authorURL})
+##### by [${t.authorName}](${
+                t.authorURL.startsWith("https://app.plex.tv") ? "https://plex.tv" : t.authorURL
+              })
 ##### :alarm_clock: ${msToString(t.duration)} :timer_clock: ${t.createdTime}`;
           })
           .join("\n") +
