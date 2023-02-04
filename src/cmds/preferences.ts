@@ -2,7 +2,7 @@ import { EmbedBuilder, Message, msToString } from "revolt-toolset";
 import Command from "../Command";
 import config from "../config";
 import { getPlexUser, pollPlexPIN, requestPlexPIN } from "../music/IntegrationPlex";
-import { getServerSettings, getUserSettings } from "../Settings";
+import { getServerSettings, getUserSettings, setUserSetting } from "../Settings";
 
 export default new Command(
   "preferences",
@@ -44,7 +44,24 @@ Examples:
 - ${preview("plextoken", "[token]")}
 - ${preview("plextoken", "link")}
 - ${preview("plexserver", "MyMedia:Music")}`);
-      message.reply(embed);
+      const reply = await message.reply(embed);
+      if (prefs.plexKey) {
+        const user = await getPlexUser(prefs.plexKey);
+        if (!user) {
+          setUserSetting(message.author, "plexKey", "");
+          await reply.edit(
+            embed.setDescription(
+              embed.description.replace(`:${config.emojis.loading}:`, "Not Linked")
+            )
+          );
+        } else {
+          await reply.edit(
+            embed.setDescription(
+              embed.description.replace(`:${config.emojis.loading}:`, user.username)
+            )
+          );
+        }
+      }
     } else {
       const value = args.from(2).join(" ");
       if (!value)
@@ -84,8 +101,10 @@ Go to [plex.tv/link](https://plex.tv/link) and enter the code **\`${
             }
             const user = await getPlexUser(token);
             if (!user) return reply.edit(replyEmbed.setDescription("Invalid authorizaton token."));
+            setUserSetting(message.author, "plexKey", token);
             reply.edit(
-              replyEmbed.setDescription(`Account linked successfully! **${user.username}**`)
+              replyEmbed.setDescription(`### Account linked successfully! **${user.username}**
+You can now proceed with setting \`plexserver\`.`)
             );
           } catch {
             message.reply("Failed to link account.");
