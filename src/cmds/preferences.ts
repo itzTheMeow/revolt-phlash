@@ -31,7 +31,7 @@ Settings are laid out in "Setting Name (key)" format. Use ${preview(
 
 #### Plex Integration (\`plextoken\`, \`plexserver\`)
 Add your plex account for use with music commands.
-Use plextoken to set your token manually (do this in DMs, DO NOT LEAK YOUR TOKEN) or pass 'link' to use the safer pin option.
+Use plextoken to set your token manually (do this in DMs, DO NOT LEAK YOUR TOKEN), pass 'link' to use the safer pin option, or pass 'unlink' to remove your account.
 Use plexserver to set your server and library name for use with music searching. Use the format ServerName:LibraryName.
 **Status: ${prefs.plexKey ? `:${config.emojis.loading}:` : "Not Linked"}**${
         prefs.plexServer
@@ -57,7 +57,7 @@ Examples:
         } else {
           await reply.edit(
             embed.setDescription(
-              embed.description.replace(`:${config.emojis.loading}:`, user.username)
+              embed.description.replace(`:${config.emojis.loading}:`, "@" + user.username)
             )
           );
         }
@@ -71,6 +71,11 @@ Examples:
       switch (key) {
         case "plextoken": {
           try {
+            if (value.toLowerCase() == "unlink") {
+              setUserSetting(message.author, "plexKey", "");
+              message.reply("Plex account unlinked successfully!");
+              return;
+            }
             const replyEmbed = new EmbedBuilder()
               .setColor(config.brandColor)
               .setTitle("Link Plex Account");
