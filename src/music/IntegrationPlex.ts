@@ -47,6 +47,7 @@ interface PlexTrack {
   grandparentKey: string;
   key: string;
   ratingKey: string;
+  librarySectionTitle: string;
   Media: {
     id: number;
     duration: number;
@@ -154,20 +155,27 @@ export async function getPlexServers(token: string): Promise<PlexServer[]> {
 export async function searchPlexSong(
   token: string,
   server: PlexServer,
-  query: string
+  query: string,
+  libname?: string
 ): Promise<CustomTrack> {
-  const res = <PlexTrack>(
-    await axios.get(
-      `${server.address}/hubs/search?${QueryString.stringify({
-        query,
-        limit: 1,
-        ...getHeaders(token),
-      })}`
-    )
-  ).data.MediaContainer.Hub.filter((t) => t.type == "track")[0].Metadata[0];
+  const trackList = <PlexTrack[]>(
+      await axios.get(
+        `${server.address}/hubs/search?${QueryString.stringify({
+          query,
+          limit: 30,
+          ...getHeaders(token),
+        })}`
+      )
+    ).data.MediaContainer.Hub.find((t) => t.type == "track").Metadata,
+    res = libname
+      ? trackList.filter(
+          (t) =>
+            t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
+            libname.toLowerCase().replace(/ /g, "")
+        )[0]
+      : trackList[0];
 
   let i: NodeJS.Timer;
-
   function sendState(state: "playing" | "paused" | "stopped", time: number) {
     axios.get(
       `${server.address}/:/timeline${QueryString.stringify(
