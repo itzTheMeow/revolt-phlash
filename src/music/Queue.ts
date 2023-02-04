@@ -97,9 +97,9 @@ export default class Queue {
     if (this.connection.state == RevoiceState.PLAYING || !this.freed) return null;
     this.startedPlaying = 0;
     const finished = this.nowPlaying;
-    this.playHistory.unshift(finished);
+    if (finished) this.playHistory.unshift(finished);
     this.nowPlaying = null;
-    finished.onstop?.(this);
+    finished?.onstop?.(this);
     if (!this.songs.length) return null;
     this.nowPlaying = this.songs.shift();
     const stream = await (async (): Promise<internal.Readable> => {
