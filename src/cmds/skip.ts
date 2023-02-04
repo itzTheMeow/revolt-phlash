@@ -15,7 +15,7 @@ export default new Command(
     if (!queue) return message.react(config.emojis.redTick);
 
     const index = args.number(1),
-      skipped = await queue.skipTo(Math.min(0, (index || 0) - 2));
+      skipped = await queue.skipTo(Math.max(0, (index || 0) - 2));
 
     if (skipped.length) {
       message.reply(`Skipped past ${skipped.length} song${skipped.length > 1 ? "s" : ""}.`);
