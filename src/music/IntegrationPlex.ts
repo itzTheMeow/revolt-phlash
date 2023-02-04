@@ -177,7 +177,7 @@ export async function searchPlexSong(
           )
         : trackList
     ).sort((a, b) => {
-      function calc(c: typeof a | typeof b) {
+      function calc(c: PlexTrack) {
         return (
           Number(c.score) +
           Number(
