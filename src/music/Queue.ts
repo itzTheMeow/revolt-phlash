@@ -50,7 +50,7 @@ export default class Queue {
   public player: MediaPlayer;
   public readonly port: number;
   public freed = true;
-  private startedPlaying = 0;
+  public startedPlaying = 0;
 
   constructor(
     public parent: ServerQueueManager,
