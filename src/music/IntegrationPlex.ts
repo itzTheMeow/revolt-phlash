@@ -189,6 +189,8 @@ export async function searchPlexSong(
       return calc(b) - calc(a);
     })[0];
 
+  if (!res) return null;
+
   let i: NodeJS.Timer;
   function sendState(state: "playing" | "paused" | "stopped", time: number) {
     axios.get(

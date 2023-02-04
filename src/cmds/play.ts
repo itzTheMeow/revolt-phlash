@@ -49,6 +49,14 @@ export default new Command(
         return prev;
       },
       {
+        "--playlist": {
+          description: "Search provider for playlists instead of tracks.",
+          aliases: ["--pl"],
+        },
+        "--shuffle": {
+          description: "Shuffles the playlist before queueing it. (playlist only)",
+          aliases: [],
+        },
         "-channel": {
           description: "The channel to play music in",
           aliases: ["-c"],
@@ -143,6 +151,7 @@ export default new Command(
       } else if (useProvider == SearchProviders.TuneIn) {
         return await getTuneinTrack(query);
       } else if (useProvider == "soundcloud") {
+        //TODO: playlists
         return soundcloudToTrack(
           (
             await SoundCloud.tracks.searchV2({
@@ -180,6 +189,7 @@ export default new Command(
       ) {
         return rawToTrack(new URL(query));
       } else {
+        //TODO: playlists
         return youtubeToTrack(await Search.searchOne(query, "video"));
       }
     })();
