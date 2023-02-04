@@ -48,6 +48,7 @@ interface PlexTrack {
   key: string;
   ratingKey: string;
   librarySectionTitle: string;
+  score: string;
   Media: {
     id: number;
     duration: number;
@@ -167,13 +168,15 @@ export async function searchPlexSong(
         })}`
       )
     ).data.MediaContainer.Hub.find((t) => t.type == "track").Metadata,
-    res = libname
-      ? trackList.filter(
-          (t) =>
-            t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
-            libname.toLowerCase().replace(/ /g, "")
-        )[0]
-      : trackList[0];
+    res = (
+      libname
+        ? trackList.filter(
+            (t) =>
+              t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
+              libname.toLowerCase().replace(/ /g, "")
+          )
+        : trackList
+    ).sort((a, b) => Number(b.score) - Number(a.score))[0];
 
   let i: NodeJS.Timer;
   function sendState(state: "playing" | "paused" | "stopped", time: number) {
