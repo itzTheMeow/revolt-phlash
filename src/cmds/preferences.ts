@@ -42,6 +42,7 @@ Examples:
 - ${preview("plextoken", "link")}
 - ${preview("plexserver", "MyMedia")}
 
+
 #### Default Music Provider (\`provider\`)
 Changes your default music search provider when you use \`${serverSettings.prefix}play\`.
 Must be one of ${Object.values(SearchProviders)

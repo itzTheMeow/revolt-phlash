@@ -31,7 +31,8 @@ Settings are laid out in "Setting Name (key)" format. Use ${preview(
 
 #### Server Avatar (\`avatar\`)
 Change the bot's avatar for this server.
-Example: ${preview("avatar", "https://i.imgur.com/AtJgKtd.png")}`);
+Example:
+- ${preview("avatar", "https://i.imgur.com/AtJgKtd.png")}`);
       message.reply(embed);
     } else {
       const value = args.from(2).join(" ");
