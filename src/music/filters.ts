@@ -4,6 +4,7 @@ export enum QueueFilter {
   nightcore,
   nightcoreExtended,
   bassBoost,
+  reverb,
 }
 export interface QueueFilters {
   id: string;
@@ -47,5 +48,11 @@ export const Filters: { [key in QueueFilter]: QueueFilters } = {
     name: "Bass Boost",
     args: "bass=g=10:f=110:w=0.3",
     aliases: ["bass", "bb"],
+  },
+  [QueueFilter.reverb]: {
+    id: "reverb",
+    name: "Reverb",
+    args: "aecho=1.0:1.0:30:0.5",
+    aliases: ["rv"],
   },
 };
