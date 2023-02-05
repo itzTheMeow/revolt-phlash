@@ -52,7 +52,7 @@ export const Filters: { [key in QueueFilter]: QueueFilters } = {
   [QueueFilter.reverb]: {
     id: "reverb",
     name: "Reverb",
-    args: "aecho=1.0:1.0:30:0.5",
+    args: "aecho=1.0:1.0:35:0.5",
     aliases: ["rv"],
   },
 };
