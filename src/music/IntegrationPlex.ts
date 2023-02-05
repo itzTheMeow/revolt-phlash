@@ -183,16 +183,16 @@ export async function searchPlexSong(
   ).data.MediaContainer.Hub;
 
   if (!searchPlaylist) {
-    const trackList = <PlexTrack[]>result.find((t) => t.type == "track").Metadata,
+    const trackList = <PlexTrack[]>result.find((t) => t.type == "track")?.Metadata,
       res = (
         libname
-          ? trackList.filter(
+          ? trackList?.filter(
               (t) =>
                 t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
                 libname.toLowerCase().replace(/ /g, "")
             )
           : trackList
-      ).sort((a, b) => {
+      )?.sort((a, b) => {
         function calc(c: PlexTrack) {
           return (
             Number(c.score) +
@@ -206,15 +206,15 @@ export async function searchPlexSong(
           );
         }
         return calc(b) - calc(a);
-      })[0];
+      })?.[0];
 
     return res ? mapTrack(res) : null;
   } else {
-    const playlists = <PlexPlaylist[]>result.find((t) => t.type == "playlist").Metadata,
+    const playlists = <PlexPlaylist[]>result.find((t) => t.type == "playlist")?.Metadata,
       list =
-        playlists.find(
+        playlists?.find(
           (l) => l.title.toLowerCase().replace(/ /g, "") == query.toLowerCase().replace(/ /g, "")
-        ) || playlists[0];
+        ) || playlists?.[0];
     if (!list) return null;
     const tracks = <PlexPlaylist & { Metadata: PlexTrack[] }>(
       await axios.get(
