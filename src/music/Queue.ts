@@ -7,11 +7,13 @@ import { MediaPlayer, RevoiceState, User } from "revoice-ts";
 import { VoiceConnection } from "revoice-ts/dist/Revoice";
 import { Channel } from "revolt-toolset";
 import internal from "stream";
-import { exec as ytDlpExec } from "yt-dlp-exec";
+import { create as YTDLP } from "yt-dlp-exec";
 import ytdl from "ytdl-core";
 import randomInteger from "../util";
 import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
+
+const ytdlp = YTDLP("/bin/yt-dlp");
 
 export enum TrackProvider {
   YOUTUBE,
@@ -118,7 +120,7 @@ export default class Queue {
                 quality: "highestaudio",
                 highWaterMark: 1 << 26,
               })
-            : ytDlpExec(this.nowPlaying.url, {
+            : ytdlp.exec(this.nowPlaying.url, {
                 format: "bestaudio",
                 output: "-",
               }).stdout;
