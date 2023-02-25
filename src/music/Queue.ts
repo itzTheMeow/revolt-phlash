@@ -13,7 +13,7 @@ import randomInteger from "../util";
 import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
 
-const ytdlp = YTDLP("/bin/yt-dlp");
+const ytdlp = YTDLP("/usr/local/bin/yt-dlp");
 
 export enum TrackProvider {
   YOUTUBE,
