@@ -14,7 +14,7 @@ export function youtubeToTrack(yt: VideoYT | null): CustomTrack | null {
     authorURL: yt.channel?.url || "https://youtube.com",
     authorIcon: yt.channel?.iconURL?.() || "",
     duration: yt.duration,
-    views: yt.views,
+    views: Number(yt.views) || 0,
     url: yt.url,
     provider: TrackProvider.YOUTUBE,
   };
@@ -28,7 +28,7 @@ export function youtubeListToTrack(yt: PlaylistYT | null): CustomTrack | null {
     authorURL: yt.channel?.url || "https://youtube.com",
     authorIcon: yt.channel?.iconURL?.() || "",
     duration: yt.videos.reduce((dur, v) => dur + v.duration, 0),
-    views: yt.views,
+    views: Number(yt.views) || 0,
     url: yt.url,
     provider: TrackProvider.YOUTUBE,
   };
