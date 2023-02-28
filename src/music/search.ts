@@ -94,9 +94,9 @@ export default async function searchTrack(
     );
   }
   if (useProvider == SearchProviders.YouTubeMusic) {
-    return youtubeToTrack(
-      await Search.getVideo((await YouTubeMusic.searchMusics(query))[0]?.youtubeId)
-    );
+    const id = (await YouTubeMusic.searchMusics(query))[0]?.youtubeId;
+    if (!id) return null;
+    return youtubeToTrack(await Search.getVideo(`https://youtube.com/watch?v=${id}`));
   }
   // try raw URLs
   if (
