@@ -33,6 +33,7 @@
     "soundcloud-scraper": "^5.0.3",
     "soundcloud.ts": "^0.4.9",
     "typescript": "^4.8.3",
+    "undici": "^5.20.0",
     "urban-eng-dictionary": "^1.0.3",
     "youtube-sr": "^4.3.4",
     "yt-dlp-exec": "^1.0.2",
