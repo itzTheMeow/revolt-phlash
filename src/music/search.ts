@@ -113,5 +113,7 @@ export default async function searchTrack(
   }
 
   // fallback to youtube
-  return youtubeToTrack(await Search.searchOne(query, "video"));
+  const vid = await Search.searchOne(query, "video");
+  if (!vid) return null;
+  return youtubeToTrack(await Search.getVideo(vid.url));
 }
