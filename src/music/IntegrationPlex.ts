@@ -287,7 +287,7 @@ export async function searchPlexSong(
         )}` || "https://app.plex.tv",
       authorIcon: "",
       duration: track.Media[0].duration,
-      views: track.viewCount,
+      views: Number(track.viewCount) || 0,
       url:
         `https://app.plex.tv/desktop/#!/server/${server.id}/details?key=${encodeURIComponent(
           track.parentKey
