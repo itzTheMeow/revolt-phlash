@@ -106,14 +106,5 @@ export default async function searchTrack(
   }
 
   // fallback to youtube
-  if (isPlaylist) {
-    const list = await Search.searchOne(query, "playlist");
-    if (!list) return null;
-    return [
-      youtubeListToTrack(list),
-      ...(await Promise.all(list.videos.map(async (v) => await Search.getVideo(v.url)))).map(
-        youtubeToTrack
-      ),
-    ];
-  } else return youtubeToTrack(await Search.searchOne(query, "video"));
+  return youtubeToTrack(await Search.searchOne(query, "video"));
 }
