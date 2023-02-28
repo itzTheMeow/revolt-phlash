@@ -1,6 +1,6 @@
 import db from "enhanced.db";
 import { Client, Permissions } from "revolt-toolset";
-import { getCommands, loadCommands } from "./Command";
+import { getCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
 
@@ -32,7 +32,6 @@ bot.once("ready", () => {
     setTimeout(() => updateStatus(), 30_000);
   }
   if (!config.dev) updateStatus();
-  loadCommands();
 });
 
 bot.on("message", (message) => {

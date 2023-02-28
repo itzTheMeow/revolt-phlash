@@ -1,5 +1,6 @@
 node_modules
-dist
+dist.js
+src/dist.ts
 token
 DEV
 enhanced.sqlite

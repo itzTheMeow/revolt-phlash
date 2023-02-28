@@ -1,4 +1,4 @@
-import YouTubeMusic from "node-youtube-music";
+import * as YouTubeMusic from "node-youtube-music";
 import { User } from "revolt-toolset";
 import { Util as SoundCloudUtils } from "soundcloud-scraper";
 import SCClient from "soundcloud.ts";

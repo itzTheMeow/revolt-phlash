@@ -1,4 +1,3 @@
-import fs from "fs";
 import { Client, Message, Permissions } from "revolt-toolset";
 import config from "./config";
 
@@ -61,6 +60,7 @@ export default class Command {
     this.aliases = [...(opts.aliases || [])].sort();
     this.args = opts.args || [];
     this.requiredPermissions = opts.permissions || [];
+    cachedCommands.push(this);
   }
 
   public fire(bot: Client, message: Message): CommandArgumentsManager {
@@ -121,19 +121,5 @@ export default class Command {
 
 const cachedCommands: Command[] = [];
 export function getCommands() {
-  return cachedCommands || loadCommands();
-}
-export function loadCommands() {
-  const foundCommands: Command[] = [];
-  fs.readdirSync("dist/cmds")
-    .filter((f) => f.endsWith(".js"))
-    .forEach((f) => {
-      const p = `${process.cwd()}/dist/cmds/${f}`;
-      delete require.cache[require.resolve(p)];
-      foundCommands.push(require(p).default);
-    });
-  cachedCommands.splice(0);
-  cachedCommands.push(...foundCommands);
-  console.log(`Loaded ${cachedCommands.length} commands.`);
   return cachedCommands;
 }
