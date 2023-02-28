@@ -1,3 +1,4 @@
+import YouTubeMusic from "node-youtube-music";
 import { User } from "revolt-toolset";
 import { Util as SoundCloudUtils } from "soundcloud-scraper";
 import SCClient from "soundcloud.ts";
@@ -13,6 +14,7 @@ import {
 } from "./converters";
 import { getPlexServers, searchPlexSong } from "./IntegrationPlex";
 import { getTuneinTrack } from "./IntegrationTuneIn";
+
 const SoundCloud = new SCClient();
 
 export enum SearchProviders {
@@ -89,6 +91,11 @@ export default async function searchTrack(
           limit: 1,
         })
       )?.collection?.[0]
+    );
+  }
+  if (useProvider == SearchProviders.YouTubeMusic) {
+    return youtubeToTrack(
+      await Search.getVideo((await YouTubeMusic.searchMusics(query))[0]?.youtubeId)
     );
   }
   // try raw URLs
