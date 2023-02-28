@@ -1,35 +1,12 @@
 import { Channel, Message, msToString } from "revolt-toolset";
-import { Util as SoundCloudUtils } from "soundcloud-scraper";
-import SCClient from "soundcloud.ts";
-import { URL } from "url";
-import Search from "youtube-sr";
 import { QueueManager } from "..";
 import Command from "../Command";
 import config from "../config";
-import {
-  CustomTrack,
-  rawToTrack,
-  soundcloudListToTrack,
-  soundcloudToTrack,
-  youtubeListToTrack,
-  youtubeToTrack,
-} from "../music/converters";
 import { Filters } from "../music/filters";
-import { getPlexServers, searchPlexSong } from "../music/IntegrationPlex";
-import { getTuneinTrack } from "../music/IntegrationTuneIn";
 import { Track } from "../music/Queue";
-import { SearchProviders } from "../music/search";
+import searchTrack, { SearchProviderAliases, SearchProviders } from "../music/search";
 import { musicFooter, shuffle } from "../music/util";
 import { getUserSettings } from "../Settings";
-
-const SoundCloud = new SCClient();
-
-const SearchProviderAliases: { [key in SearchProviders]: string[] } = {
-  youtube: ["yt", "y"],
-  soundcloud: ["sc", "s", "cloud"],
-  tunein: ["radio", "t"],
-  plex: ["p"],
-};
 
 export default new Command(
   "play",
@@ -118,10 +95,7 @@ export default new Command(
             }, 20000);
           });
       if (!useChannel || !useChannel.isVoice())
-        return context.reply(
-          "That's not a valid voice channel or you took too long to answer.",
-          false
-        );
+        return context.reply("That's not a valid voice channel or you took too long to answer.");
       queue = QueueManager.getQueue(useChannel, message.channel);
     }
 
@@ -131,74 +105,20 @@ export default new Command(
           audioAttachment.id
         }?__filename=${encodeURIComponent(audioAttachment.name)}`
       : args.asString();
-    if (!query) return message.reply("You need to enter a URL or search query!", false);
+    if (!query) return message.reply("You need to enter a URL or search query!");
 
-    const foundData: CustomTrack | CustomTrack[] = await (async () => {
-      const useProvider =
-        Object.entries(SearchProviderAliases).find((e) => e[1].includes(args.flag("use")))?.[0] ||
-        args.flag("use") ||
-        getUserSettings(message.author).provider;
-      if (useProvider.startsWith(SearchProviders.Plex)) {
-        const prefs = getUserSettings(message.author);
-        if (!prefs.plexKey || !prefs.plexServer)
-          return (
-            message.reply("You need to link your plex account with the settings command!"), null
-          );
-        const server = (await getPlexServers(prefs.plexKey)).find((s) => s.id == prefs.plexServer);
-        if (!server) return message.reply("Failed to get plex server. Try re-linking?"), null;
-        return await searchPlexSong(
-          prefs.plexKey,
-          server,
-          query,
-          useProvider.substring(SearchProviders.Plex.length + 1).trim(),
-          args.bflag("playlist")
-        );
-      } else if (useProvider == SearchProviders.TuneIn) {
-        return await getTuneinTrack(query);
-      } else if (useProvider == "soundcloud") {
-        //TODO: playlists
-        return soundcloudToTrack(
-          (
-            await SoundCloud.tracks.searchV2({
-              q: query,
-              limit: 1,
-            })
-          )?.collection?.[0]
-        );
-      } else if (Search.validate(query, "PLAYLIST")) {
-        const list = await Search.getPlaylist(query);
-        if (!list) return null;
-        return [
-          youtubeListToTrack(list),
-          ...(await Promise.all(list.videos.map(async (v) => await Search.getVideo(v.url)))).map(
-            youtubeToTrack
-          ),
-        ];
-      } else if (Search.validate(query, "VIDEO")) {
-        return youtubeToTrack(await Search.getVideo(query));
-      } else if (SoundCloudUtils.validateURL(query, "track")) {
-        return soundcloudToTrack(await SoundCloud.tracks.getV2(query));
-      } else if (SoundCloudUtils.validateURL(query, "playlist")) {
-        const list = await SoundCloud.playlists.getV2(query);
-        if (!list) return null;
-        return [soundcloudListToTrack(list), ...list.tracks.map(soundcloudToTrack)];
-      } else if (
-        (() => {
-          try {
-            new URL(query);
-            return true;
-          } catch {
-            return false;
-          }
-        })()
-      ) {
-        return rawToTrack(new URL(query));
-      } else {
-        //TODO: playlists
-        return youtubeToTrack(await Search.searchOne(query, "video"));
-      }
-    })();
-    if (!foundData) return message.reply("No results found for that search!", false);
+    const foundData = await searchTrack(
+      query,
+      <SearchProviders>(
+        (Object.entries(SearchProviderAliases).find((e) => e[1].includes(args.flag("use")))?.[0] ||
+          args.flag("use") ||
+          getUserSettings(message.author).provider)
+      ),
+      message.author,
+      args.bflag("playlist")
+    );
+    if (typeof foundData == "string") return message.reply(foundData);
+    if (!foundData) return message.reply("No results found for that search!");
 
     const reply = await message.reply(
       {

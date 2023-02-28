@@ -36,7 +36,7 @@ export function getUserSettings(user: User): UserSettings {
     plexKey: "",
     plexServer: "",
     provider: SearchProviders.YouTube,
-    ...(<UserSettings>db.get(`prefs_${user.id}`) || {}),
+    ...(<UserSettings>db.get(`prefs_${user?.id}`) || {}),
   };
 }
 export function setUserSetting<K extends keyof UserSettings>(
