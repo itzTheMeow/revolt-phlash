@@ -80,7 +80,7 @@ export default async function searchTrack(
     return await getTuneinTrack(query);
   }
   // try soundcloud
-  if (useProvider == "soundcloud") {
+  if (useProvider == SearchProviders.SoundCloud) {
     //TODO: playlists
     return soundcloudToTrack(
       (
