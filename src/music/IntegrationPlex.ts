@@ -33,6 +33,7 @@ interface PlexServer {
   id: string;
   name: string;
   address: string;
+  token: string;
 }
 interface PlexPlaylist {
   score: string;
@@ -157,6 +158,7 @@ export async function getPlexServers(token: string): Promise<PlexServer[]> {
             conns[0]
           )?.address,
           id: d.getAttribute("clientIdentifier"),
+          token: d.getAttribute("accessToken"),
         };
       })
       .filter((d) => d.address);
@@ -166,7 +168,6 @@ export async function getPlexServers(token: string): Promise<PlexServer[]> {
 }
 
 export async function searchPlexSong(
-  token: string,
   server: PlexServer,
   query: string,
   libname?: string,
@@ -177,7 +178,7 @@ export async function searchPlexSong(
       `${server.address}/hubs/search?${QueryString.stringify({
         query,
         limit: 30,
-        ...getHeaders(token),
+        ...getHeaders(server.token),
       })}`
     )
   ).data.MediaContainer.Hub;
@@ -222,7 +223,7 @@ export async function searchPlexSong(
           includeExternalMedia: 1,
           "X-Plex-Container-Start": 0,
           "X-Plex-Container-Size": 999,
-          ...getHeaders(token),
+          ...getHeaders(server.token),
         })}`
       )
     ).data.MediaContainer;
@@ -265,7 +266,7 @@ export async function searchPlexSong(
               hasMDE: 1,
               time: Math.round(time),
               duration: Math.round(duration),
-              ...getHeaders(token),
+              ...getHeaders(server.token),
             },
             { addQueryPrefix: true }
           )}`
@@ -295,7 +296,7 @@ export async function searchPlexSong(
       address:
         server.address +
         track.Media[0].Part[0].key +
-        QueryString.stringify(getHeaders(token), { addQueryPrefix: true }),
+        QueryString.stringify(getHeaders(server.token), { addQueryPrefix: true }),
       provider: TrackProvider.RAW,
       onplay(q) {
         sendState("playing", 0, q.nowPlaying.duration / q.playbackSpeed());

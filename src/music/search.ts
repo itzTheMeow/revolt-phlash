@@ -70,7 +70,6 @@ export default async function searchTrack(
     const server = (await getPlexServers(prefs.plexKey)).find((s) => s.id == prefs.plexServer);
     if (!server) return "Failed to get plex server. Try re-linking?";
     return await searchPlexSong(
-      prefs.plexKey,
       server,
       query,
       useProvider.substring(SearchProviders.Plex.length + 1).trim(),
