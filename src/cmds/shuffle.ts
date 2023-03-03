@@ -8,9 +8,7 @@ export default new Command(
     description: "Shuffles the queue.",
     aliases: ["sh"],
     flags: {
-      "--keep": {
-        description: "Keep the first queued song in its position.",
-      },
+      "--keep": { aliases: ["--k"], description: "Keep the first queued song in its position." },
     },
   },
   async (bot, message, args) => {
