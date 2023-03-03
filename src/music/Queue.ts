@@ -12,6 +12,7 @@ import ytdl from "ytdl-core";
 import randomInteger from "../util";
 import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
+import { shuffle } from "./util";
 
 const ytdlp = YTDLP("/usr/local/bin/yt-dlp");
 
@@ -200,5 +201,8 @@ export default class Queue {
     const skipped = this.songs.splice(0, index);
     await this.onSongFinished();
     return skipped;
+  }
+  public shuffle(keepFirst = false) {
+    this.songs = shuffle(this.songs, keepFirst);
   }
 }
