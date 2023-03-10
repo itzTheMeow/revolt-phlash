@@ -7,7 +7,7 @@ import { MediaPlayer, RevoiceState, User } from "revoice-ts";
 import { VoiceConnection } from "revoice-ts/dist/Revoice";
 import { Channel } from "revolt-toolset";
 import internal from "stream";
-import { create as YTDLP } from "yt-dlp-exec";
+import { create as YTDLP } from "youtube-dl-exec";
 import ytdl from "ytdl-core";
 import randomInteger from "../util";
 import { Filters, QueueFilter } from "./filters";

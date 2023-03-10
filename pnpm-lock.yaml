@@ -19,8 +19,8 @@ specifiers:
   soundcloud.ts: ^0.4.9
   typescript: ^4.8.3
   undici: ^5.20.0
+  youtube-dl-exec: ^2.4.0
   youtube-sr: ^4.3.4
-  yt-dlp-exec: ^1.0.2
   ytdl-core: ^4.11.2
 
 dependencies:
@@ -42,8 +42,8 @@ dependencies:
   soundcloud.ts: 0.4.9
   typescript: 4.9.4
   undici: 5.20.0
+  youtube-dl-exec: 2.4.0
   youtube-sr: 4.3.4
-  yt-dlp-exec: 1.0.2
   ytdl-core: 4.11.2
 
 packages:
@@ -615,6 +615,23 @@ packages:
     engines: {node: '>=0.6'}
     dev: false
 
+  /bin-version-check/5.0.0:
+    resolution: {integrity: sha512-Q3FMQnS5eZmrBGqmDXLs4dbAn/f+52voP6ykJYmweSA60t6DyH4UTSwZhtbK5UH+LBoWvDljILUQMLRUtsynsA==}
+    engines: {node: '>=12'}
+    dependencies:
+      bin-version: 6.0.0
+      semver: 7.3.8
+      semver-truncate: 2.0.0
+    dev: false
+
+  /bin-version/6.0.0:
+    resolution: {integrity: sha512-nk5wEsP4RiKjG+vF+uG8lFsEn4d7Y6FVDamzzftSunXOoOcOOkzcWdKVlGgFFwlUQCj63SgnUkLLGF8v7lufhw==}
+    engines: {node: '>=12'}
+    dependencies:
+      execa: 5.1.1
+      find-versions: 5.1.0
+    dev: false
+
   /binary-data/0.6.0:
     resolution: {integrity: sha512-HGiT0ir03tS1u7iWdW5xjJfbPpvxH2qJbPFxXW0I3P5iOzkbjN/cJy5GlpAwmjHW5CiayGOxZ/ytLzXmYgdgqQ==}
     engines: {node: '>=6'}
@@ -1043,6 +1060,13 @@ packages:
 
   /file-uri-to-path/1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    dev: false
+
+  /find-versions/5.1.0:
+    resolution: {integrity: sha512-+iwzCJ7C5v5KgcBuueqVoNiHVoQpwiUK5XFLjf0affFTep+Wcw93tPvmb8tqujDNmzhBDPddnWV/qgWSXgq+Hg==}
+    engines: {node: '>=12'}
+    dependencies:
+      semver-regex: 4.0.5
     dev: false
 
   /fluent-ffmpeg/2.1.2:
@@ -1478,12 +1502,6 @@ packages:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
     dev: false
 
-  /mkdirp/1.0.4:
-    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: false
-
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: false
@@ -1850,6 +1868,23 @@ packages:
 
   /sdp-transform/2.14.1:
     resolution: {integrity: sha512-RjZyX3nVwJyCuTo5tGPx+PZWkDMCg7oOLpSlhjDdZfwUoNqG1mM8nyj31IGHyaPWXhjbP7cdK3qZ2bmkJ1GzRw==}
+    hasBin: true
+    dev: false
+
+  /semver-regex/4.0.5:
+    resolution: {integrity: sha512-hunMQrEy1T6Jr2uEVjrAIqjwWcQTgOAcIM52C8MY1EZSD3DDNft04XzvYKPqjED65bNVVko0YI38nYeEHCX3yw==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /semver-truncate/2.0.0:
+    resolution: {integrity: sha512-Rh266MLDYNeML5h90ttdMwfXe1+Nc4LAWd9X1KdJe8pPHP4kFmvLZALtsMNHNdvTyQygbEC0D59sIz47DIaq8w==}
+    engines: {node: '>=8'}
+    dependencies:
+      semver: 6.3.0
+    dev: false
+
+  /semver/6.3.0:
+    resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
     hasBin: true
     dev: false
 
@@ -2221,22 +2256,20 @@ packages:
     dev: false
     optional: true
 
-  /youtube-sr/4.3.4:
-    resolution: {integrity: sha512-olSYcR80XigutCrePEXBX3/RJJrWfonJQj7+/ggBiWU0CzTDLE1q8+lpWTWCG0JpzhzILp/IB/Bq/glGqqr1TQ==}
-    dev: false
-
-  /yt-dlp-exec/1.0.2:
-    resolution: {integrity: sha512-swKtruQmGBs+Xrxy0wCZ2FxCT167EpBYIWdj/klTzNB2HrHng/qFlKo/C0WVlopbww8/uMIGQR6grXQ2ObcrAw==}
-    engines: {node: '>= 12'}
+  /youtube-dl-exec/2.4.0:
+    resolution: {integrity: sha512-uHQzfhljFPyXZElSJ+YhKhWD11YdKDK+QTuRCp/22sOD8g3RE++uGti/kHFPV62DupEAWNq8XGoVaYyqsrEAyw==}
+    engines: {node: '>= 14'}
     requiresBuild: true
     dependencies:
+      bin-version-check: 5.0.0
       dargs: 7.0.0
       execa: 5.1.1
       is-unix: 2.0.7
-      mkdirp: 1.0.4
-      node-fetch: 2.6.8
-    transitivePeerDependencies:
-      - encoding
+      simple-get: 4.0.1
+    dev: false
+
+  /youtube-sr/4.3.4:
+    resolution: {integrity: sha512-olSYcR80XigutCrePEXBX3/RJJrWfonJQj7+/ggBiWU0CzTDLE1q8+lpWTWCG0JpzhzILp/IB/Bq/glGqqr1TQ==}
     dev: false
 
   /ytdl-core/4.11.2:
