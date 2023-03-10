@@ -20,7 +20,8 @@
     "@types/jsdom": "^20.0.1",
     "@types/node": "^18.7.18",
     "@types/qs": "^6.9.7",
-    "axios": "^1.1.2",
+    "axios": "^1.2.2",
+    "cheerio": "1.0.0-rc.12",
     "enhanced.db": "^0.3.4",
     "esbuild": "^0.17.10",
     "ffmpeg-static": "^5.1.0",
@@ -34,7 +35,6 @@
     "soundcloud.ts": "^0.4.9",
     "typescript": "^4.8.3",
     "undici": "^5.20.0",
-    "urban-eng-dictionary": "^1.0.3",
     "youtube-sr": "^4.3.4",
     "yt-dlp-exec": "^1.0.2",
     "ytdl-core": "^4.11.2"

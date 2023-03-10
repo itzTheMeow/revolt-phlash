@@ -1,6 +1,6 @@
-import define from "urban-eng-dictionary";
 import Command from "../Command";
 import config from "../config";
+import define from "../modules/urban-eng-dictionary";
 
 export default new Command(
   "urban",

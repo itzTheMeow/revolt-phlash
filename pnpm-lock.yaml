@@ -4,7 +4,8 @@ specifiers:
   '@types/jsdom': ^20.0.1
   '@types/node': ^18.7.18
   '@types/qs': ^6.9.7
-  axios: ^1.1.2
+  axios: ^1.2.2
+  cheerio: 1.0.0-rc.12
   enhanced.db: ^0.3.4
   esbuild: ^0.17.10
   ffmpeg-static: ^5.1.0
@@ -18,7 +19,6 @@ specifiers:
   soundcloud.ts: ^0.4.9
   typescript: ^4.8.3
   undici: ^5.20.0
-  urban-eng-dictionary: ^1.0.3
   youtube-sr: ^4.3.4
   yt-dlp-exec: ^1.0.2
   ytdl-core: ^4.11.2
@@ -28,6 +28,7 @@ dependencies:
   '@types/node': 18.11.18
   '@types/qs': 6.9.7
   axios: 1.2.2
+  cheerio: 1.0.0-rc.12
   enhanced.db: 0.3.4
   esbuild: 0.17.10
   ffmpeg-static: 5.1.0
@@ -41,7 +42,6 @@ dependencies:
   soundcloud.ts: 0.4.9
   typescript: 4.9.4
   undici: 5.20.0
-  urban-eng-dictionary: 1.0.3
   youtube-sr: 4.3.4
   yt-dlp-exec: 1.0.2
   ytdl-core: 4.11.2
@@ -793,11 +793,6 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /data-uri-to-buffer/4.0.1:
-    resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
-    engines: {node: '>= 12'}
-    dev: false
-
   /data-urls/3.0.2:
     resolution: {integrity: sha512-Jy/tj3ldjZJo63sVAvg6LHt2mHvl4V6AgRAmNDtLdm7faqtsx+aJG42rsyCo9JCoRVKwPFzKlIPx3DIibwSIaQ==}
     engines: {node: '>=12'}
@@ -1033,14 +1028,6 @@ packages:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: false
 
-  /fetch-blob/3.2.0:
-    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
-    engines: {node: ^12.20 || >= 14.13}
-    dependencies:
-      node-domexception: 1.0.0
-      web-streams-polyfill: 3.2.1
-    dev: false
-
   /ffmpeg-static/5.1.0:
     resolution: {integrity: sha512-eEWOiGdbf7HKPeJI5PoJ0oCwkL0hckL2JdS4JOuB/gUETppwkEpq8nF0+e6VEQnDCo/iuoipbTUsn9QJmtpNkg==}
     engines: {node: '>=16'}
@@ -1088,13 +1075,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
-    dev: false
-
-  /formdata-polyfill/4.0.10:
-    resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
-    engines: {node: '>=12.20.0'}
-    dependencies:
-      fetch-blob: 3.2.0
     dev: false
 
   /fs-constants/1.0.0:
@@ -1541,11 +1521,6 @@ packages:
       semver: 7.3.8
     dev: false
 
-  /node-domexception/1.0.0:
-    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
-    engines: {node: '>=10.5.0'}
-    dev: false
-
   /node-fetch/2.6.8:
     resolution: {integrity: sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==}
     engines: {node: 4.x || >=6.0.0}
@@ -1556,15 +1531,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: false
-
-  /node-fetch/3.3.0:
-    resolution: {integrity: sha512-BKwRP/O0UvoMKp7GNdwPlObhYGB5DQqwhEDQlNKuoqwVYSxkSZCSbHjnFFmUEtwSKRPU4kNK8PbDYYitwaE3QA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dependencies:
-      data-uri-to-buffer: 4.0.1
-      fetch-blob: 3.2.0
-      formdata-polyfill: 4.0.10
     dev: false
 
   /node-youtube-music/0.10.2:
@@ -2102,12 +2068,6 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: false
 
-  /urban-eng-dictionary/1.0.3:
-    resolution: {integrity: sha512-vXgZJYv+7fnnCm/HbNDEVj5fW03PBltov1nWUlRTDVoxh2W6HCRIL/kB8TmmLtaltJfzJVFRt53zHKxhgiXimw==}
-    dependencies:
-      node-fetch: 3.3.0
-    dev: false
-
   /url-parse/1.5.10:
     resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
     dependencies:
@@ -2129,11 +2089,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       xml-name-validator: 4.0.0
-    dev: false
-
-  /web-streams-polyfill/3.2.1:
-    resolution: {integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==}
-    engines: {node: '>= 8'}
     dev: false
 
   /webcrypto-core/1.7.5:
