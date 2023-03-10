@@ -17,7 +17,7 @@ process.on("unhandledRejection", (err, pro) => {
 });
 
 bot.once("ready", () => {
-  console.log(`${bot.user.username} is now online!`);
+  console.log(`${bot.user.username} is online!`);
   let status = 0;
   const statusChoices = [
     () => `Use ${config.prefix}help for help!`,
