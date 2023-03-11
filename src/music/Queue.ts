@@ -173,9 +173,9 @@ export default class Queue {
     this.nowPlaying.onplay?.(this);
     return finished;
   }
-  public async addSong(song: Track, prepend = false) {
-    if (prepend) this.songs.unshift(song);
-    else this.songs.push(song);
+  public async addSong(song: Track, atIndex = -1) {
+    if (atIndex < 0) this.songs.push(song);
+    else this.songs.splice(atIndex, 0, song);
     if (!this.nowPlaying) await this.onSongFinished();
     return song;
   }

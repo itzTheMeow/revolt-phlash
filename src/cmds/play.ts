@@ -21,8 +21,12 @@ export default new Command(
         return prev;
       },
       {
+        "--mix": {
+          description: "Mixes the playlist into the queue. (every other song)",
+          aliases: [],
+        },
         "--playlist": {
-          description: "Search provider for playlists instead of tracks.",
+          description: "Search the provider for playlists instead of tracks.",
           aliases: ["--pl"],
         },
         "--prepend": {
@@ -150,20 +154,25 @@ export default new Command(
     let firstSong: Track;
     const shouldSkip = args.bflag("skip") && queue.nowPlaying;
 
-    for (const track of Array.isArray(foundData)
+    const trackList = Array.isArray(foundData)
       ? args.bflag("shuffle")
         ? shuffle(foundData) // doesnt really matter for shuffling
         : args.bflag("prepend") // reverse order if prepending to queue
         ? [...foundData].reverse()
         : foundData
-      : [foundData]) {
+      : [foundData];
+    for (const track of trackList) {
       const s = await queue.addSong(
         {
           ...track,
           filtersEnabled,
           playbackSpeed,
         },
-        args.bflag("prepend")
+        args.bflag("mix")
+          ? trackList.indexOf(track) * 2 + (args.bflag("prepend") ? 0 : 1)
+          : args.bflag("prepend")
+          ? 0
+          : -1
       );
       if (!firstSong) firstSong = s;
     }
