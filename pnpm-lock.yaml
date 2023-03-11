@@ -12,7 +12,7 @@ specifiers:
   jsdom: ^21.1.0
   node-youtube-music: ^0.10.2
   qs: ^6.11.0
-  revoice-ts: ^0.0.10
+  revoice-ts: ^0.0.11
   revoice.js: ^0.1.733
   revolt-toolset: ^1.0.60
   soundcloud-scraper: ^5.0.3
@@ -35,7 +35,7 @@ dependencies:
   jsdom: 21.1.0
   node-youtube-music: 0.10.2
   qs: 6.11.0
-  revoice-ts: 0.0.10
+  revoice-ts: 0.0.11
   revoice.js: 0.1.737
   revolt-toolset: 1.0.60
   soundcloud-scraper: 5.0.3
@@ -281,18 +281,6 @@ packages:
 
   /@insertish/oapi/0.1.16:
     resolution: {integrity: sha512-dxuLdNKBmnbVw8BBRzE1APZ3d7wErhNWQepXdNM3ueeQrheo6Sjg8FGFCQG7zCrEKns08lg5ITmxhqbYXVXZBQ==}
-    hasBin: true
-    dependencies:
-      typescript: 4.9.4
-    optionalDependencies:
-      axios: 0.26.1
-      openapi-typescript: 5.4.1
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /@insertish/oapi/0.1.18:
-    resolution: {integrity: sha512-LZLUk3WmzUjCM0quensexvQx/Kk1MpFBtCLJRnRrPOiaFT37JpOmWUFlrdu0sPS6B9wi2edEBeLcsnIiq85WMA==}
     hasBin: true
     dependencies:
       typescript: 4.9.4
@@ -1776,12 +1764,12 @@ packages:
       lowercase-keys: 3.0.0
     dev: false
 
-  /revoice-ts/0.0.10:
-    resolution: {integrity: sha512-ILxVrnWacqyOyd9xqOtD1MshmsZEke7awSt/R1fkF2FegyDdsyTE8ns1DbIGQtfpzQxsKe6eTAS5JSg6O9pWqA==}
+  /revoice-ts/0.0.11:
+    resolution: {integrity: sha512-wVOm1Yxx+58sfLy/82eQheL45+IPEIzASla1HcVAHw189hoNiPMiCgn8lcd7v9/pvJc+EQIze1eMuPGBmY3hOQ==}
     dependencies:
       ffmpeg-static: 5.1.0
       msc-node: 0.0.10
-      revolt-api: 0.5.5-5
+      revolt-api: 0.5.5
       ws: 8.12.0
     transitivePeerDependencies:
       - bufferutil
@@ -1808,16 +1796,6 @@ packages:
     resolution: {integrity: sha512-aaXVqvDu6hWjrPoIUDSlMTdHLbWXfx5rlaycQwzevRizdPZRgsncEadvjfA90tB83N3oeVlKJTscLHbyQNO4QQ==}
     dependencies:
       '@insertish/oapi': 0.1.16
-      axios: 0.26.1
-      lodash.defaultsdeep: 4.6.1
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /revolt-api/0.5.5-5:
-    resolution: {integrity: sha512-H8O1vty8pJikWZ1JIc/QFe49YPov/309G8AUUfR/EsJccjAxw8Pw1XT2dvOreCF6CrQx8k0uX0RIRcw0wS7XRA==}
-    dependencies:
-      '@insertish/oapi': 0.1.18
       axios: 0.26.1
       lodash.defaultsdeep: 4.6.1
     transitivePeerDependencies:
