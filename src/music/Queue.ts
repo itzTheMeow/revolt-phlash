@@ -181,6 +181,7 @@ export default class Queue {
   }
 
   public playbackSpeed(track = this.nowPlaying) {
+    if (!track) return 1;
     return [
       track.playbackSpeed || 1,
       ...track.filtersEnabled.map((f) => (f in Filters ? Filters[f].speed || 1 : 1)),
