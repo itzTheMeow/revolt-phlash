@@ -38,6 +38,7 @@ bot.on("message", (message) => {
   if (!message.isUser()) return;
   const content = message.content?.trim() || "";
   if (message.author.bot || !content?.startsWith(config.prefix)) return;
+  if (message.authorID == "01GENEGK34AWC41QB8M8201Z78") return; // temporary
   const cmdName = content.substring(config.prefix.length).split(" ")[0]?.toLowerCase();
   const cmd =
     getCommands().find((c) => c?.name == cmdName) ||
