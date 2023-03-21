@@ -206,4 +206,15 @@ export default class Queue {
   public shuffle(keepFirst = false) {
     this.songs = shuffle(this.songs, keepFirst);
   }
+
+  public dump() {
+    return JSON.stringify(this.songs);
+  }
+  public async restore(dump: string) {
+    this.freed = false;
+    this.player.disconnect(false, true);
+    this.freed = true;
+    this.songs = JSON.parse(dump);
+    await this.onSongFinished();
+  }
 }
