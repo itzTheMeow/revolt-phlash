@@ -216,9 +216,6 @@ export default class Queue {
     return { channel: this.channel, tracks: JSON.parse(JSON.stringify(this.songs)) };
   }
   public async restore(dump: DumpedQueue) {
-    this.freed = false;
-    this.player?.disconnect(false, true);
-    this.freed = true;
     await this.connect();
     this.songs = dump.tracks;
     await this.onSongFinished();
