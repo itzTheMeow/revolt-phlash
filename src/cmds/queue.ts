@@ -2,10 +2,10 @@ import { msToString } from "revolt-toolset";
 import { QueueManager } from "..";
 import Command from "../Command";
 import config from "../config";
-import { Track } from "../music/Queue";
+import { DumpedQueue, Track } from "../music/Queue";
 import { musicFooter } from "../music/util";
 
-const FrozenQueues: Record<string, string> = {};
+const FrozenQueues: Record<string, DumpedQueue> = {};
 
 export default new Command(
   "queue",
@@ -17,10 +17,20 @@ export default new Command(
   },
   async (bot, message, args) => {
     if (!message.channel.isServerBased()) return;
+    const command = <"freeze" | "restore">args.string(1);
     const queue = QueueManager.getServerQueue(message.channel.server);
+
+    if (command == "restore") {
+      const q = FrozenQueues[message.authorID];
+      if (!q) return message.reply("There is no saved queue to restore!");
+      await QueueManager.getQueue(q.channel, message.channel).restore(q);
+      message.reply(`Restored the queue to <#${q.channel.id}>!`);
+      return;
+    }
+
     if (!queue) return message.reply("There is nothing in the queue!", false);
 
-    if (args.number(1)) {
+    if (args.number(1) || !command) {
       const totalSongs = queue.songs.length + Number(!!queue.nowPlaying);
 
       const PER_PAGE = 5;
@@ -35,7 +45,9 @@ export default new Command(
         return (
           pages[num]
             ?.map((t, i) => {
-              const emoji = [...String(i + 1)].map((c) => `:${config.emojis.num[c]}:`).join("");
+              const emoji = [...String(num * PER_PAGE + i + 1)]
+                .map((c) => `:${config.emojis.num[c]}:`)
+                .join("");
               if (t == queue.nowPlaying)
                 return `### Now Playing
 ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
@@ -76,19 +88,10 @@ ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
       });
     }
 
-    const command = <"freeze" | "restore">args.string(1);
-
     switch (command) {
       case "freeze": {
         FrozenQueues[message.authorID] = queue.dump();
         message.reply("Saved the queue in memory.");
-        break;
-      }
-      case "restore": {
-        const q = FrozenQueues[message.authorID];
-        if (!q) return message.reply("There is no saved queue to restore!");
-        await queue.restore(q);
-        message.reply("Restored the queue!");
         break;
       }
     }

@@ -39,6 +39,11 @@ export interface Track {
   onstop?(queue: Queue): any;
 }
 
+export interface DumpedQueue {
+  channel: Channel;
+  tracks: Track[];
+}
+
 export default class Queue {
   public get connected() {
     return [
@@ -207,14 +212,14 @@ export default class Queue {
     this.songs = shuffle(this.songs, keepFirst);
   }
 
-  public dump() {
-    return JSON.stringify(this.songs);
+  public dump(): DumpedQueue {
+    return { channel: this.channel, tracks: this.songs };
   }
-  public async restore(dump: string) {
+  public async restore(dump: DumpedQueue) {
     this.freed = false;
     this.player.disconnect(false, true);
     this.freed = true;
-    this.songs = JSON.parse(dump);
+    this.songs = dump.tracks;
     await this.onSongFinished();
   }
 }
