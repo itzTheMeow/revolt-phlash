@@ -75,9 +75,10 @@ ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
         );
       }
 
-      let num = args.number(1);
+      let num = args.number(1) || 1;
       if (num <= 0) num = 1;
       if (num > pages.length) num = pages.length;
+      if (!pages[num - 1]) num = 1;
       message.reply({
         embeds: [
           {

@@ -217,9 +217,10 @@ export default class Queue {
   }
   public async restore(dump: DumpedQueue) {
     this.freed = false;
-    this.player.disconnect(false, true);
+    this.player?.disconnect(false, true);
     this.freed = true;
     this.songs = dump.tracks;
+    await this.connect();
     await this.onSongFinished();
   }
 }
