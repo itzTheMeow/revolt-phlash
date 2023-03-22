@@ -213,14 +213,14 @@ export default class Queue {
   }
 
   public dump(): DumpedQueue {
-    return { channel: this.channel, tracks: this.songs };
+    return { channel: this.channel, tracks: JSON.parse(JSON.stringify(this.songs)) };
   }
   public async restore(dump: DumpedQueue) {
     this.freed = false;
     this.player?.disconnect(false, true);
     this.freed = true;
-    this.songs = dump.tracks;
     await this.connect();
+    this.songs = dump.tracks;
     await this.onSongFinished();
   }
 }
