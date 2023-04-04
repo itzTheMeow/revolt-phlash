@@ -14,7 +14,7 @@ import ServerQueueManager from "./ServerManager";
 import { Filters, QueueFilter } from "./filters";
 import { shuffle } from "./util";
 
-const ytdlp = YTDLP(process.cwd() + "/yt-dlp");
+const ytdlp = YTDLP("/usr/local/bin/yt-dlp");
 
 export enum TrackProvider {
   YOUTUBE,
