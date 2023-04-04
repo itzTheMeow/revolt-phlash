@@ -10,8 +10,8 @@ import internal from "stream";
 import { create as YTDLP } from "youtube-dl-exec";
 import ytdl from "ytdl-core";
 import randomInteger from "../util";
-import { Filters, QueueFilter } from "./filters";
 import ServerQueueManager from "./ServerManager";
+import { Filters, QueueFilter } from "./filters";
 import { shuffle } from "./util";
 
 const ytdlp = YTDLP(process.cwd() + "/yt-dlp");
@@ -118,10 +118,11 @@ export default class Queue {
         case TrackProvider.YOUTUBE:
         case TrackProvider.SOUNDCLOUD:
           // determine if its a livestream (yt only)
-          return this.nowPlaying.provider == TrackProvider.YOUTUBE &&
+          // temporary fix bc yt-dlp is being cringe
+          return this.nowPlaying.provider == TrackProvider.YOUTUBE /*&&
             !this.nowPlaying.duration &&
             !this.nowPlaying.views &&
-            this.nowPlaying.createdTime == "unknown"
+            this.nowPlaying.createdTime == "unknown"*/
             ? ytdl(this.nowPlaying.url, {
                 quality: "highestaudio",
                 highWaterMark: 1 << 26,
