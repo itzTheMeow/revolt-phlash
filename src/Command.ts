@@ -1,4 +1,4 @@
-import { Client, Message, Permissions } from "revolt-toolset";
+import { Client, Message, Permissions } from "revkit";
 import config from "./config";
 
 interface CommandArgumentsManager {

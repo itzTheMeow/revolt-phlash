@@ -12,9 +12,9 @@ specifiers:
   jsdom: ^21.1.0
   node-youtube-music: ^0.10.2
   qs: ^6.11.0
+  revkit: ^1.1.0
   revoice-ts: ^0.0.11
   revoice.js: ^0.1.733
-  revolt-toolset: ^1.0.60
   soundcloud-scraper: ^5.0.3
   soundcloud.ts: ^0.4.9
   typescript: ^4.8.3
@@ -35,9 +35,9 @@ dependencies:
   jsdom: 21.1.0
   node-youtube-music: 0.10.2
   qs: 6.11.0
+  revkit: 1.1.0
   revoice-ts: 0.0.11
   revoice.js: 0.1.737
-  revolt-toolset: 1.0.60
   soundcloud-scraper: 5.0.3
   soundcloud.ts: 0.4.9
   typescript: 4.9.4
@@ -461,8 +461,8 @@ packages:
       parse5: 7.1.2
     dev: false
 
-  /@types/luxon/3.2.0:
-    resolution: {integrity: sha512-lGmaGFoaXHuOLXFvuju2bfvZRqxAqkHPx9Y9IQdQABrinJJshJwfNCKV+u7rR3kJbiqfTF/NhOkcxxAFrObyaA==}
+  /@types/luxon/3.3.0:
+    resolution: {integrity: sha512-uKRI5QORDnrGFYgcdAVnHvEIvEZ8noTpP/Bg+HeUzZghwinDlIS87DEenV5r1YoOF9G4x600YsUXLWZ19rmTmg==}
     dev: false
 
   /@types/ms/0.7.31:
@@ -1418,8 +1418,8 @@ packages:
       yallist: 4.0.0
     dev: false
 
-  /luxon/3.2.1:
-    resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
+  /luxon/3.3.0:
+    resolution: {integrity: sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==}
     engines: {node: '>=12'}
     dev: false
 
@@ -1764,6 +1764,25 @@ packages:
       lowercase-keys: 3.0.0
     dev: false
 
+  /revkit/1.1.0:
+    resolution: {integrity: sha512-rcXcYMludPvBEjamaIl59CGaeMqTtzaRym1JTMpT7zBw2y4fI693AgqnezYyr8C6MKUKzN93QjdGg8i1p2bUqA==}
+    dependencies:
+      '@insertish/exponential-backoff': 3.1.0-patch.2
+      '@insertish/isomorphic-ws': 4.0.1
+      '@types/luxon': 3.3.0
+      '@types/ws': 8.5.4
+      axios: 1.2.2
+      eventemitter3: 5.0.0
+      form-data: 4.0.0
+      long: 5.2.1
+      luxon: 3.3.0
+      revolt-api: 0.5.5
+      ulid: 2.3.0
+    transitivePeerDependencies:
+      - debug
+      - ws
+    dev: false
+
   /revoice-ts/0.0.11:
     resolution: {integrity: sha512-wVOm1Yxx+58sfLy/82eQheL45+IPEIzASla1HcVAHw189hoNiPMiCgn8lcd7v9/pvJc+EQIze1eMuPGBmY3hOQ==}
     dependencies:
@@ -1800,25 +1819,6 @@ packages:
       lodash.defaultsdeep: 4.6.1
     transitivePeerDependencies:
       - debug
-    dev: false
-
-  /revolt-toolset/1.0.60:
-    resolution: {integrity: sha512-xYtoSuraul8dKZZFDc/qhZulMgjb73re8QZ4mbO7DrrDuZk8sgTaxdNOnD5uizipOGUHxMEsGapPSV/1UVYB/Q==}
-    dependencies:
-      '@insertish/exponential-backoff': 3.1.0-patch.2
-      '@insertish/isomorphic-ws': 4.0.1
-      '@types/luxon': 3.2.0
-      '@types/ws': 8.5.4
-      axios: 1.2.2
-      eventemitter3: 5.0.0
-      form-data: 4.0.0
-      long: 5.2.1
-      luxon: 3.2.1
-      revolt-api: 0.5.5
-      ulid: 2.3.0
-    transitivePeerDependencies:
-      - debug
-      - ws
     dev: false
 
   /rx.mini/1.2.2:

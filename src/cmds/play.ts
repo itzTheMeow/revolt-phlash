@@ -1,12 +1,12 @@
-import { Channel, Message, msToString } from "revolt-toolset";
+import { Channel, Message, msToString } from "revkit";
 import { QueueManager } from "..";
 import Command from "../Command";
+import { getUserSettings } from "../Settings";
 import config from "../config";
-import { Filters } from "../music/filters";
 import { Track } from "../music/Queue";
+import { Filters } from "../music/filters";
 import searchTrack, { SearchProviderAliases, SearchProviders } from "../music/search";
 import { musicFooter, shuffle } from "../music/util";
-import { getUserSettings } from "../Settings";
 
 export default new Command(
   "play",

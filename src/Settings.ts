@@ -1,5 +1,5 @@
 import db from "enhanced.db";
-import { Server, User } from "revolt-toolset";
+import { Server, User } from "revkit";
 import config from "./config";
 import { SearchProviders } from "./music/search";
 

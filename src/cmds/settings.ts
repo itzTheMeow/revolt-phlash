@@ -1,8 +1,8 @@
 import axios from "axios";
-import { EmbedBuilder, Permissions } from "revolt-toolset";
+import { EmbedBuilder, Permissions } from "revkit";
 import Command from "../Command";
-import config from "../config";
 import { getServerSettings } from "../Settings";
+import config from "../config";
 
 export default new Command(
   "settings",

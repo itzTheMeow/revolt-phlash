@@ -1,5 +1,5 @@
 import axios from "axios";
-import { msToString } from "revolt-toolset";
+import { msToString } from "revkit";
 import Command from "../Command";
 
 export default new Command(
@@ -15,11 +15,7 @@ export default new Command(
         responseType: "arraybuffer",
       })
       .then(async (res) => {
-        const id = await bot.uploadAttachment(
-          "cat.png",
-          res.data,
-          "attachments"
-        );
+        const id = await bot.uploadAttachment("cat.png", res.data, "attachments");
         message.reply({
           content: `###### Finished in ${msToString(Date.now() - startTime)}.`,
           attachments: [id],

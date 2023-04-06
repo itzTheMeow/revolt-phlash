@@ -1,4 +1,4 @@
-import { msToString } from "revolt-toolset";
+import { msToString } from "revkit";
 import { QueueManager } from "..";
 import Command from "../Command";
 import config from "../config";

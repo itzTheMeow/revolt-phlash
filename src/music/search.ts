@@ -1,9 +1,11 @@
 import * as YouTubeMusic from "node-youtube-music";
-import { User } from "revolt-toolset";
+import { User } from "revkit";
 import { Util as SoundCloudUtils } from "soundcloud-scraper";
 import SCClient from "soundcloud.ts";
 import Search from "youtube-sr";
 import { getUserSettings } from "../Settings";
+import { getPlexServers, searchPlexSong } from "./IntegrationPlex";
+import { getTuneinTrack } from "./IntegrationTuneIn";
 import {
   CustomTrack,
   rawToTrack,
@@ -12,8 +14,6 @@ import {
   youtubeListToTrack,
   youtubeToTrack,
 } from "./converters";
-import { getPlexServers, searchPlexSong } from "./IntegrationPlex";
-import { getTuneinTrack } from "./IntegrationTuneIn";
 
 const SoundCloud = new SCClient();
 

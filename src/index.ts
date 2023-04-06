@@ -1,5 +1,5 @@
 import db from "enhanced.db";
-import { Client, Permissions } from "revolt-toolset";
+import { Client, Permissions } from "revkit";
 import { getCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";

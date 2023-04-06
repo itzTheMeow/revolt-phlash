@@ -1,9 +1,9 @@
-import { EmbedBuilder, Message, msToString } from "revolt-toolset";
+import { EmbedBuilder, Message, msToString } from "revkit";
 import Command from "../Command";
+import { getServerSettings, getUserSettings, setUserSetting } from "../Settings";
 import config from "../config";
 import { getPlexServers, getPlexUser, pollPlexPIN, requestPlexPIN } from "../music/IntegrationPlex";
 import { SearchProviders } from "../music/search";
-import { getServerSettings, getUserSettings, setUserSetting } from "../Settings";
 
 export default new Command(
   "preferences",
