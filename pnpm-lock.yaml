@@ -14,7 +14,6 @@ specifiers:
   qs: ^6.11.0
   revkit: ^1.1.0
   revoice-ts: ^0.0.11
-  revoice.js: ^0.1.733
   soundcloud-scraper: ^5.0.3
   soundcloud.ts: ^0.4.9
   typescript: ^4.8.3
@@ -37,7 +36,6 @@ dependencies:
   qs: 6.11.0
   revkit: 1.1.0
   revoice-ts: 0.0.11
-  revoice.js: 0.1.737
   soundcloud-scraper: 5.0.3
   soundcloud.ts: 0.4.9
   typescript: 4.9.4
@@ -1785,20 +1783,6 @@ packages:
 
   /revoice-ts/0.0.11:
     resolution: {integrity: sha512-wVOm1Yxx+58sfLy/82eQheL45+IPEIzASla1HcVAHw189hoNiPMiCgn8lcd7v9/pvJc+EQIze1eMuPGBmY3hOQ==}
-    dependencies:
-      ffmpeg-static: 5.1.0
-      msc-node: 0.0.10
-      revolt-api: 0.5.5
-      ws: 8.12.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /revoice.js/0.1.737:
-    resolution: {integrity: sha512-xmgQInE1/zZoIece65heNSsRUx2yjyiiXasgnVBjix76FDT0C4zEr6OM6sUzYciB6mRBllkZcQJa9gUIsFZaiA==}
     dependencies:
       ffmpeg-static: 5.1.0
       msc-node: 0.0.10
