@@ -1,4 +1,4 @@
-import { msToString } from "revkit";
+import ms from "ms-plus";
 import { QueueManager } from "..";
 import Command from "../Command";
 import config from "../config";
@@ -53,10 +53,11 @@ export default new Command(
 ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
 :alarm_clock: ${
                   t.duration
-                    ? `${msToString(queue.seek, { noMs: true })}/${msToString(
-                        t.duration / queue.playbackSpeed(),
-                        { noMs: true }
-                      )}${
+                    ? `${ms(queue.seek).drop(1000).toString()}/${ms(
+                        t.duration / queue.playbackSpeed()
+                      )
+                        .drop(1000)
+                        .toString()}${
                         queue.playbackSpeed() !== 1 ? ` (${queue.playbackSpeed().toFixed(1)}x)` : ""
                       }`
                     : "Live"
@@ -66,7 +67,7 @@ ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
 ##### by [${t.authorName}](${
                   t.authorURL.startsWith("https://app.plex.tv") ? "https://plex.tv" : t.authorURL
                 })
-##### :alarm_clock: ${msToString(t.duration)} :timer_clock: ${t.createdTime}`;
+##### :alarm_clock: ${ms(t.duration).toString()} :timer_clock: ${t.createdTime}`;
             })
             .join("\n") +
           `\n\n${musicFooter([

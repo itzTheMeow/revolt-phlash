@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@revkit/voice': ^0.0.4
   '@types/jsdom': ^20.0.1
   '@types/node': ^18.7.18
   '@types/qs': ^6.9.7
@@ -10,19 +11,21 @@ specifiers:
   esbuild: ^0.17.10
   ffmpeg-static: ^5.1.0
   jsdom: ^21.1.0
+  ms-plus: ^0.0.5
   node-youtube-music: ^0.10.2
   qs: ^6.11.0
-  revkit: ^1.1.0
-  revoice-ts: ^0.0.11
+  revkit: ^1.1.3
   soundcloud-scraper: ^5.0.3
   soundcloud.ts: ^0.4.9
   typescript: ^4.8.3
   undici: ^5.20.0
+  ws: ^8.13.0
   youtube-dl-exec: ^2.4.0
   youtube-sr: ^4.3.4
   ytdl-core: ^4.11.2
 
 dependencies:
+  '@revkit/voice': 0.0.4_ws@8.13.0
   '@types/jsdom': 20.0.1
   '@types/node': 18.11.18
   '@types/qs': 6.9.7
@@ -32,14 +35,15 @@ dependencies:
   esbuild: 0.17.10
   ffmpeg-static: 5.1.0
   jsdom: 21.1.0
+  ms-plus: 0.0.5
   node-youtube-music: 0.10.2
   qs: 6.11.0
-  revkit: 1.1.0
-  revoice-ts: 0.0.11
+  revkit: 1.1.3_ws@8.13.0
   soundcloud-scraper: 5.0.3
   soundcloud.ts: 0.4.9
   typescript: 4.9.4
   undici: 5.20.0
+  ws: 8.13.0
   youtube-dl-exec: 2.4.0
   youtube-sr: 4.3.4
   ytdl-core: 4.11.2
@@ -271,10 +275,12 @@ packages:
     resolution: {integrity: sha512-0lsMVexkZ7dHpQlPrTZDRsm42hZ4/CzKxP1hbAEJH8IaEwrIEhhTKJuFxPuLOi2TwPImuocncjYHpGpwVNOemQ==}
     dev: false
 
-  /@insertish/isomorphic-ws/4.0.1:
+  /@insertish/isomorphic-ws/4.0.1_ws@8.13.0:
     resolution: {integrity: sha512-kFD/p8T4Hkqr992QrdkbW/cQ/W/q2d9MPCobwzBv2PwTKLkCD9RaYDy6m17qRnSLQQ5PU0kHCG8kaOwAqzj1vQ==}
     peerDependencies:
       ws: '*'
+    dependencies:
+      ws: 8.13.0
     dev: false
 
   /@insertish/oapi/0.1.16:
@@ -420,6 +426,26 @@ packages:
       tsyringe: 4.7.0
     dev: false
 
+  /@revkit/voice/0.0.4_ws@8.13.0:
+    resolution: {integrity: sha512-103yCVOwuWV0wrxdlVFJihjVx68Vex7iQuHs8rjvQ0nhoILf4lUl+wnIpLgeIou45Q80KHvo8xk2sTGLyPnlaQ==}
+    dependencies:
+      '@insertish/isomorphic-ws': 4.0.1_ws@8.13.0
+      dgram: 1.0.1
+      eventemitter3: 5.0.0
+      ffmpeg-static: 5.1.0
+      mediasoup-client: 3.6.84
+      msc-node: 0.0.10
+      prism-media: github.com/itzTheMeow/prism-media/f3e33538bbd00cd9f2a2184a75a832f961ba5409_ffmpeg-static@5.1.0
+      revkit: 1.1.3_ws@8.13.0
+    transitivePeerDependencies:
+      - '@discordjs/opus'
+      - debug
+      - node-opus
+      - opusscript
+      - supports-color
+      - ws
+    dev: false
+
   /@sindresorhus/is/5.3.0:
     resolution: {integrity: sha512-CX6t4SYQ37lzxicAqsBtxA3OseeoVrh9cSJ5PFYam0GksYlupRfy1A+Q4aYD3zvcfECLc0zO2u+ZnR2UYKvCrw==}
     engines: {node: '>=14.16'}
@@ -459,10 +485,6 @@ packages:
       parse5: 7.1.2
     dev: false
 
-  /@types/luxon/3.3.0:
-    resolution: {integrity: sha512-uKRI5QORDnrGFYgcdAVnHvEIvEZ8noTpP/Bg+HeUzZghwinDlIS87DEenV5r1YoOF9G4x600YsUXLWZ19rmTmg==}
-    dev: false
-
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: false
@@ -481,12 +503,6 @@ packages:
 
   /@types/tough-cookie/4.0.2:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
-    dev: false
-
-  /@types/ws/8.5.4:
-    resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
-    dependencies:
-      '@types/node': 18.11.18
     dev: false
 
   /abab/2.0.6:
@@ -558,6 +574,15 @@ packages:
     engines: {node: '>=8.0.0'}
     dev: false
 
+  /awaitqueue/3.0.1_supports-color@9.3.1:
+    resolution: {integrity: sha512-w3uWpUVI/7Q/gS7SrW8UCkZBDC+JPxSjVSFVqlty+OEo4tSEOGPB6jHWXxsi+bRktDXFaFiVKFBvMVzPhUhvqA==}
+    engines: {node: '>=14'}
+    dependencies:
+      debug: 4.3.4_supports-color@9.3.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /axios/0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
@@ -576,6 +601,16 @@ packages:
 
   /axios/1.2.2:
     resolution: {integrity: sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /axios/1.3.5:
+    resolution: {integrity: sha512-glL/PvG/E+xCWwV8S6nCHcrfg1exGx7vxyUIivIA1iL7BIh6bePylCfVHwp6k13ao7SATxB6imau2kqY+I67kw==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -835,6 +870,19 @@ packages:
       supports-color: 8.1.1
     dev: false
 
+  /debug/4.3.4_supports-color@9.3.1:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+      supports-color: 9.3.1
+    dev: false
+
   /decimal.js/10.4.3:
     resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
     dev: false
@@ -868,6 +916,11 @@ packages:
   /detect-libc/2.0.1:
     resolution: {integrity: sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==}
     engines: {node: '>=8'}
+    dev: false
+
+  /dgram/1.0.1:
+    resolution: {integrity: sha512-zJVFL1EWfKtE0z2VN6qfpn/a+qG1viEzcwJA0EjtzS76ONSE3sEyWBwEbo32hS4IFw/EWVuWN+8b89aPW6It2A==}
+    deprecated: npm is holding this package for security reasons. As it's a core Node module, we will not transfer it over to other users. You may safely remove the package from your dependencies.
     dev: false
 
   /dom-serializer/2.0.0:
@@ -998,6 +1051,11 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /event-target-shim/5.0.1:
+    resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
+    engines: {node: '>=6'}
+    dev: false
+
   /eventemitter3/5.0.0:
     resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
     dev: false
@@ -1025,6 +1083,13 @@ packages:
   /expand-template/2.0.3:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
+    dev: false
+
+  /fake-mediastreamtrack/1.1.6:
+    resolution: {integrity: sha512-lcoO5oPsW57istAsnjvQxNjBEahi18OdUhWfmEewwfPfzNZnji5OXuodQM+VnUPi/1HnQRJ6gBUjbt1TNXrkjQ==}
+    dependencies:
+      event-target-shim: 5.0.1
+      uuid: 8.3.2
     dev: false
 
   /fast-levenshtein/2.0.6:
@@ -1154,6 +1219,15 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       debug: 4.3.4_supports-color@8.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /h264-profile-level-id/1.0.1_supports-color@9.3.1:
+    resolution: {integrity: sha512-D3Rln/jKNjKDW5ZTJTK3niSoOGE+pFqPvRHHVgQN3G7umcn/zWGPUo8Q8VpDj16x3hKz++zVviRNRmXu5cpN+Q==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      debug: 4.3.4_supports-color@9.3.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1358,7 +1432,7 @@ packages:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.12.0
+      ws: 8.13.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -1429,6 +1503,22 @@ packages:
       sax: 1.2.4
     dev: false
 
+  /mediasoup-client/3.6.84:
+    resolution: {integrity: sha512-eWkL0/rBPr9Bd8+qz4EqeYUg3+NtHNyAielk2BxfRiOyyKhknb38RabIM3L7eh9mi8qupZ3O11W7OkLSx+XRfQ==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@types/debug': 4.1.7
+      awaitqueue: 3.0.1_supports-color@9.3.1
+      bowser: 2.11.0
+      debug: 4.3.4_supports-color@9.3.1
+      events: 3.3.0
+      fake-mediastreamtrack: 1.1.6
+      h264-profile-level-id: 1.0.1_supports-color@9.3.1
+      queue-microtask: 1.2.3
+      sdp-transform: 2.14.1
+      supports-color: 9.3.1
+    dev: false
+
   /merge-stream/2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
     dev: false
@@ -1486,6 +1576,10 @@ packages:
 
   /mkdirp-classic/0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
+    dev: false
+
+  /ms-plus/0.0.5:
+    resolution: {integrity: sha512-+bNsU6sI1Ep9hxURmvvtfFX//zuVJTImbska7IK+lqMj/LXP/xnOKHraAo9WlpLASEm0ONICnpeliaVxYxSM6Q==}
     dev: false
 
   /ms/2.1.2:
@@ -1719,6 +1813,10 @@ packages:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
     dev: false
 
+  /queue-microtask/1.2.3:
+    resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+    dev: false
+
   /quick-lru/5.1.1:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
@@ -1762,14 +1860,12 @@ packages:
       lowercase-keys: 3.0.0
     dev: false
 
-  /revkit/1.1.0:
-    resolution: {integrity: sha512-rcXcYMludPvBEjamaIl59CGaeMqTtzaRym1JTMpT7zBw2y4fI693AgqnezYyr8C6MKUKzN93QjdGg8i1p2bUqA==}
+  /revkit/1.1.3_ws@8.13.0:
+    resolution: {integrity: sha512-q8WA5fAP/9sSHQQt2VR0ZLlevDTVUr8oeFNYVFCT1FJLcSjnkhgjwGRuEXRfIU/aMm0qoh5eeHAd1NEavQ4Fbw==}
     dependencies:
       '@insertish/exponential-backoff': 3.1.0-patch.2
-      '@insertish/isomorphic-ws': 4.0.1
-      '@types/luxon': 3.3.0
-      '@types/ws': 8.5.4
-      axios: 1.2.2
+      '@insertish/isomorphic-ws': 4.0.1_ws@8.13.0
+      axios: 1.3.5
       eventemitter3: 5.0.0
       form-data: 4.0.0
       long: 5.2.1
@@ -1779,20 +1875,6 @@ packages:
     transitivePeerDependencies:
       - debug
       - ws
-    dev: false
-
-  /revoice-ts/0.0.11:
-    resolution: {integrity: sha512-wVOm1Yxx+58sfLy/82eQheL45+IPEIzASla1HcVAHw189hoNiPMiCgn8lcd7v9/pvJc+EQIze1eMuPGBmY3hOQ==}
-    dependencies:
-      ffmpeg-static: 5.1.0
-      msc-node: 0.0.10
-      revolt-api: 0.5.5
-      ws: 8.12.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
     dev: false
 
   /revolt-api/0.5.5:
@@ -1946,6 +2028,11 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       has-flag: 4.0.0
+    dev: false
+
+  /supports-color/9.3.1:
+    resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
+    engines: {node: '>=12'}
     dev: false
 
   /symbol-tree/3.2.4:
@@ -2186,8 +2273,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: false
 
-  /ws/8.12.0:
-    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
+  /ws/8.13.0:
+    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -2241,4 +2328,27 @@ packages:
       m3u8stream: 0.8.6
       miniget: 4.2.2
       sax: 1.2.4
+    dev: false
+
+  github.com/itzTheMeow/prism-media/f3e33538bbd00cd9f2a2184a75a832f961ba5409_ffmpeg-static@5.1.0:
+    resolution: {tarball: https://codeload.github.com/itzTheMeow/prism-media/tar.gz/f3e33538bbd00cd9f2a2184a75a832f961ba5409}
+    id: github.com/itzTheMeow/prism-media/f3e33538bbd00cd9f2a2184a75a832f961ba5409
+    name: prism-media
+    version: 1.3.5
+    peerDependencies:
+      '@discordjs/opus': '>=0.8.0 <1.0.0'
+      ffmpeg-static: ^5.0.2 || ^4.2.7 || ^3.0.0 || ^2.4.0
+      node-opus: ^0.3.3
+      opusscript: ^0.0.8
+    peerDependenciesMeta:
+      '@discordjs/opus':
+        optional: true
+      ffmpeg-static:
+        optional: true
+      node-opus:
+        optional: true
+      opusscript:
+        optional: true
+    dependencies:
+      ffmpeg-static: 5.1.0
     dev: false

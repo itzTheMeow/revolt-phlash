@@ -1,15 +1,11 @@
-import { spawn } from "child_process";
+import VoiceClient from "@revkit/voice/node";
 import db from "enhanced.db";
-import ffmpegPath from "ffmpeg-static";
 import http from "http";
 import https from "https";
-import { Channel } from "revkit";
-import { MediaPlayer, RevoiceState, User } from "revoice-ts";
-import { VoiceConnection } from "revoice-ts/dist/Revoice";
+import { Channel, VoiceChannel } from "revkit";
 import internal from "stream";
 import { create as YTDLP } from "youtube-dl-exec";
 import ytdl from "ytdl-core";
-import randomInteger from "../util";
 import ServerQueueManager from "./ServerManager";
 import { Filters, QueueFilter } from "./filters";
 import { shuffle } from "./util";
@@ -40,52 +36,34 @@ export interface Track {
 }
 
 export interface DumpedQueue {
-  channel: Channel;
+  channel: VoiceChannel;
   tracks: Track[];
 }
 
 export default class Queue {
-  public get connected() {
-    return [
-      RevoiceState.IDLE,
-      RevoiceState.BUFFERING,
-      RevoiceState.PAUSED,
-      RevoiceState.PLAYING,
-    ].includes(this.connection?.state || RevoiceState.OFFLINE);
-  }
-  public listeners: User[] = [];
-  public connection: VoiceConnection;
-  public player: MediaPlayer;
-  public readonly port: number;
+  public voice: VoiceClient;
   public freed = true;
   public startedPlaying = 0;
 
   constructor(
     public parent: ServerQueueManager,
-    public channel: Channel,
+    public channel: VoiceChannel,
     public lastSent: Channel
-  ) {
-    // allows 1k ports to be used, i think thats enough
-    this.port = randomInteger(55535, 65535);
-  }
+  ) {}
 
   public async connect(): Promise<boolean> {
-    return new Promise((r) => {
-      if (this.connected) return r(true);
-      this.player = new MediaPlayer(false, this.port);
-      this.player.socket.on("error", console.trace);
-      this.parent.client
-        .join(this.channel.id, false)
-        .then((c) => {
-          this.connection = c;
-          this.connection.on("join", () => {
-            this.connection.play(this.player);
-            r(true);
-          });
-          this.connection.on("state", (s) => s == RevoiceState.IDLE && this.onSongFinished());
-        })
-        .catch(() => (this.connError(), r(false)));
-    });
+    if (this.voice?.connected) return true;
+    try {
+      this.voice = new VoiceClient(this.parent.client);
+      await this.voice.connect(this.channel);
+      this.voice.on("stopProduce", () => this.onSongFinished());
+      this.voice.on("error", console.error);
+    } catch (err) {
+      console.error(err);
+      this.connError();
+      return false;
+    }
+    return true;
   }
   public connError() {
     this.lastSent.send(`Failed to join voice channel (<#${this.channel.id}>).`);
@@ -97,7 +75,7 @@ export default class Queue {
     this.nowPlaying = null;
     if (this.parent.queues.includes(this))
       this.parent.queues.splice(this.parent.queues.indexOf(this), 1);
-    if (this.connection) await this.connection.destroy();
+    this.voice?.disconnect();
   }
 
   public songs: Track[] = [];
@@ -105,7 +83,7 @@ export default class Queue {
   public playHistory: Track[] = [];
 
   public async onSongFinished(): Promise<Track | null> {
-    if (this.connection.state == RevoiceState.PLAYING || !this.freed) return null;
+    if (this.voice.isProducing("audio") || !this.freed) return null;
     this.startedPlaying = 0;
     const finished = this.nowPlaying;
     if (finished) this.playHistory.unshift(finished);
@@ -150,30 +128,14 @@ export default class Queue {
       }
     })();
     if (!stream) return this.onSongFinished();
-    const ff = spawn(ffmpegPath, [
-      "-i",
-      "-",
-      "-f",
-      "mp3",
-      "-ar",
-      "48000",
-      "-ac",
-      "2",
-      "-analyzeduration",
-      "0",
+    this.voice.setArgs([
       "-af",
       [
         `atempo=${this.nowPlaying.playbackSpeed.toFixed(1)}`,
         ...this.nowPlaying.filtersEnabled.map((f) => (typeof f == "string" ? f : Filters[f].args)),
       ].join(","),
-      "pipe:1",
     ]);
-    stream.pipe(ff.stdin);
-    stream.on("error", () => true);
-    ff.stdin.on("error", () => true);
-    ff.stdout.on("error", () => true);
-    this.player.ffmpeg.on("exit", () => ff.kill());
-    await this.player.playStream(ff.stdout);
+    await this.voice.play("audio", stream);
     db.set("tracks_played", (Number(db.get("tracks_played")) || 0) + 1);
     this.startedPlaying = Date.now();
     this.nowPlaying.onplay?.(this);
@@ -203,7 +165,7 @@ export default class Queue {
   public async skipTo(index: number) {
     index = Math.min(this.songs.length, index);
     this.freed = false;
-    this.player.disconnect(false, true);
+    await this.voice.stopProduce("audio");
     this.freed = true;
     const skipped = this.songs.splice(0, index);
     await this.onSongFinished();

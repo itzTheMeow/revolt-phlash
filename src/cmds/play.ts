@@ -1,4 +1,5 @@
-import { Channel, Message, msToString } from "revkit";
+import ms from "ms-plus";
+import { Channel, Message } from "revkit";
 import { QueueManager } from "..";
 import Command from "../Command";
 import { getUserSettings } from "../Settings";
@@ -200,11 +201,11 @@ by [${track.authorName}](${track.authorURL})
 
 :alarm_clock: ${
             track.duration
-              ? msToString(track.duration, { noMs: true }) +
+              ? ms(track.duration).drop(1000).toString() +
                 (queue.playbackSpeed(track) !== 1
-                  ? ` (${msToString(track.duration / queue.playbackSpeed(track), {
-                      noMs: true,
-                    })} @ ${queue.playbackSpeed(track).toFixed(1)}x)`
+                  ? ` (${ms(track.duration / queue.playbackSpeed(track))
+                      .drop(1000)
+                      .toString()} @ ${queue.playbackSpeed(track).toFixed(1)}x)`
                   : "")
               : "Live"
           }

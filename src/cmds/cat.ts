@@ -1,5 +1,5 @@
 import axios from "axios";
-import { msToString } from "revkit";
+import ms from "ms-plus";
 import Command from "../Command";
 
 export default new Command(
@@ -17,7 +17,7 @@ export default new Command(
       .then(async (res) => {
         const id = await bot.uploadAttachment("cat.png", res.data, "attachments");
         message.reply({
-          content: `###### Finished in ${msToString(Date.now() - startTime)}.`,
+          content: `###### Finished in ${ms(Date.now() - startTime).toString()}.`,
           attachments: [id],
         });
       });

@@ -1,4 +1,5 @@
-import { EmbedBuilder, Message, msToString } from "revkit";
+import ms from "ms-plus";
+import { EmbedBuilder, Message } from "revkit";
 import Command from "../Command";
 import { getServerSettings, getUserSettings, setUserSetting } from "../Settings";
 import config from "../config";
@@ -114,13 +115,12 @@ Example:
 Go to [plex.tv/link](https://plex.tv/link) and enter the code **\`${
                   pin.code
                 }\`** to link your account.
-*This code will expire in ${msToString(
-                  Math.round((pin.expires.getTime() - Date.now()) / 1000 / 60) * 60 * 1000,
-                  {
-                    verbose: true,
-                    maxDepth: 1,
-                  }
-                )}.*`)
+*This code will expire in ${ms(
+                  Math.round((pin.expires.getTime() - Date.now()) / 1000 / 60) * 60 * 1000
+                ).toString({
+                  verbose: true,
+                  maxDepth: 1,
+                })}.*`)
               );
               token = await pollPlexPIN(pin);
               if (!token) reply.edit(replyEmbed.setDescription("Authorization code expired."));
