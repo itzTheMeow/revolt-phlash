@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@revkit/voice': ^0.0.4
+  '@revkit/voice': ^0.0.5
   '@types/jsdom': ^20.0.1
   '@types/node': ^18.7.18
   '@types/qs': ^6.9.7
@@ -25,7 +25,7 @@ specifiers:
   ytdl-core: ^4.11.2
 
 dependencies:
-  '@revkit/voice': 0.0.4_ws@8.13.0
+  '@revkit/voice': 0.0.5_ws@8.13.0
   '@types/jsdom': 20.0.1
   '@types/node': 18.11.18
   '@types/qs': 6.9.7
@@ -426,8 +426,8 @@ packages:
       tsyringe: 4.7.0
     dev: false
 
-  /@revkit/voice/0.0.4_ws@8.13.0:
-    resolution: {integrity: sha512-103yCVOwuWV0wrxdlVFJihjVx68Vex7iQuHs8rjvQ0nhoILf4lUl+wnIpLgeIou45Q80KHvo8xk2sTGLyPnlaQ==}
+  /@revkit/voice/0.0.5_ws@8.13.0:
+    resolution: {integrity: sha512-ALU6oGDOrynGrBZ2MEuzU0FXLvEAHy8icLtPm8yK/+0PmbL2nlN/g/3IL8BQdz+wKgy7TT40mO6UbMany31+IA==}
     dependencies:
       '@insertish/isomorphic-ws': 4.0.1_ws@8.13.0
       dgram: 1.0.1
