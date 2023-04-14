@@ -27,7 +27,7 @@
     "esbuild": "^0.17.10",
     "ffmpeg-static": "^5.1.0",
     "jsdom": "^21.1.0",
-    "ms-plus": "^0.0.5",
+    "ms-plus": "^0.0.6",
     "node-youtube-music": "^0.10.2",
     "qs": "^6.11.0",
     "revkit": "^1.1.3",

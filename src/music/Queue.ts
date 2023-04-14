@@ -156,9 +156,7 @@ export default class Queue {
     ].reduce((s, v) => s * v, 1);
   }
   public get seek() {
-    return this.startedPlaying
-      ? (Date.now() - this.startedPlaying) / this.playbackSpeed(this.nowPlaying)
-      : 0;
+    return this.startedPlaying ? Date.now() - this.startedPlaying : 0;
   }
 
   /** Skip to a song in the queue. Returns songs skipped if any. (does not include nowPlaying) */
