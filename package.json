@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/itzTheMeow/revolt-phlash#readme",
   "dependencies": {
-    "@revkit/voice": "^0.0.5",
+    "@revkit/voice": "^0.0.6",
     "@types/jsdom": "^20.0.1",
     "@types/node": "^18.7.18",
     "@types/qs": "^6.9.7",
