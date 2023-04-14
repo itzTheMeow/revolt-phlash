@@ -53,10 +53,8 @@ export default new Command(
 ${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
 :alarm_clock: ${
                   t.duration
-                    ? `${ms(queue.seek).drop(1000).toString()}/${ms(
-                        t.duration / queue.playbackSpeed()
-                      )
-                        .drop(1000)
+                    ? `${ms(queue.seek).drop(1).toString()}/${ms(t.duration / queue.playbackSpeed())
+                        .drop(1)
                         .toString()}${
                         queue.playbackSpeed() !== 1 ? ` (${queue.playbackSpeed().toFixed(1)}x)` : ""
                       }`

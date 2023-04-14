@@ -201,10 +201,10 @@ by [${track.authorName}](${track.authorURL})
 
 :alarm_clock: ${
             track.duration
-              ? ms(track.duration).drop(1000).toString() +
+              ? ms(track.duration).drop(1).toString() +
                 (queue.playbackSpeed(track) !== 1
                   ? ` (${ms(track.duration / queue.playbackSpeed(track))
-                      .drop(1000)
+                      .drop(1)
                       .toString()} @ ${queue.playbackSpeed(track).toFixed(1)}x)`
                   : "")
               : "Live"
