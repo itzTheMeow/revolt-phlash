@@ -1,8 +1,8 @@
-import ms from "ms-plus";
 import { QueueManager } from "..";
 import Command from "../Command";
 import config from "../config";
 import { DumpedQueue, Track } from "../music/Queue";
+import { nowPlayingText, songText } from "../music/text";
 import { musicFooter } from "../music/util";
 
 const FrozenQueues: Record<string, DumpedQueue> = {};
@@ -31,7 +31,7 @@ export default new Command(
     if (!queue) return message.reply("There is nothing in the queue!", false);
 
     if (args.number(1) || !command) {
-      const totalSongs = queue.songs.length + Number(!!queue.nowPlaying);
+      const totalSongs = queue.songs.length;
 
       const PER_PAGE = 5;
       const pages: Track[][] = queue.nowPlaying ? [[queue.nowPlaying]] : [];
@@ -45,29 +45,12 @@ export default new Command(
         return (
           pages[num]
             ?.map((t, i) => {
-              const emoji = [...String(num * PER_PAGE + i + 1)]
-                .map((c) => `:${config.emojis.num[c]}:`)
-                .join("");
+              const index = num * PER_PAGE + i;
               if (t == queue.nowPlaying)
-                return `### Now Playing
-${emoji} **[${t.title}](${t.url})** by [${t.authorName}](${t.authorURL})
-:alarm_clock: ${
-                  t.duration
-                    ? `${ms(queue.seek).drop(1).toString()}/${ms(t.duration / queue.playbackSpeed())
-                        .drop(1)
-                        .toString()}${
-                        queue.playbackSpeed() !== 1 ? ` (${queue.playbackSpeed().toFixed(1)}x)` : ""
-                      }`
-                    : "Live"
-                } :eye: ${t.views.toLocaleString()} :timer_clock: ${t.createdTime}\n`;
-              else
-                return `#### ${emoji} **[${t.title}](${t.url})**
-##### by [${t.authorName}](${
-                  t.authorURL.startsWith("https://app.plex.tv") ? "https://plex.tv" : t.authorURL
-                })
-##### :alarm_clock: ${ms(t.duration).toString()} :timer_clock: ${t.createdTime}`;
+                return `### Now Playing\n${nowPlayingText(queue, t)}\n###### \u200b`;
+              else return songText(queue, t, index);
             })
-            .join("\n") +
+            .join("\n###### \u200b\n") +
           `\n\n${musicFooter([
             `${totalSongs.toLocaleString()} total song${totalSongs == 1 ? "" : "s"} `,
           ])}`
