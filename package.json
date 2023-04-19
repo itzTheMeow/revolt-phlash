@@ -36,7 +36,6 @@
     "typescript": "^4.8.3",
     "undici": "^5.20.0",
     "ws": "^8.13.0",
-    "youtube-dl-exec": "^2.4.0",
     "youtube-sr": "^4.3.4",
     "ytdl-core": "^4.11.2"
   }

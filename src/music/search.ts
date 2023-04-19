@@ -1,21 +1,12 @@
 import * as YouTubeMusic from "node-youtube-music";
 import { User } from "revkit";
 import { Util as SoundCloudUtils } from "soundcloud-scraper";
-import SCClient from "soundcloud.ts";
 import Search from "youtube-sr";
 import { getUserSettings } from "../Settings";
 import { getPlexServers, searchPlexSong } from "./IntegrationPlex";
 import { getTuneinTrack } from "./IntegrationTuneIn";
-import {
-  CustomTrack,
-  rawToTrack,
-  soundcloudListToTrack,
-  soundcloudToTrack,
-  youtubeListToTrack,
-  youtubeToTrack,
-} from "./converters";
-
-const SoundCloud = new SCClient();
+import { CustomTrack, rawToTrack, youtubeListToTrack, youtubeToTrack } from "./converters";
+import { SoundCloud, soundcloudListToTrack, soundcloudToTrack } from "./providers/soundcloud";
 
 export enum SearchProviders {
   YouTube = "youtube",

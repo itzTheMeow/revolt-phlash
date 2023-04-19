@@ -4,13 +4,11 @@ import http from "http";
 import https from "https";
 import { Channel, VoiceChannel } from "revkit";
 import internal from "stream";
-import { create as YTDLP } from "youtube-dl-exec";
 import ytdl from "ytdl-core";
 import ServerQueueManager from "./ServerManager";
 import { Filters, QueueFilter } from "./filters";
+import { SoundCloud } from "./providers/soundcloud";
 import { shuffle } from "./util";
-
-const ytdlp = YTDLP("/usr/local/bin/yt-dlp");
 
 export enum TrackProvider {
   YOUTUBE,
@@ -94,29 +92,25 @@ export default class Queue {
     const stream = await (async (): Promise<internal.Readable> => {
       switch (this.nowPlaying.provider) {
         case TrackProvider.YOUTUBE:
+          return ytdl(this.nowPlaying.url, {
+            quality: "highestaudio",
+            highWaterMark: 1 << 26, // amount of video to buffer
+          });
         case TrackProvider.SOUNDCLOUD:
-          // determine if its a livestream (yt only)
-          // temporary fix bc yt-dlp is being cringe
-          return this.nowPlaying.provider == TrackProvider.YOUTUBE /*&&
-            !this.nowPlaying.duration &&
-            !this.nowPlaying.views &&
-            this.nowPlaying.createdTime == "unknown"*/
-            ? ytdl(this.nowPlaying.url, {
-                quality: "highestaudio",
-                highWaterMark: 1 << 26,
-              })
-            : ytdlp.exec(this.nowPlaying.url, {
-                format: "bestaudio",
-                output: "-",
-              }).stdout;
+          return new internal.Readable().wrap(
+            await SoundCloud.util.streamTrack(this.nowPlaying.url)
+          );
         case TrackProvider.RAW:
           return await new Promise((r) =>
+            // use either http or https depending on the address
             ((this.nowPlaying.address || this.nowPlaying.url).startsWith("http://")
               ? http
               : https
             ).get(this.nowPlaying.address || this.nowPlaying.url, (res) => {
               r(
+                // if the status is non-200 then it's probably not valid audio
                 res.statusCode !== 200 ||
+                  // if the content-type isn't audio or video, also probably not valid
                   !["audio/", "video/"].find((f) =>
                     res.headers["content-type"]?.toLowerCase().startsWith(f)
                   )
