@@ -21,7 +21,7 @@ specifiers:
   undici: ^5.20.0
   ws: ^8.13.0
   youtube-sr: ^4.3.4
-  ytdl-core: ^4.11.2
+  ytdl-core: npm:@distube/ytdl-core@^4.11.9
 
 dependencies:
   '@revkit/voice': 0.0.6_ws@8.13.0
@@ -44,7 +44,7 @@ dependencies:
   undici: 5.20.0
   ws: 8.13.0
   youtube-sr: 4.3.4
-  ytdl-core: 4.11.2
+  ytdl-core: /@distube/ytdl-core/4.11.9
 
 packages:
 
@@ -56,6 +56,16 @@ packages:
       concat-stream: 2.0.0
       http-response-object: 3.0.2
       parse-cache-control: 1.0.1
+    dev: false
+
+  /@distube/ytdl-core/4.11.9:
+    resolution: {integrity: sha512-wlQu48gG9eV8YCASpra1bw2iXIlc3FuF/WiB8akBGmrp/jd9tGvuxwgOH5oKYQZYSSjzazsW2VX7L5rt+8Fu5Q==}
+    engines: {node: '>=12'}
+    dependencies:
+      m3u8stream: 0.8.6
+      miniget: 4.2.2
+      sax: 1.2.4
+      undici: 5.22.0
     dev: false
 
   /@esbuild/android-arm/0.17.10:
@@ -1593,7 +1603,7 @@ packages:
       mime: 3.0.0
       prettier: 2.8.3
       tiny-glob: 0.2.9
-      undici: 5.20.0
+      undici: 5.22.0
       yargs-parser: 21.1.1
     dev: false
     optional: true
@@ -2011,6 +2021,13 @@ packages:
       busboy: 1.6.0
     dev: false
 
+  /undici/5.22.0:
+    resolution: {integrity: sha512-fR9RXCc+6Dxav4P9VV/sp5w3eFiSdOjJYsbtWfd4s5L5C4ogyuVpdKIVHeW0vV1MloM65/f7W45nR9ZxwVdyiA==}
+    engines: {node: '>=14.0'}
+    dependencies:
+      busboy: 1.6.0
+    dev: false
+
   /universalify/0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
     engines: {node: '>= 4.0.0'}
@@ -2163,15 +2180,6 @@ packages:
 
   /youtube-sr/4.3.4:
     resolution: {integrity: sha512-olSYcR80XigutCrePEXBX3/RJJrWfonJQj7+/ggBiWU0CzTDLE1q8+lpWTWCG0JpzhzILp/IB/Bq/glGqqr1TQ==}
-    dev: false
-
-  /ytdl-core/4.11.2:
-    resolution: {integrity: sha512-D939t9b4ZzP3v0zDvehR2q+KgG97UTgrTKju3pOPGQcXtl4W6W5z0EpznzcJFu+OOpl7S7Ge8hv8zU65QnxYug==}
-    engines: {node: '>=12'}
-    dependencies:
-      m3u8stream: 0.8.6
-      miniget: 4.2.2
-      sax: 1.2.4
     dev: false
 
   github.com/itzTheMeow/prism-media/f3e33538bbd00cd9f2a2184a75a832f961ba5409_ffmpeg-static@5.1.0:
