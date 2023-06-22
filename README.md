@@ -2,4 +2,4 @@
 
 A port of PHLASH for use on Revolt.
 
-used for testing music rn
+For questions or support contact me: **Meow#7182**
