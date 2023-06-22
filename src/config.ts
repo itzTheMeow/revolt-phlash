@@ -34,4 +34,5 @@ export default {
   yesResponses: ["true", "yes", "on", "y", "+"],
   noResponses: ["false", "no", "off", "n", "-"],
   token: fs.readFileSync("token").toString().trim(),
+  rbl_token: fs.existsSync("revoltbots") ? fs.readFileSync("revoltbots").toString().trim() : "",
 };

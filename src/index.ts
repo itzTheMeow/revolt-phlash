@@ -1,5 +1,6 @@
 import db from "enhanced.db";
 import { Client, Permissions } from "revkit";
+import * as rbots from "revoltbots.js";
 import { getCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
@@ -7,6 +8,7 @@ import ServerQueueManager from "./music/ServerManager";
 export const bot = new Client({
   reconnect: true,
 });
+const RevoltBots = new rbots.Client(config.rbl_token);
 
 process.on("uncaughtException", (err, ori) => {
   console.error(`Unhandled Rejection: ${err}\n^^ ${err.stack}\n^^ ${ori}`);
@@ -31,7 +33,13 @@ bot.once("ready", () => {
     status++;
     setTimeout(() => updateStatus(), 30_000);
   }
-  if (!config.dev) updateStatus();
+  if (!config.dev) {
+    updateStatus();
+    if (config.rbl_token) {
+      RevoltBots.postStats(bot);
+      RevoltBots.autopostStats(bot);
+    }
+  }
 });
 
 bot.on("message", (message) => {
