@@ -13,8 +13,8 @@ export default new Command(
     const memberID = args.string(1);
     if(!memberID) return message.reply("Specify a member to ban!");
     
-    const member = message.server.members.fetch(memberID),
-      user = await bot.users.fetch(member?.id || memberID);
+    const member = await message.server.members.fetch(memberID).catch(()=>null),
+      user = await bot.users.fetch(member?.id || memberID).catch(()=>null);
       
     if(member?.id == bot.user.id) return message.reply("You want me to ban myself? How sad.");
     
