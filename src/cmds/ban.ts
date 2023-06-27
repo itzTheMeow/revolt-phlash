@@ -23,10 +23,10 @@ export default new Command(
     if(member && !member.inferiorTo(message.member)) return message.reply("You are not high enough to ban this member.");
     
     try { 
-      await message.server.members.ban(member || memberID, {});
+      await message.server.members.ban(member || memberID, {reason: "Banned."});
       message.channel.send(`Successfully banned ${user?.username || "user"}.`);
     } catch(err) {
-      console.log(err);
+      console.log(err.request.data, err.response.data);
     }
   }
 );
