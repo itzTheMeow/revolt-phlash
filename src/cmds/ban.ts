@@ -9,8 +9,10 @@ export default new Command(
   async (bot, message, args) => {
     if(!message.server || !message.member) return;
     
-    const memberID = args.string(1),
-      member = message.server.members.fetch(memberID),
+    const memberID = args.string(1);
+    if(!memberID) return message.reply("Specify a member to ban!");
+    
+    const member = message.server.members.fetch(memberID),
       user = await bot.users.fetch(member?.id || memberID);
       
     if(member?.id == bot.user.id) return message.reply("You want me to ban myself? How sad.");
