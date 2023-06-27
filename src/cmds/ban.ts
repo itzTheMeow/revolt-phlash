@@ -26,7 +26,7 @@ export default new Command(
       await message.server.members.ban(member || memberID);
       message.channel.send(`Successfully banned ${user?.username || "user"}.`);
     } catch(err) {
-      console.log(err);
+      console.log(err.response.data);
     }
   }
 );
