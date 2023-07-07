@@ -11,7 +11,7 @@ export default new Command(
   "queue",
   {
     description:
-      "View the server queue.\nCommands:\nUse a number to view a specific page.\n`freeze` - Freezes the queue allowing you to restore it later. (tied to your user)\n`restore` - Restores the frozen queue.",
+      "View the server queue.\nCommands:\nUse a number to view a specific page.\n`debug` - Shows debug information.\n`freeze` - Freezes the queue allowing you to restore it later. (tied to your user)\n`restore` - Restores the frozen queue.",
     aliases: ["q"],
     args: ["<command>"],
   },
@@ -25,6 +25,20 @@ export default new Command(
       if (!q) return message.reply("There is no saved queue to restore!");
       await QueueManager.getQueue(q.channel, message.channel).restore(q);
       message.reply(`Restored the queue to <#${q.channel.id}>!`);
+      return;
+    }
+    if (command == "debug") {
+      if (!queue) {
+        message.reply("Nothing playing.");
+      } else {
+        message.reply({
+          embeds: [{
+            title: "Music Player Debug",
+            description: `Stream URL: ${queue.nowPlaying?.url || "N/A"}`,
+            colour: config.brandColor,
+          }] 
+        });
+      }
       return;
     }
 
