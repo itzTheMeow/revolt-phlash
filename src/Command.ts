@@ -78,6 +78,7 @@ export default class Command {
       )
       .trim()
       // im actually an insane regex user
+      //TODO: try this later: -[^-\s]{1,}\s{1,}(?:(?<!\\)".*?(?<!\\)"|\S*)|(?<!\\)".*?(?<!\\)"|\S{1,}
       .match(/-[^-\s]*\s(?:".*?"|\S*)|".*?"|\S*/g)
       .filter((a) => {
         if (!a) return false;
