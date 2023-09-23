@@ -40,7 +40,7 @@ export default new Command(
         },
         "--skip": {
           description: "Skips to the queued song after adding it. Best paired with --prepend.",
-          aliases: [],
+          aliases: ["--sk"],
         },
         "-channel": {
           description: "The channel to play music in",
