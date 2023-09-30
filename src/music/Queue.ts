@@ -1,10 +1,10 @@
+import ytdl from "@distube/ytdl-core";
 import VoiceClient from "@revkit/voice/node";
 import db from "enhanced.db";
 import http from "http";
 import https from "https";
 import { Channel, VoiceChannel } from "revkit";
 import internal from "stream";
-import ytdl from "ytdl-core";
 import ServerQueueManager from "./ServerManager";
 import { Filters, QueueFilter } from "./filters";
 import { SoundCloud } from "./providers/soundcloud";

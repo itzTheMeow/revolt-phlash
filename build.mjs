@@ -26,5 +26,12 @@ esbuild.buildSync({
   outfile: "dist.js",
   bundle: true,
   platform: "node",
-  external: ["enhanced.db", "jsdom", "ytdl-core", "yt-dlp-exec", "ffmpeg-static", "soundcloud.ts"],
+  external: [
+    "enhanced.db",
+    "jsdom",
+    "@distube/ytdl-core",
+    "yt-dlp-exec",
+    "ffmpeg-static",
+    "soundcloud.ts",
+  ],
 });
