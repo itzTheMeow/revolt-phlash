@@ -78,12 +78,13 @@ export default class Command {
       )
       .trim()
       // im actually an insane regex user
+      // also document this lmao
       //TODO: try this later: -[^-\s]{1,}\s{1,}(?:(?<!\\)".*?(?<!\\)"|\S*)|(?<!\\)".*?(?<!\\)"|\S{1,}
       .match(/-[^-\s]*\s(?:".*?"|\S*)|".*?"|\S*/g)
       .filter((a) => {
         if (!a) return false;
         const alias = Object.entries(this.flags).find((f) =>
-          f[1].aliases.includes(a.split(" ")[0])
+          f[1].aliases?.includes(a.split(" ")[0])
         )?.[0];
         if (a.startsWith("--")) {
           bflags.push((alias || a).substring(2));
@@ -98,7 +99,10 @@ export default class Command {
         return true;
       })
       .map((a) => a.replace(/^"(.*)"$/, "$1"));
-    args.unshift(null);
+    // add command name as args[0]
+    args.unshift(
+      message.content.trim().split(" ")[0].substring(config.prefix.length).toLowerCase()
+    );
     return {
       string: (i) => args[i],
       number: (i) => (isNaN(Number(args[i])) ? undefined : Number(args[i])),

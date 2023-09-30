@@ -30,7 +30,8 @@ export default async function searchTrack(
   query: string,
   useProvider?: SearchProviders,
   user?: User,
-  isPlaylist = false
+  isPlaylist = false,
+  limit = 1
 ): Promise<string | CustomTrack | CustomTrack[]> {
   // Try youtube playlist/video
   if (Search.validate(query, "PLAYLIST")) {
@@ -64,29 +65,42 @@ export default async function searchTrack(
       server,
       query,
       useProvider.substring(SearchProviders.Plex.length + 1).trim(),
-      isPlaylist
+      isPlaylist,
+      limit
     );
   }
   // try tunein
   if (useProvider == SearchProviders.TuneIn) {
-    return await getTuneinTrack(query);
+    return await getTuneinTrack(query, limit);
   }
   // try soundcloud
   if (useProvider == SearchProviders.SoundCloud) {
     //TODO: playlists
-    return soundcloudToTrack(
-      (
-        await SoundCloud.tracks.searchV2({
-          q: query,
-          limit: 1,
-        })
-      )?.collection?.[0]
-    );
+    const res = (
+      await SoundCloud.tracks.searchV2({
+        q: query,
+        limit: 1,
+      })
+    )?.collection;
+    if (!res.length) return null;
+    if (limit == 1) return soundcloudToTrack(res[0]);
+    else return res.slice(0, limit).map(soundcloudToTrack);
   }
   if (useProvider == SearchProviders.YouTubeMusic) {
-    const id = (await YouTubeMusic.searchMusics(query))[0]?.youtubeId;
-    if (!id) return null;
-    return youtubeToTrack(await Search.getVideo(`https://youtube.com/watch?v=${id}`));
+    const res = await YouTubeMusic.searchMusics(query);
+    if (!res?.length) return null;
+    if (limit == 1)
+      return youtubeToTrack(
+        await Search.getVideo(`https://youtube.com/watch?v=${res[0].youtubeId}`)
+      );
+    else
+      return await Promise.all(
+        res
+          .slice(0, limit)
+          .map(async ({ youtubeId }) =>
+            youtubeToTrack(await Search.getVideo(`https://youtube.com/watch?v=${youtubeId}`))
+          )
+      );
   }
   // try raw URLs
   if (
@@ -103,7 +117,14 @@ export default async function searchTrack(
   }
 
   // fallback to youtube
-  const vid = await Search.searchOne(query, "video");
-  if (!vid) return null;
-  return youtubeToTrack(await Search.getVideo(vid.url));
+  const vid =
+    limit == 1
+      ? await Search.searchOne(query, "video")
+      : await Search.search(query, { type: "video" });
+  if (Array.isArray(vid) ? !vid?.length : !vid) return null;
+  if (Array.isArray(vid))
+    return await Promise.all(
+      vid.slice(0, limit).map(async ({ url }) => youtubeToTrack(await Search.getVideo(url)))
+    );
+  else return youtubeToTrack(await Search.getVideo(vid.url));
 }

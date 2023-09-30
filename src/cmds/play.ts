@@ -34,6 +34,10 @@ export default new Command(
           description: "Adds the song to the beginning of the queue.",
           aliases: ["--pre", "--first"],
         },
+        "--search": {
+          description:
+            "Lets you choose which song to play from a list of search results. This is automatically enabled when using the `search` command alias.",
+        },
         "--shuffle": {
           description: "Shuffles the playlist before queueing it. (playlist only)",
           aliases: ["--sh"],
@@ -62,7 +66,7 @@ export default new Command(
         },
       }
     ),
-    aliases: ["p"],
+    aliases: ["p", "search"],
     args: ["<query>"],
   },
   async (bot, message, args) => {
@@ -111,8 +115,9 @@ export default new Command(
         }?__filename=${encodeURIComponent(audioAttachment.name)}`
       : args.asString();
     if (!query) return message.reply("You need to enter a URL or search query!");
+    const shouldSearch = args.string(0) == "search" || args.bflag("search");
 
-    const foundData = await searchTrack(
+    let foundData = await searchTrack(
       query,
       <SearchProviders>(
         (Object.entries(SearchProviderAliases).find((e) => e[1].includes(args.flag("use")))?.[0] ||
@@ -120,10 +125,45 @@ export default new Command(
           getUserSettings(message.author).provider)
       ),
       message.author,
-      args.bflag("playlist")
+      args.bflag("playlist"),
+      shouldSearch ? 10 : 1
     );
     if (typeof foundData == "string") return message.reply(foundData);
     if (!foundData) return message.reply("No results found for that search!");
+
+    if (shouldSearch && Array.isArray(foundData)) {
+      // return first result if there's only one
+      if (foundData.length == 1) foundData = foundData[0];
+      else {
+        const context = await message.reply(
+          {
+            content: "Send the number for the result you want to play.",
+            embed: {
+              title: `${foundData.length} Results`,
+              description: foundData
+                .map((trk, i) => `${i + 1} | ${trk.title} | ${trk.authorName}`)
+                .join("\n"),
+            },
+          },
+          true
+        );
+        const index = await new Promise<number | null>((res) => {
+          const handler = (m: Message) => {
+            if (m.authorID !== message.authorID || m.channelID !== message.channelID) return;
+            bot.off("message", handler);
+            return res(Number(m.content));
+          };
+          bot.on("message", handler);
+          setTimeout(() => {
+            bot.off("message", handler);
+            res(null);
+          }, 20000);
+        });
+        if (!index || !foundData[index - 1])
+          return context.reply("That's not a valid song choice!");
+        foundData = foundData[index - 1];
+      }
+    }
 
     const reply = await message.reply(
       {

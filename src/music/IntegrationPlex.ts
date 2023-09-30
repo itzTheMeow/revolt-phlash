@@ -3,8 +3,8 @@ import { randomUUID } from "crypto";
 import db from "enhanced.db";
 import { JSDOM } from "jsdom";
 import QueryString from "qs";
-import { CustomTrack } from "./converters";
 import { TrackProvider } from "./Queue";
+import { CustomTrack } from "./converters";
 
 const PLEX_HEADERS = {
   "X-Plex-Client-Identifier": String(
@@ -171,7 +171,8 @@ export async function searchPlexSong(
   server: PlexServer,
   query: string,
   libname?: string,
-  searchPlaylist = false
+  searchPlaylist = false,
+  limit = 1
 ): Promise<CustomTrack | CustomTrack[]> {
   const result = (
     await axios.get(
@@ -207,9 +208,13 @@ export async function searchPlexSong(
           );
         }
         return calc(b) - calc(a);
-      })?.[0];
+      });
 
-    return res ? mapTrack(res) : null;
+    return limit == 1 && res[0]
+      ? mapTrack(res[0])
+      : limit > 1 && res?.length
+      ? res.slice(0, limit).map(mapTrack)
+      : null;
   } else {
     const playlists = <PlexPlaylist[]>result.find((t) => t.type == "playlist")?.Metadata,
       list =
