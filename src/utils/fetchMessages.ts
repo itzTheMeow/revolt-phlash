@@ -12,6 +12,7 @@ export default async function fetchMessages(channel: Channel, amount: number) {
     amount -= 100;
     messages.push(...msgs.filter((m) => m.isUser()));
     last = (msgs[msgs.length - 1] || {}).id || "";
+    await new Promise((r) => setTimeout(r, 500));
   }
   return messages;
 }
