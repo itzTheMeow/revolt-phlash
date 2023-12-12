@@ -15,7 +15,7 @@ export default new Command(
     if (!msg) return;
     const messages = <Message[]>(
       (await fetchMessages(message.channel, 500)).filter(
-        (m) => m.isUser() && m.content && m.content.length > 1 && !m.author.bot
+        (m) => m.isUser() && m.content && m.content.length > 1 && !m.author?.bot
       )
     );
 
