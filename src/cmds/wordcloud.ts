@@ -6,7 +6,7 @@ import fetchMessages from "../utils/fetchMessages";
 export default new Command(
   "wordcloud",
   {
-    description: "Creates a wordcloud with the last 1,000 messages in the channel.",
+    description: "Creates a wordcloud with the last 500 messages in the channel.",
     aliases: ["wc"],
   },
   async (bot, message, args) => {
@@ -14,7 +14,7 @@ export default new Command(
       msg = await message.reply("Generating...");
     if (!msg) return;
     const messages = <Message[]>(
-      (await fetchMessages(message.channel, 1000)).filter(
+      (await fetchMessages(message.channel, 500)).filter(
         (m) => m.isUser() && m.content && m.content.length > 1 && !m.author.bot
       )
     );
