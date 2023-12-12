@@ -41,8 +41,10 @@ export default new Command(
       .then(async (res) => {
         const file = await bot.uploadAttachment("cloud.png", Buffer.from(res), "attachments");
         if (!file) return msg.edit("Failed to upload attachment.");
-        msg.edit({
-          content: `Generated in ${ms(Date.now() - startTime).toString()}.`,
+        msg.delete();
+        message.reply({
+          content: `#### Generated in ${ms(Date.now() - startTime).toString()}.`,
+          attachments: [file],
         });
       })
       .catch((err) => {
