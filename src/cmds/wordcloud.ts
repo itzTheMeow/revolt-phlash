@@ -14,7 +14,7 @@ export default new Command(
       msg = await message.reply("Generating...");
     if (!msg) return;
     const messages = <Message[]>(
-      (await fetchMessages(message.channel, 10000)).filter(
+      (await fetchMessages(message.channel, 1000)).filter(
         (m) => m.isUser() && m.content && m.content.length > 1 && !m.author.bot
       )
     );
