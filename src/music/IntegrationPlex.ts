@@ -208,8 +208,8 @@ export async function searchPlexSong(
           );
         }
         return calc(b) - calc(a);
-      });
-
+      }) || [];
+ 
     return limit == 1 && res[0]
       ? mapTrack(res[0])
       : limit > 1 && res?.length
