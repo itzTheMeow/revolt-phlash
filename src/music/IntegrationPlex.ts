@@ -1,6 +1,6 @@
 import axios from "axios";
 import { randomUUID } from "crypto";
-import db from "enhanced.db";
+import db from "enhanced.db-new";
 import { JSDOM } from "jsdom";
 import QueryString from "qs";
 import { TrackProvider } from "./Queue";
@@ -186,30 +186,30 @@ export async function searchPlexSong(
 
   if (!searchPlaylist) {
     const trackList = <PlexTrack[]>result.find((t) => t.type == "track")?.Metadata,
-      res = (
-        libname
+      res =
+        (libname
           ? trackList?.filter(
               (t) =>
                 t.librarySectionTitle.toLowerCase().replace(/ /g, "") ==
                 libname.toLowerCase().replace(/ /g, "")
             )
           : trackList
-      )?.sort((a, b) => {
-        function calc(c: PlexTrack) {
-          return (
-            Number(c.score) +
-            Number(
-              c.title
-                .toLowerCase()
-                .replace(/ /g, "")
-                .includes(query.toLowerCase().replace(/ /g, ""))
-            ) *
-              5
-          );
-        }
-        return calc(b) - calc(a);
-      }) || [];
- 
+        )?.sort((a, b) => {
+          function calc(c: PlexTrack) {
+            return (
+              Number(c.score) +
+              Number(
+                c.title
+                  .toLowerCase()
+                  .replace(/ /g, "")
+                  .includes(query.toLowerCase().replace(/ /g, ""))
+              ) *
+                5
+            );
+          }
+          return calc(b) - calc(a);
+        }) || [];
+
     return limit == 1 && res[0]
       ? mapTrack(res[0])
       : limit > 1 && res?.length

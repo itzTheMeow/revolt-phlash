@@ -1,6 +1,6 @@
 import ytdl from "@distube/ytdl-core";
 import VoiceClient from "@revkit/voice/node";
-import db from "enhanced.db";
+import db from "enhanced.db-new";
 import http from "http";
 import https from "https";
 import { Channel, VoiceChannel } from "revkit";

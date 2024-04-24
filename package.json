@@ -24,7 +24,7 @@
     "@types/qs": "^6.9.7",
     "axios": "^1.2.2",
     "cheerio": "1.0.0-rc.12",
-    "enhanced.db": "^0.3.4",
+    "enhanced.db-new": "^1.0.2",
     "esbuild": "^0.17.10",
     "ffmpeg-static": "^5.1.0",
     "jsdom": "^21.1.0",

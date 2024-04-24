@@ -27,7 +27,7 @@ esbuild.buildSync({
   bundle: true,
   platform: "node",
   external: [
-    "enhanced.db",
+    "enhanced.db-new",
     "jsdom",
     "@distube/ytdl-core",
     "yt-dlp-exec",

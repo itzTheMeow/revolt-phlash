@@ -1,4 +1,4 @@
-import db from "enhanced.db";
+import db from "enhanced.db-new";
 import { Server, User } from "revkit";
 import config from "./config";
 import { SearchProviders } from "./music/search";
