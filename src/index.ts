@@ -5,7 +5,7 @@ import { getCommands } from "./Command";
 import config from "./config";
 import ServerQueueManager from "./music/ServerManager";
 
-db.options({});
+db.options({ filename: "enhanced.sqlite" });
 
 export const bot = new Client({
   reconnect: true,
