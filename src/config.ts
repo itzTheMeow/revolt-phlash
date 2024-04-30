@@ -13,6 +13,7 @@ export default {
     grey: "#8c8c8c",
   },
   emojis: {
+    arrow_right: "01GETPPYATCSDJMGGK9YHHHR47",
     discspin: "01GETQ7NVHXQW0373J5YY7ZRBH",
     greenTick: "01GETPPMWHRN2K6X2D45PYJ0SA",
     loading: "01GF1K7B8M10CG5N8ZVC149797",
